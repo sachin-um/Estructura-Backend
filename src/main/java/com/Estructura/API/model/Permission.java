@@ -1,4 +1,4 @@
-package com.sachin.Estructura.model;
+package com.Estructura.API.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

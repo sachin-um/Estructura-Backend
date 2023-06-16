@@ -1,6 +1,6 @@
-package com.sachin.Estructura.auth;
+package com.Estructura.API.auth;
 
-import com.sachin.Estructura.model.Role;
+import com.Estructura.API.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.sachin.Estructura.auth;
+package com.Estructura.API.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
-package com.sachin.Estructura.config;
+package com.Estructura.API.config;
 
-import com.sachin.Estructura.repository.TokenRepository;
+import com.Estructura.API.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

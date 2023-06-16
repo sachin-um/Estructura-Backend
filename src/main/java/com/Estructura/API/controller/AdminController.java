@@ -1,4 +1,4 @@
-package com.sachin.Estructura.controller;
+package com.Estructura.API.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

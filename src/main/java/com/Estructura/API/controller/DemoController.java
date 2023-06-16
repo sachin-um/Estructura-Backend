@@ -1,4 +1,4 @@
-package com.sachin.Estructura.controller;
+package com.Estructura.API.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

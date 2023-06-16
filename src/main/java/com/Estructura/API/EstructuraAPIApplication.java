@@ -1,20 +1,19 @@
-package com.sachin.Estructura;
+package com.Estructura.API;
 
-import com.sachin.Estructura.auth.AuthenticationService;
-import com.sachin.Estructura.auth.RegisterRequest;
-import com.sachin.Estructura.model.Role;
+import com.Estructura.API.auth.AuthenticationService;
+import com.Estructura.API.auth.RegisterRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import static com.sachin.Estructura.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.ADMIN;
 
 @SpringBootApplication
-public class SecurityApplication {
+public class EstructuraAPIApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SecurityApplication.class, args);
+		SpringApplication.run(EstructuraAPIApplication.class, args);
 	}
 
 	@Bean
