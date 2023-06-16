@@ -1,4 +1,4 @@
-package com.sachin.Estructura.config;
+package com.Estructura.API.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

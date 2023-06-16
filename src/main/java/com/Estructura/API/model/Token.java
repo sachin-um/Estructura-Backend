@@ -1,4 +1,4 @@
-package com.sachin.Estructura.model;
+package com.Estructura.API.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,9 +1,9 @@
-package com.sachin.Estructura.controller;
+package com.Estructura.API.controller;
 
-import com.sachin.Estructura.auth.AuthenticationRequest;
-import com.sachin.Estructura.auth.AuthenticationResponse;
-import com.sachin.Estructura.auth.AuthenticationService;
-import com.sachin.Estructura.auth.RegisterRequest;
+import com.Estructura.API.auth.AuthenticationRequest;
+import com.Estructura.API.auth.AuthenticationResponse;
+import com.Estructura.API.auth.AuthenticationService;
+import com.Estructura.API.auth.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

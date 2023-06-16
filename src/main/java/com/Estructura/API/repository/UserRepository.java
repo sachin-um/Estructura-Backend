@@ -1,6 +1,6 @@
-package com.sachin.Estructura.repository;
+package com.Estructura.API.repository;
 
-import com.sachin.Estructura.model.User;
+import com.Estructura.API.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

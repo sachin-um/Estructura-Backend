@@ -1,4 +1,4 @@
-package com.sachin.Estructura.auth;
+package com.Estructura.API.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

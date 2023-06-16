@@ -1,4 +1,4 @@
-package com.sachin.Estructura.config;
+package com.Estructura.API.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

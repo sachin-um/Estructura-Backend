@@ -1,10 +1,10 @@
-package com.sachin.Estructura;
+package com.Estructura.API;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SecurityApplicationTests {
+class EstructuraAPIApplicationTests {
 
 	@Test
 	void contextLoads() {

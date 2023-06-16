@@ -1,13 +1,12 @@
-package com.sachin.Estructura.auth;
+package com.Estructura.API.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sachin.Estructura.config.JwtService;
-import com.sachin.Estructura.model.Token;
-import com.sachin.Estructura.repository.TokenRepository;
-import com.sachin.Estructura.model.TokenType;
-import com.sachin.Estructura.model.Role;
-import com.sachin.Estructura.model.User;
-import com.sachin.Estructura.repository.UserRepository;
+import com.Estructura.API.config.JwtService;
+import com.Estructura.API.model.Token;
+import com.Estructura.API.repository.TokenRepository;
+import com.Estructura.API.model.TokenType;
+import com.Estructura.API.model.User;
+import com.Estructura.API.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

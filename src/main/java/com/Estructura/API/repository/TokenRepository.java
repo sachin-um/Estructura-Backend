@@ -1,6 +1,6 @@
-package com.sachin.Estructura.repository;
+package com.Estructura.API.repository;
 
-import com.sachin.Estructura.model.Token;
+import com.Estructura.API.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
