@@ -1,0 +1,30 @@
+name: Build & Deploy Estructura API
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    name: Build and Deploy Estructura API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: action/checkout@v3
+
+      - name: Setup JDK 17
+        uses: action/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: 17
+      - name: Unit Tests
+        runs: mvn -B test --file pom.xml
+
+      - name: Build the application
+        run:
+          mvn clean
+          mvn -B package --file pom.xml
+
