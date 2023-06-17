@@ -33,7 +33,7 @@ jobs:
           cache: 'maven'
 
       - name: Change postgres host
-        run: sed -i 's/localhost/postgres/g' src/main/resources/application.properties
+        run: echo "${{ job.services.postgres.ports[5432] }}" && sed -i 's/localhost/postgres/g' src/main/resources/application.properties
 
       - name: Unit Tests
         run: cat src/main/resources/application.properties && mvn -B test --file pom.xml
