@@ -45,17 +45,18 @@ jobs:
           cache: 'maven'
 
       - name: Start PostgreSQL
-        run:
-          docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest
+        run: |
+          docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest\
+          docker ps
 
       - name: Wait for PostgreSQL to start
         run: |
           echo "HI"
-          until nc -zv postgres-container  5433; do sleep 5; done
+          until nc -zv localhost 5433; do sleep 5; done
 
       - name: Run Unit Tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-container:5433/estructura
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5433/estructura
           SPRING_DATASOURCE_USERNAME: estructura
           SPRING_DATASOURCE_PASSWORD: estructura@123
         run:
