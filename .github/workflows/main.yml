@@ -49,15 +49,15 @@ jobs:
           docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest
 
       - name: Wait for PostgreSQL to start
-        run:
-          docker-compose exec postgres bash -c 'until pg_isready; do sleep 30; done'
+        run: |
+        echo "Waiting for PostgreSQL to start..."
+        until nc -zv postgres 5433; do sleep 5; done
 
       - name: Run Unit Tests
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/estructura
           SPRING_DATASOURCE_USERNAME: estructura
           SPRING_DATASOURCE_PASSWORD: estructura@123
-          SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
         run:
           mvn test
 #      - name: Unit Tests
