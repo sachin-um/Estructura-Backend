@@ -48,6 +48,7 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/estructura
           SPRING_DATASOURCE_USERNAME: estructura
           SPRING_DATASOURCE_PASSWORD: estructura@123
+          SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
 
       - name: Build the application
         run: |
