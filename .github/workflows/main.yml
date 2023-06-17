@@ -48,9 +48,6 @@ jobs:
         run:
           docker-compose up -d
 
-      - name: Wait for PostgreSQL to start
-        run:
-          docker-compose exec postgres bash -c 'until pg_isready; do sleep 1; done'
 
       - name: Run Unit Tests
           env:
