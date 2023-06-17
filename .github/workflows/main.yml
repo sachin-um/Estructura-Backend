@@ -51,11 +51,11 @@ jobs:
       - name: Wait for PostgreSQL to start
         run: |
           echo "HI"
-          until nc -zv postgres 5433; do sleep 5; done
+          until nc -zv <postgres-container-ip> 5433; do sleep 5; done
 
       - name: Run Unit Tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/estructura
+          SPRING_DATASOURCE_URL: jdbc:postgresql://<postgres-container-ip>:5433/estructura
           SPRING_DATASOURCE_USERNAME: estructura
           SPRING_DATASOURCE_PASSWORD: estructura@123
         run:
