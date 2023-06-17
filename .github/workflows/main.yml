@@ -48,15 +48,25 @@ jobs:
         run:
           docker-compose up -d
 
+      - name: Wait for PostgreSQL to start
+        run:
+          docker-compose exec postgres bash -c 'until pg_isready; do sleep 1; done'
 
       - name: Run Unit Tests
-          env:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/estructura
-            SPRING_DATASOURCE_USERNAME: estructura
-            SPRING_DATASOURCE_PASSWORD: estructura@123
-            SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/estructura
+          SPRING_DATASOURCE_USERNAME: estructura
+          SPRING_DATASOURCE_PASSWORD: estructura@123
+          SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
         run:
           mvn test
+#      - name: Unit Tests
+#        run: mvn test
+#        env:
+#          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/estructura
+#          SPRING_DATASOURCE_USERNAME: estructura
+#          SPRING_DATASOURCE_PASSWORD: estructura@123
+#          SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
 
       - name: Build the application
         run: |
