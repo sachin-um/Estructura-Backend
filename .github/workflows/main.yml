@@ -46,7 +46,7 @@ jobs:
 
       - name: Start PostgreSQL
         run: |
-          docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest\
+          docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest
           docker ps
 
       - name: Wait for PostgreSQL to start
