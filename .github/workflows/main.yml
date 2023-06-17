@@ -49,8 +49,7 @@ jobs:
           mvn -B package --file pom.xml
 
       - name: Unit Tests
-          run:
-            mvn test
+        run: mvn test
           env:
             SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/estructura
             SPRING_DATASOURCE_USERNAME: estructura
