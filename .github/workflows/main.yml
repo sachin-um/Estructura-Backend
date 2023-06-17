@@ -43,8 +43,6 @@ jobs:
           distribution: 'corretto'
           java-version: 17
           cache: 'maven'
-      - name: Build with Maven
-          run: mvn clean package --file pom.xml
 
       - name: Start PostgreSQL
           run: docker-compose up -d
@@ -59,4 +57,8 @@ jobs:
             SPRING_DATASOURCE_PASSWORD: estructura@123
             SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
           run: mvn test
-      
+
+      - name: Build the application
+        run: |
+          mvn clean
+          mvn -B package --file pom.xml
