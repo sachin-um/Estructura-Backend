@@ -30,7 +30,7 @@ jobs:
           cache: 'maven'
 
       - name: Change postgres host
-        run: sed -i 's/localhost/postgres/g' input.txt
+        run: sed -i 's/localhost/postgres/g' src/main/resources/application.properties
 
       - name: Unit Tests
         run: mvn -B test --file pom.xml
