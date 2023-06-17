@@ -43,7 +43,7 @@ jobs:
           cache: 'maven'
 
       - name: Build the application
-          run: |
+          run: 
             mvn clean
             mvn -B package --file pom.xml
 
