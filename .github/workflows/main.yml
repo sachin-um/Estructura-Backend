@@ -12,6 +12,12 @@ jobs:
   build-deploy:
     name: Build and Deploy Estructura API
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: estructura
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,6 +27,10 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: 17
+          cache: 'maven'
+
+      - name: Change postgres host
+        - run: sed -i 's/localhost/postgres/g' input.txt
 
       - name: Unit Tests
         run: mvn -B test --file pom.xml
