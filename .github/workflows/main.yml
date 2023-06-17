@@ -48,9 +48,9 @@ jobs:
         run:
           docker run -d --name postgres-container -p 5433:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest
 
-      - name: Wait for PostgreSQL to start
-        run:
-          docker-compose exec postgres bash -c 'until pg_isready; do sleep 10; done'
+#      - name: Wait for PostgreSQL to start
+#        run:
+#          docker-compose exec postgres bash -c 'until pg_isready; do sleep 10; done'
 
       - name: Run Unit Tests
         env:
