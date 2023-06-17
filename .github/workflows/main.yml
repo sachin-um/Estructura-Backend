@@ -42,13 +42,6 @@ jobs:
           java-version: 17
           cache: 'maven'
 
-      - name: Build the application
-          run: 
-            mvn clean
-            mvn -B package --file pom.xml
-
-
-
       - name: Unit Tests
         run: mvn test
         env:
@@ -57,3 +50,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: estructura@123
           SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
 
+      - name: Build the application
+        run: |
+          mvn clean
+          mvn -B package --file pom.xml
