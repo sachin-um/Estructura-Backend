@@ -46,7 +46,7 @@ jobs:
 
       - name: Start PostgreSQL
         run:
-          docker-compose up -d
+          docker run -d --name postgres-container -p 5432:5432 -e POSTGRES_USER=estructura -e POSTGRES_PASSWORD=estructura@123 -e POSTGRES_DB=estructura postgres:latest
 
       - name: Wait for PostgreSQL to start
         run:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Run Unit Tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/estructura
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/estructura
           SPRING_DATASOURCE_USERNAME: estructura
           SPRING_DATASOURCE_PASSWORD: estructura@123
           SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
