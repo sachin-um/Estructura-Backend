@@ -33,7 +33,7 @@ jobs:
         run: sed -i 's/localhost/postgres/g' src/main/resources/application.properties
 
       - name: Unit Tests
-        run: mvn -B test --file pom.xml
+        run: cat src/main/resources/application.properties && mvn -B test --file pom.xml
 
       - name: Build the application
         run: |
