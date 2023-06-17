@@ -16,11 +16,11 @@ jobs:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres:15
+        image: postgres:leatest
         # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: Udawatta@456
+          POSTGRES_USER: estructura
+          POSTGRES_PASSWORD: estructura@123
           POSTGRES_DB: estructura
 
 
@@ -43,7 +43,11 @@ jobs:
           cache: 'maven'
 
       - name: Unit Tests
-        run: cat src/main/resources/application.properties && mvn -B test --file pom.xml
+        run: mvn test
+        env:
+          - SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/estructura
+          - SPRING_DATASOURCE_USERNAME: estructura
+          - SPRING_DATASOURCE_PASSWORD: estructura@123
 
       - name: Build the application
         run: |
