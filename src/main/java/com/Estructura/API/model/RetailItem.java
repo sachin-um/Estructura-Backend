@@ -22,8 +22,7 @@ public class RetailItem {
     @Column(name = "item_Name",length = 255,nullable = false)
     private String name;
 
-    @Column(precision = 8, scale = 2, nullable = false)
-    @DecimalMin(value = "0.00")
+    @Column(name="price", columnDefinition = "numeric(10,2)")
     private Double price;
 
     private String description;
