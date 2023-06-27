@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Data
@@ -13,25 +15,45 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "retail_Item")
 public class RetailItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "retail_item_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "retail_item_sequence"
+    )
     private long id;
-    @Column(name = "item_Name",length = 255,nullable = false)
+
+    @Enumerated(EnumType.STRING)
+    private RetailItemType retailItemType;
+
+    //@Column(name = "item_Name",length = 255,nullable = false)
     private String name;
 
-    @Column(name="price", columnDefinition = "numeric(10,2)")
+    //@Column(name="price", columnDefinition = "numeric(10,2)")
     private Double price;
+
+    private String image;
 
     private String description;
 
-    private String category;
-
     private Integer quantity;// different quantity types
 
-
+    public RetailItem(RetailItemType retailItemType, String name, Double price, String image, String description, Integer quantity){
+        this.retailItemType = retailItemType;
+        this.name = name;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+        this.quantity = quantity;
+    }
 
 
 }
