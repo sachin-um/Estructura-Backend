@@ -1,12 +1,12 @@
 package com.Estructura.API.auth;
 
+import com.Estructura.API.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
 import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
-import com.Estructura.API.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -34,7 +34,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
-        var savedUser=userRepository.save(user);
+        var savedUser=userService.saveUser(user);
         var jwtToken= jwtService.generateToken(user);
         var refreshToken= jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
@@ -53,7 +53,7 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user =userRepository.findByEmail(request.getEmail())
+        var user =userService.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken= jwtService.generateToken(user);
         var refreshToken= jwtService.generateRefreshToken(user);
@@ -100,7 +100,7 @@ public class AuthenticationService {
         refreshToken=authHeader.substring(7);
         userEmail= jwtService.extractUsername(refreshToken);
         if (userEmail != null){
-            var user=this.userRepository.findByEmail(userEmail)
+            var user=this.userService.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken,user)){
                 var accessToken= jwtService.generateToken(user);
