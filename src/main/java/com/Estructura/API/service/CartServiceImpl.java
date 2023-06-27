@@ -6,7 +6,8 @@ import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.model.ShoppingCart;
 import com.Estructura.API.repository.CartRepository;
 import com.Estructura.API.repository.OrderEntityRepository;
-import com.Estructura.API.userinfo.UserInfo;
+//import com.Estructura.API.userinfo.UserInfo;
+import jakarta.persistence.criteria.Order;
 import lombok.AllArgsConstructor;
 
 import org.aspectj.weaver.ast.Or;
@@ -25,27 +26,25 @@ import java.util.Optional;
 
 public class CartServiceImpl implements CartService{
 
-    @Autowired
+
     private final CartRepository cartRepository;
-    @Autowired
     private final RetailItemService retailItemService;
-    @Autowired
     private final OrderEntityRepository orderEntityRepository;
 
     @Override
     @Transactional
     public String addToCart(OrderRequestBody orderRequestBody){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = (UserInfo) auth.getPrincipal();
-        Optional<ShoppingCart> shoppingCartCheck = cartRepository.findByUserInfo(userInfo);
+        //UserInfo userInfo = (UserInfo) auth.getPrincipal();
+        //Optional<ShoppingCart> shoppingCartCheck = cartRepository.findByUserInfo(userInfo);
 
         ShoppingCart shoppingCart;
-        if(!shoppingCartCheck.isPresent()){
-            shoppingCart = new ShoppingCart(userInfo);
-            cartRepository.save(shoppingCart);
-        }else{
-            shoppingCart = shoppingCartCheck.get();
-        }
+//        if(!shoppingCartCheck.isPresent()){
+//            shoppingCart = new ShoppingCart(userInfo);
+//            cartRepository.save(shoppingCart);
+//        }else{
+//            shoppingCart = shoppingCartCheck.get();
+//        }
 
         Optional<RetailItem> retailItem = retailItemService.findRetailItemById(orderRequestBody.getId());
         if(!retailItem.isPresent()){
@@ -54,7 +53,7 @@ public class CartServiceImpl implements CartService{
 
         OrderEntity orderEntity = new OrderEntity(orderRequestBody.getNum(), retailItem.get());
         orderEntityRepository.save(orderEntity);
-        shoppingCart.getProducts().add(orderEntity);
+//        shoppingCart.getRetailItems().add(orderEntity);
 
         return "Done";
     }
@@ -67,6 +66,22 @@ public class CartServiceImpl implements CartService{
         }
 
         return "Done";
+    }
+
+
+    @Override
+    public List<OrderEntity> findOrderedRetailItems(){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //UserInfo userInfo = (UserInfo) auth.getPrincipal();
+        //List<ShoppingCart> shoppingCarts = cartRepository.findAllByUserInfo(userInfo);
+        List<OrderEntity> retailItems = new ArrayList<OrderEntity>();
+
+//        for(int i = shoppingCarts.size()-1; i>=0; i--){
+//            retailItems.addAll(shoppingCarts.get(i).getRetailItems());
+//        }
+
+        return retailItems;
     }
 
 

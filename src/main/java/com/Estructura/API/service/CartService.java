@@ -11,6 +11,6 @@ public interface CartService {
 
     public String addToCartMultiple(List<OrderRequestBody> orders);
 
-    List<OrderEntity> findOrderedRetailItems();
+    public List<OrderEntity> findOrderedRetailItems();
 
 }

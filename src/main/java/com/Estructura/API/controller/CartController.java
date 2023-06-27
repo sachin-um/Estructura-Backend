@@ -15,19 +15,19 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("single")
+    @PostMapping("/single")
     String addToCart(@RequestBody OrderRequestBody orderRequestBody){
         return cartService.addToCart(orderRequestBody);
     }
 
-    @PostMapping("all")
+    @PostMapping("/all")
     String addToCartMultiple(@RequestBody List<OrderRequestBody> orders){
         return cartService.addToCartMultiple(orders);
     }
 
     @GetMapping()
-    List<OrderEntity> findOrderedProducts(){
-        return cartService.findOrderedProducts();
+    List<OrderEntity> findOrderedRetailItems(){
+        return cartService.findOrderedRetailItems();
     }
 
 }

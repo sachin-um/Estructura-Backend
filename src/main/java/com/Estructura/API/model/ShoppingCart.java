@@ -30,10 +30,10 @@ public class ShoppingCart {
     private Long id;
 
     @OneToMany
-    private List<OrderEntity> products = new ArrayList<OrderEntity>();
+    private List<OrderEntity> retailItems = new ArrayList<OrderEntity>();
 
-    public ShoppingCart(UserInfo userInfo){
-        this.userInfo = userInfo;
-    }
+//    public ShoppingCart(UserInfo userInfo){
+//        this.userInfo = userInfo;
+//    }
 
 }
