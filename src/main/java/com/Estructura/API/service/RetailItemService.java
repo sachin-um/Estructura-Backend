@@ -10,12 +10,11 @@ import java.util.Optional;
 
 public interface RetailItemService {
 
-    public List<RetailItem> fetchAll();
-    public List<RetailItem> fetchAllRetailItems();
+    List<RetailItem> fetchAll();
 
-    public Optional<RetailItem> findRetailItemById(Long id);
+    Optional<RetailItem> findRetailItemById(Long id);
 
-    public List<RetailItem> fetchByType(RetailItemType type);
+    List<RetailItem> fetchByType(RetailItemType type);
 
-    public void addRetailItem();
+    void addRetailItem(RetailItem retailItem);
 }
