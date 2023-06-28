@@ -1,5 +1,8 @@
-package com.Estructura.API.auth;
+package com.Estructura.API.service;
 
+import com.Estructura.API.auth.AuthenticationRequest;
+import com.Estructura.API.auth.AuthenticationResponse;
+import com.Estructura.API.auth.RegisterRequest;
 import com.Estructura.API.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
@@ -10,6 +13,7 @@ import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +30,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
     public AuthenticationResponse register(RegisterRequest request) {
         var user= User.builder()
                 .firstname(request.getFirstname())
@@ -39,6 +44,7 @@ public class AuthenticationService {
         var refreshToken= jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
         return AuthenticationResponse.builder()
+                .loggedUser(savedUser)
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -55,14 +61,22 @@ public class AuthenticationService {
         );
         var user =userService.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken= jwtService.generateToken(user);
-        var refreshToken= jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user,jwtToken);
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+        if (user.isVerified()){
+            var jwtToken= jwtService.generateToken(user);
+            var refreshToken= jwtService.generateRefreshToken(user);
+            revokeAllUserTokens(user);
+            saveUserToken(user,jwtToken);
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        }
+        else {
+            return AuthenticationResponse.builder()
+                    .errormessage("You have to verify your account first..")
+                    .build();
+        }
+
     }
 
     private void revokeAllUserTokens(User user){

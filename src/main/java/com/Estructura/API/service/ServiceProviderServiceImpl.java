@@ -1,4 +1,4 @@
 package com.Estructura.API.service;
 
-public class ServiceProviderServiceImpl {
+public class ServiceProviderServiceImpl implements ServiceProviderService{
 }

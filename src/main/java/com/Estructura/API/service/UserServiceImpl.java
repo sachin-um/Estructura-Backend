@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService{
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Override
     public User saveUser(User user) {
         Optional<User> theUser=userRepository.findByEmail(user.getEmail());
