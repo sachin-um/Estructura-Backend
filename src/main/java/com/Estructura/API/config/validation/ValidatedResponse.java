@@ -20,15 +20,23 @@ import lombok.NoArgsConstructor;
  * example:
  *      // RESPONSE is the class that extends ValidatedResponse
  *      // ENTITY is the entity that is being validated
- *      ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
- *      Validator validator = factory.getValidator();
- *      var violations = validator.validate(ENTITY);
- *      if (!violations.isEmpty()){
- *          var response = RESPONSE.builder()
- *                  .build();
- *          response.setValidationViolationsFromConstraintViolations(violations);
- *          return response;
+ *      var ENTITY= ENTITY.builder()
+ *              .x(request.getblah())
+ *              .y(request.getblahblah())
+ *              .build();
+ *      var response = new RESPONSE();
+ * 
+ *      // Pre check fields that aren't checked by response.checkValidity()
+ *      if(request.getBlah().isEmpty()) {
+ *          response.addError("blah", "blah is required");
  *      }
+ * 
+ *      // If Request is valid
+ *      if (response.checkValidity(user)){
+ *          response.setblahblahblah(true);
+ *      }
+ *      
+ *      return response;
  * ! NOTE: This class is not meant to be used directly, but rather extended
  *   Make sure that the extended class has it's own Builder, Getter and Setter annotations 
 */
