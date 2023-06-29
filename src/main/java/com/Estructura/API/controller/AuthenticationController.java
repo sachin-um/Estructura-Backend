@@ -23,36 +23,42 @@ public class AuthenticationController {
     private final AuthenticationService service;
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final ApplicationEventPublisher publisher;
+
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse>register(
+    public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request,
-            final HttpServletRequest servletRequest
-    ){
-        AuthenticationResponse response=service.register(request);
-        // publisher.publishEvent(new RegistrationCompleteEvent(response.getLoggedUser(),applicationUrl(servletRequest)));
-        return ResponseEntity.ok(response);
+            final HttpServletRequest servletRequest) {
+        AuthenticationResponse response = service.register(request);
+        
+        // Only send email if saving user is successful
+        if (response.isSuccess()) {
+            publisher.publishEvent(new RegistrationCompleteEvent(
+                    response.getLoggedUser(), applicationUrl(servletRequest)));
+            return ResponseEntity.ok(response);
+        }
+
+        // If saving user is not successful, return bad request
+        return ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(@RequestParam("token") String token){
-        EmailVerificationToken theToken=emailVerificationTokenService.findByToken(token);
-        if (theToken.getUser().isVerified()){
+    public String verifyEmail(@RequestParam("token") String token) {
+        EmailVerificationToken theToken = emailVerificationTokenService.findByToken(token);
+        if (theToken.getUser().isVerified()) {
             return "This account has already been verified ,please login";
         }
-        String verificationResult=emailVerificationTokenService.validateToken(token);
-        if (verificationResult.equalsIgnoreCase("valid")){
+        String verificationResult = emailVerificationTokenService.validateToken(token);
+        if (verificationResult.equalsIgnoreCase("valid")) {
             return "Email verified successfully. Now you can login to your account";
-        }
-        else {
+        } else {
             return "Invalid verification token";
-            }
+        }
 
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse>register(
-            @RequestBody AuthenticationRequest request
-    ){
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody AuthenticationRequest request) {
 
         return ResponseEntity.ok(service.authenticate(request));
     }
@@ -60,12 +66,11 @@ public class AuthenticationController {
     @PostMapping("/refresh-token")
     public void refreshToken(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-        service.refreshToken(request,response);
+            HttpServletResponse response) throws IOException {
+        service.refreshToken(request, response);
     }
 
     private String applicationUrl(HttpServletRequest request) {
-        return "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }
