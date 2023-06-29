@@ -16,5 +16,7 @@ public interface RetailItemService {
 
     List<RetailItem> fetchByType(RetailItemType type);
 
+    List<RetailItem> fetchByID(Long id);
+
     void addRetailItem(RetailItem retailItem);
 }

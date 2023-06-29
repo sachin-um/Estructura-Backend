@@ -11,4 +11,7 @@ import java.util.List;
 public interface RetailItemRepository extends JpaRepository<RetailItem, Long> {
 
     List<RetailItem> findAllByRetailItemType(RetailItemType retailItemType);
+
+    List<RetailItem> findAllById(Long id);
+
 }

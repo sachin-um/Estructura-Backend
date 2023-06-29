@@ -3,6 +3,7 @@ package com.Estructura.API.controller;
 import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.model.RetailItemType;
 import com.Estructura.API.service.RetailItemService;
+import com.sun.mail.imap.protocol.INTERNALDATE;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,8 @@ public class RetailItemController {
         return retailItemService.fetchAll();
     }
 
-    @GetMapping()
-    List<RetailItem> fetchByType(@RequestParam("type") String type) {
+    @GetMapping("/type/{type}")
+    List<RetailItem> fetchByType(@PathVariable("type") String type) {
         RetailItemType retailItemType;
         switch (type.toUpperCase()) {
             case "FURNITURE" -> retailItemType = RetailItemType.FURNITURE;
@@ -36,6 +37,12 @@ public class RetailItemController {
             }
         }
         return retailItemService.fetchByType(retailItemType);
+    }
+
+    @GetMapping("/id/{id}")
+    List<RetailItem> fetchByID(@PathVariable("id") Long id){
+        System.out.println("ID: " + id);
+        return retailItemService.fetchByID(id);
     }
 
     @PostMapping("/additem")

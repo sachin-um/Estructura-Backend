@@ -11,7 +11,6 @@ import jakarta.persistence.criteria.Order;
 import lombok.AllArgsConstructor;
 
 import org.aspectj.weaver.ast.Or;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -47,6 +46,8 @@ public class CartServiceImpl implements CartService{
 //        }
 
         Optional<RetailItem> retailItem = retailItemService.findRetailItemById(orderRequestBody.getId());
+        System.out.println(retailItem.toString());
+
         if(!retailItem.isPresent()){
             throw new IllegalStateException("retail item id error/not found");
         }
@@ -61,7 +62,9 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public String addToCartMultiple(List<OrderRequestBody> orders){
+        System.out.println("orders: " + orders.toString());
         for(OrderRequestBody body: orders){
+            System.out.println("body: " + body.toString());
             this.addToCart(body);
         }
 
@@ -69,6 +72,7 @@ public class CartServiceImpl implements CartService{
     }
 
 
+    //past orders?? check on shopping carts
     @Override
     public List<OrderEntity> findOrderedRetailItems(){
 

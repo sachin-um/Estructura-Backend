@@ -30,6 +30,11 @@ public class RetailItemServiceImpl implements RetailItemService {
     }
 
     @Override
+    public List<RetailItem> fetchByID(Long id){
+        return retailItemRepository.findAllById(id);
+    }
+
+    @Override
     public void addRetailItem(RetailItem retailItem){
         retailItemRepository.save(retailItem);
     }
