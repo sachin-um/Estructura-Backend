@@ -4,7 +4,6 @@ import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.model.RetailItemType;
 import lombok.AllArgsConstructor;
 import com.Estructura.API.repository.RetailItemRepository;
-import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,18 +25,18 @@ public class RetailItemServiceImpl implements RetailItemService {
     }
 
     @Override
-    public List<RetailItem> fetchAllRetailItems(){
-        return retailItemRepository.findAll();
-    }
-
-    @Override
     public List<RetailItem> fetchByType(RetailItemType retailItemType){
         return retailItemRepository.findAllByRetailItemType(retailItemType);
     }
 
     @Override
-    public void addRetailItem(){
+    public List<RetailItem> fetchByID(Long id){
+        return retailItemRepository.findAllById(id);
+    }
 
+    @Override
+    public void addRetailItem(RetailItem retailItem){
+        retailItemRepository.save(retailItem);
     }
 
 }
