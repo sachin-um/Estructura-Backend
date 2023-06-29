@@ -12,6 +12,9 @@ import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Validator;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +42,17 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        var violations = validator.validate(user);
+        if (!violations.isEmpty()){
+            var response = AuthenticationResponse.builder()
+                    .build();
+            response.setValidationViolationsFromConstraintViolations(violations);
+            return response;
+        }
         var savedUser=userService.saveUser(user);
         var jwtToken= jwtService.generateToken(user);
         var refreshToken= jwtService.generateRefreshToken(user);

@@ -1,7 +1,11 @@
 package com.Estructura.API.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import lombok.Builder.Default;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,16 +20,22 @@ import java.util.List;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="_user")
+@Table(name = "_user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank(message = "First name is required")
     private String firstname;
+    @NotBlank(message = "Last name is required")
     private String lastname;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+    @NotBlank(message = "Password is required")
     private String password;
-    private boolean isVerified=false;
+    @Default
+    private boolean isVerified = false;
 
     @Enumerated(EnumType.STRING)
     private Role role;

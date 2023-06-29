@@ -29,7 +29,7 @@ public class AuthenticationController {
             final HttpServletRequest servletRequest
     ){
         AuthenticationResponse response=service.register(request);
-        publisher.publishEvent(new RegistrationCompleteEvent(response.getLoggedUser(),applicationUrl(servletRequest)));
+        // publisher.publishEvent(new RegistrationCompleteEvent(response.getLoggedUser(),applicationUrl(servletRequest)));
         return ResponseEntity.ok(response);
     }
 
