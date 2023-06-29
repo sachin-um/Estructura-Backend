@@ -1,5 +1,6 @@
 package com.Estructura.API.service;
 
+import com.Estructura.API.exception.TokenNotFoundException;
 import com.Estructura.API.model.EmailVerificationToken;
 import com.Estructura.API.model.User;
 import com.Estructura.API.repository.EmailVerificationTokenRepository;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -34,12 +36,26 @@ public class EmailVerificationTokenServiceImpl implements EmailVerificationToken
         }
         User user=token.getUser();
         Calendar calendar=Calendar.getInstance();
-        if ((token.getExpirationTime().getTime()-calendar.getTime().getTime()) <= 0){
-            emailVerificationTokenRepository.delete(token);
+        System.out.println(token.getToken());
+        if ((token.getExpirationTime().getTime() -calendar.getTime().getTime()) <= 0){
             return "Token already expired";
         }
         user.setVerified(true);
         userRepository.save(user);
         return "valid";
+    }
+
+    @Override
+    public EmailVerificationToken generateNewVerificationToken(String oldToken) {
+        EmailVerificationToken verificationToken=emailVerificationTokenRepository.findByToken(oldToken);// if not available
+        if (verificationToken.getToken()==null){
+            throw new TokenNotFoundException("Token not found");
+        }
+        else {
+            var verificationTokenTime=new EmailVerificationToken().getTokenExpirationTime();
+            verificationToken.setToken(UUID.randomUUID().toString());
+            verificationToken.setExpirationTime(verificationTokenTime);
+            return emailVerificationTokenRepository.save(verificationToken);
+        }
     }
 }

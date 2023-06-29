@@ -36,10 +36,10 @@ public class EmailVerificationToken {
         this.expirationTime=this.getTokenExpirationTime();
     }
 
-    private Date getTokenExpirationTime() {
+    public Date getTokenExpirationTime() {
         Calendar calendar=Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
-        calendar.add(Calendar.MINUTE,10);
+        calendar.add(Calendar.MINUTE,1);
         return new Date(calendar.getTime().getTime());
     }
 }

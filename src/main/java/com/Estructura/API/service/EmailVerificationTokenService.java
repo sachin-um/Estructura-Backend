@@ -10,4 +10,6 @@ public interface EmailVerificationTokenService {
     EmailVerificationToken findByToken(String token);
 
     String validateToken(String theToken);
+
+    EmailVerificationToken generateNewVerificationToken(String oldToken);
 }
