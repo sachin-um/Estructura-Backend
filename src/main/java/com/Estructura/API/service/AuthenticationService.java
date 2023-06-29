@@ -3,7 +3,6 @@ package com.Estructura.API.service;
 import com.Estructura.API.auth.AuthenticationRequest;
 import com.Estructura.API.auth.AuthenticationResponse;
 import com.Estructura.API.auth.RegisterRequest;
-import com.Estructura.API.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.model.Token;
@@ -13,7 +12,6 @@ import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,18 +37,29 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
-        var savedUser=userService.saveUser(user);
-        var jwtToken= jwtService.generateToken(user);
-        var refreshToken= jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
-                .loggedUser(savedUser)
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+
+        var response = new AuthenticationResponse();
+
+        // Pre check fields that aren't checked by response.checkValidity()
+        if(request.getPassword().isEmpty()) {
+            response.addError("password", "Password is required");
+        }
+
+        // Save tokens and user to database if user information is valid
+        if (response.checkValidity(user)){
+            var savedUser=userService.saveUser(user);
+            var jwtToken= jwtService.generateToken(user);
+            var refreshToken= jwtService.generateRefreshToken(user);
+            saveUserToken(savedUser, jwtToken);
+
+            response.setLoggedUser(savedUser);
+            response.setAccessToken(jwtToken);
+            response.setRefreshToken(refreshToken);
+            response.setSuccess(true);
+        }
+        
+        return response;
     }
-
-
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
