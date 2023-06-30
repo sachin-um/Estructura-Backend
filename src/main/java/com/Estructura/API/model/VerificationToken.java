@@ -12,25 +12,27 @@ import java.util.Date;
 @Setter
 @Entity
 @NoArgsConstructor
-public class EmailVerificationToken {
+public class VerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
     private Date expirationTime;
+    private TokenType tokenType;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public EmailVerificationToken(String token, User user) {
+    public VerificationToken(String token, User user, TokenType tokenType) {
         super();
         this.token = token;
         this.user = user;
         this.expirationTime=this.getTokenExpirationTime();
+        this.tokenType=tokenType;
     }
 
-    public EmailVerificationToken(String token) {
+    public VerificationToken(String token) {
         super();
         this.token = token;
         this.expirationTime=this.getTokenExpirationTime();
