@@ -3,12 +3,10 @@ package com.Estructura.API.service;
 import com.Estructura.API.auth.AuthenticationRequest;
 import com.Estructura.API.auth.AuthenticationResponse;
 import com.Estructura.API.auth.RegisterRequest;
+import com.Estructura.API.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
-import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
-import com.Estructura.API.model.TokenType;
-import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+import static com.Estructura.API.model.Role.CUSTOMER;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -30,14 +30,18 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user= User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .build();
+        Role userRole=request.getRole();
+        User user=null;
 
+        if(userRole==CUSTOMER){
+            user= User.builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(userRole)
+                    .build();
+        }
         var response = new AuthenticationResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
@@ -46,8 +50,12 @@ public class AuthenticationService {
         }
 
         // Save tokens and user to database if user information is valid
-        if (response.checkValidity(user)){
-            var savedUser=userService.saveUser(user);
+        if (user!=null && response.checkValidity(user)){
+            User savedUser=null;
+            if (user instanceof ServiceProvider){
+                savedUser=userService.saveUser(user);
+            }
+
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);
