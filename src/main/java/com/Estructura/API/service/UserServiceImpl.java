@@ -4,7 +4,6 @@ import com.Estructura.API.exception.UserAlreadyExistsException;
 import com.Estructura.API.model.User;
 import com.Estructura.API.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
