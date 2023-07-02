@@ -1,7 +1,5 @@
-package com.Estructura.API.responses.auth;
+package com.Estructura.API.responses;
 
-import com.Estructura.API.config.validation.ValidatedResponse;
-import com.Estructura.API.requests.auth.ResetPasswordRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResetPasswordResponse extends ValidatedResponse<ResetPasswordRequest>{
+public class GenericResponse<RequestClass> extends ValidatedResponse<RequestClass> {
     @JsonProperty("success")
     private boolean success;
     @JsonProperty("message")

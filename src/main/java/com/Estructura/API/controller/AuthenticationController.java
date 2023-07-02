@@ -19,9 +19,9 @@ import com.Estructura.API.event.listener.RegistrationCompleteEventListener;
 import com.Estructura.API.model.User;
 import com.Estructura.API.model.VerificationToken;
 import com.Estructura.API.requests.auth.ResetPasswordRequest;
-import com.Estructura.API.responses.auth.PasswordResetResponse;
+import com.Estructura.API.responses.GenericResponse;
+import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
-import com.Estructura.API.responses.auth.ResetPasswordResponse;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.PasswordResetRequest;
 import com.Estructura.API.requests.auth.RegisterRequest;
@@ -82,9 +82,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/password-reset-request")
-    public PasswordResetResponse resetPasswordRequest(
+    public GenericResponse<PasswordResetRequest> resetPasswordRequest(
             @RequestBody PasswordResetRequest passwordResetRequest) {
-        PasswordResetResponse response = new PasswordResetResponse();
+        GenericResponse<PasswordResetRequest> response = new GenericResponse<PasswordResetRequest>();
 
         if (response.checkValidity(passwordResetRequest)) {
             Optional<User> user = userService.findByEmail(passwordResetRequest.getEmail());
@@ -102,31 +102,33 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResetPasswordResponse resetPassword(
+    public GenericResponse<ResetPasswordRequest> resetPassword(
             @RequestBody ResetPasswordRequest passwordResetRequest,
             @RequestParam("token") String passwordRestToken) {
-        ResetPasswordResponse response = new ResetPasswordResponse();
+        GenericResponse<ResetPasswordRequest> response = new GenericResponse<ResetPasswordRequest>();
         String verificationResult = verificationTokenService.validateVerificationToken(passwordRestToken);
-        String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
-                + passwordRestToken;
+        // String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
+        //         + passwordRestToken;
         if (!verificationResult.equalsIgnoreCase("valid")) {
-            // return "Token is not valid";
+            response.addError("token", "Invalid token");
         }
-        Optional<User> user = verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
-        if (user.isPresent()) {
-            userService.resetUserPassword(user.get(), passwordResetRequest.getNewPassword());
-            // return "You successfully reset your password";
+        if(response.checkValidity(passwordResetRequest)){
+            Optional<User> user = verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
+            if (user.isPresent()) {
+                userService.resetUserPassword(user.get(), passwordResetRequest.getNewPassword());
+                response.setSuccess(true);
+                response.setMessage("You successfully reset your password");
+            } else {
+                response.addError("token", "Invalid token");
+            }
         }
-        // return "Invalid verification link,<a href=\""+url+"\">Get a new Verification
-        // Email.</a>";
         return response;
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<RegisterResponse> register(
+    public AuthenticationResponse register(
             @RequestBody AuthenticationRequest request) {
-
-        return ResponseEntity.ok(service.authenticate(request));
+        return service.authenticate(request);
     }
 
     @GetMapping("/resend-verification-email")

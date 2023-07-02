@@ -6,6 +6,7 @@ import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
 import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
@@ -60,31 +61,37 @@ public class AuthenticationService {
         return response;
     }
 
-    public RegisterResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        var response = new AuthenticationResponse();
         var user =userService.findByEmail(request.getEmail())
-                .orElseThrow();
-        if (user.isVerified()){
-            var jwtToken= jwtService.generateToken(user);
-            var refreshToken= jwtService.generateRefreshToken(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user,jwtToken);
-            return RegisterResponse.builder()
-                    .accessToken(jwtToken)
-                    .refreshToken(refreshToken)
-                    .build();
+                .orElse(null);
+        if(user == null) {
+            response.addError("email", "Email does not exist");
+        } else if(!user.isVerified()) {
+            response.addError("account", "Email is not verified");
+        } else if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            response.addError("password", "Password is incorrect");
+        } else {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getEmail(),
+                                request.getPassword()
+                        )
+                );
+                var jwtToken= jwtService.generateToken(user);
+                var refreshToken= jwtService.generateRefreshToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user,jwtToken);
+                response.setAccessToken(jwtToken);
+                response.setRefreshToken(refreshToken);
+                response.setSuccess(true);
+            } catch (Exception e) {
+                response.setSuccess(false);
+                response.addError("auth", "Authentication failed");
+            }
         }
-        else {
-            return RegisterResponse.builder()
-                    .errormessage("You have to verify your account first..")
-                    .build();
-        }
-
+        return response;
     }
 
     private void revokeAllUserTokens(User user){
