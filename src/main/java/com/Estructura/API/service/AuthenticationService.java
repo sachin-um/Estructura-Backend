@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+import static com.Estructura.API.model.Role.ADMIN;
 import static com.Estructura.API.model.Role.CUSTOMER;
 
 @Service
@@ -33,7 +34,7 @@ public class AuthenticationService {
         Role userRole=request.getRole();
         User user=null;
 
-        if(userRole==CUSTOMER){
+        if(userRole==ADMIN){
             user= User.builder()
                     .firstname(request.getFirstname())
                     .lastname(request.getLastname())
@@ -55,7 +56,7 @@ public class AuthenticationService {
             if (user instanceof ServiceProvider){
                 savedUser=userService.saveUser(user);
             }
-
+            savedUser=userService.saveUser(user);
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);
