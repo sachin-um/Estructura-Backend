@@ -1,6 +1,7 @@
-package com.Estructura.API.auth;
+package com.Estructura.API.controller.auth.responses;
 
 import com.Estructura.API.config.validation.ValidatedResponse;
+import com.Estructura.API.controller.auth.requests.RegisterRequest;
 import com.Estructura.API.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,7 +17,7 @@ import lombok.Builder.Default;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse extends ValidatedResponse<User>{
+public class RegisterResponse extends ValidatedResponse<RegisterRequest>{
     @JsonProperty("success")
     @Default
     private boolean success = false;

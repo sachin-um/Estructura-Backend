@@ -1,15 +1,16 @@
-package com.Estructura.API.controller;
+package com.Estructura.API.controller.auth;
 
-import com.Estructura.API.auth.AuthenticationRequest;
-import com.Estructura.API.auth.AuthenticationResponse;
-import com.Estructura.API.auth.PasswordResetRequest;
 import com.Estructura.API.event.PasswordResetEvent;
 import com.Estructura.API.event.RegistrationCompleteEvent;
 import com.Estructura.API.event.listener.RegistrationCompleteEventListener;
 import com.Estructura.API.model.User;
 import com.Estructura.API.model.VerificationToken;
 import com.Estructura.API.service.AuthenticationService;
-import com.Estructura.API.auth.RegisterRequest;
+import com.Estructura.API.controller.auth.requests.AuthenticationRequest;
+import com.Estructura.API.controller.auth.requests.PasswordResetRequest;
+import com.Estructura.API.controller.auth.requests.RegisterRequest;
+import com.Estructura.API.controller.auth.responses.PasswordResetResponse;
+import com.Estructura.API.controller.auth.responses.RegisterResponse;
 import com.Estructura.API.service.UserService;
 import com.Estructura.API.service.VerificationTokenService;
 import jakarta.mail.MessagingException;
@@ -37,12 +38,12 @@ public class AuthenticationController {
     private final HttpServletRequest servletRequest;
     private final UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request,
             final HttpServletRequest servletRequest) {
-        AuthenticationResponse response = service.register(request);
+        RegisterResponse response = service.register(request);
         
-        // Only send email if saving user is successful
+        // Only send email with verify link if saving user is successful
         if (response.isSuccess()) {
             publisher.publishEvent(new RegistrationCompleteEvent(
                     response.getLoggedUser(), applicationUrl(servletRequest)));
@@ -56,7 +57,6 @@ public class AuthenticationController {
     @GetMapping("/verifyEmail")
     public String verifyEmail(@RequestParam("token") String token){
         VerificationToken theToken= verificationTokenService.findByToken(token);
-        String url=applicationUrl(servletRequest)+"/api/v1/auth/resend-verification-email?token="+theToken.getToken();
         if (theToken.getUser().isVerified()){
             return "This account has already been verified ,please login";
         }
@@ -65,42 +65,60 @@ public class AuthenticationController {
             return "Email verified successfully. Now you can login to your account";
         }
         else {
+            String url=applicationUrl(servletRequest)+"/api/v1/auth/resend-verification-email?token="+theToken.getToken();
             return "Invalid verification link,<a href=\""+url+"\">Get a new Verification Email.</a>";
         }
 
     }
 
     @PostMapping("/password-reset-request")
-    public String resetPasswordRequest(@RequestBody PasswordResetRequest passwordResetRequest){
-        Optional<User> user=userService.findByEmail(passwordResetRequest.getEmail());
-        if (user.isPresent()){
+    public PasswordResetResponse resetPasswordRequest(@RequestBody PasswordResetRequest passwordResetRequest){
+        PasswordResetResponse response = new PasswordResetResponse();
+
+        if(!passwordResetRequest.getNewPassword().equals(passwordResetRequest.getConfirmPassword())){
+            response.setSuccess(false);
+            response.setMessage("Password and Confirm Password do not match");
+            return response;
+        }
+
+        if(response.checkValidity(passwordResetRequest)) {
+            Optional<User> user=userService.findByEmail(passwordResetRequest.getEmail());
+            if (user.isPresent()) {
                 publisher.publishEvent(new PasswordResetEvent(user.get(),applicationUrl(servletRequest)));
-                return "Password Rest Link is send to your Email";
+                response.setSuccess(true);
+                response.setMessage("Password reset link has been sent to your email");
+            } else {
+                response.setSuccess(false);
+                response.setMessage("User with this email does not exist");
+            }
         }
-        else {
-            return "Account not found";
-        }
+
+        return response;
     }
 
 
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestBody PasswordResetRequest passwordResetRequest,
-                                @RequestParam("token") String passwordRestToken){
+    public PasswordResetResponse resetPassword(
+        @RequestBody PasswordResetRequest passwordResetRequest,
+        @RequestParam("token") String passwordRestToken
+    ) {
+        PasswordResetResponse response = new PasswordResetResponse();
         String verificationResult=verificationTokenService.validateVerificationToken(passwordRestToken);
         String url=applicationUrl(servletRequest)+"/api/v1/auth/resend-verification-email?token="+passwordRestToken;
         if (!verificationResult.equalsIgnoreCase("valid")){
-            return  "Token is not valid";
+            // return  "Token is not valid";
         }
         Optional<User> user=verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
         if (user.isPresent()){
             userService.resetUserPassword(user.get(), passwordResetRequest.getNewPassword());
-            return "You successfully reset your password";
+            // return "You successfully reset your password";
         }
-        return "Invalid verification link,<a href=\""+url+"\">Get a new Verification Email.</a>";
+        // return "Invalid verification link,<a href=\""+url+"\">Get a new Verification Email.</a>";
+        return response;
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<RegisterResponse> register(
             @RequestBody AuthenticationRequest request) {
 
         return ResponseEntity.ok(service.authenticate(request));
@@ -118,7 +136,6 @@ public class AuthenticationController {
         String url=applicationUrl+"/api/v1/auth/verifyEmail?token="+ verificationToken.getToken();
         eventListener.sendEmailVerificationEmail(url);//handle exception
         log.info("Click the link to verify your Email : {}",url);
-
     }
 
     @PostMapping("/refresh-token")

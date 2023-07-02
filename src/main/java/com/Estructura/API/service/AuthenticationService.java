@@ -1,10 +1,10 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.auth.AuthenticationRequest;
-import com.Estructura.API.auth.AuthenticationResponse;
-import com.Estructura.API.auth.RegisterRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
+import com.Estructura.API.controller.auth.requests.AuthenticationRequest;
+import com.Estructura.API.controller.auth.requests.RegisterRequest;
+import com.Estructura.API.controller.auth.responses.RegisterResponse;
 import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
 import com.Estructura.API.model.TokenType;
@@ -29,24 +29,23 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        var user= User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .build();
-
-        var response = new AuthenticationResponse();
+    public RegisterResponse register(RegisterRequest request) {
+        var response = new RegisterResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
-        if(request.getPassword().isEmpty()) {
-            response.addError("password", "Password is required");
+        if(userService.findByEmail(request.getEmail()).isPresent()) {
+            response.addError("email", "Email is already taken");
         }
 
         // Save tokens and user to database if user information is valid
-        if (response.checkValidity(user)){
+        if (response.checkValidity(request)){
+            var user= User.builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(request.getRole())
+                    .build();
             var savedUser=userService.saveUser(user);
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
@@ -61,7 +60,7 @@ public class AuthenticationService {
         return response;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public RegisterResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -75,13 +74,13 @@ public class AuthenticationService {
             var refreshToken= jwtService.generateRefreshToken(user);
             revokeAllUserTokens(user);
             saveUserToken(user,jwtToken);
-            return AuthenticationResponse.builder()
+            return RegisterResponse.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
                     .build();
         }
         else {
-            return AuthenticationResponse.builder()
+            return RegisterResponse.builder()
                     .errormessage("You have to verify your account first..")
                     .build();
         }
@@ -129,7 +128,7 @@ public class AuthenticationService {
                 var accessToken= jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user,accessToken);
-                var authResponse=AuthenticationResponse.builder()
+                var authResponse=RegisterResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();

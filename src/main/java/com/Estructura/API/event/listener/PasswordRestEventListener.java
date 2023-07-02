@@ -8,13 +8,11 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-import static com.Estructura.API.model.TokenType.EMAIL_VERIFICATION;
 import static com.Estructura.API.model.TokenType.REST_PASSWORD;
 
 @Component
