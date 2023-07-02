@@ -2,7 +2,6 @@ package com.Estructura.API.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
-import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.RegisterRequest;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+
+import static com.Estructura.API.model.Role.CUSTOMER;
 
 @Service
 @RequiredArgsConstructor
