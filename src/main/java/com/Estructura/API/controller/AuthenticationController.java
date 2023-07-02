@@ -1,30 +1,39 @@
-package com.Estructura.API.controller.auth;
+package com.Estructura.API.controller;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Optional;
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.Estructura.API.event.PasswordResetEvent;
 import com.Estructura.API.event.RegistrationCompleteEvent;
 import com.Estructura.API.event.listener.RegistrationCompleteEventListener;
 import com.Estructura.API.model.User;
 import com.Estructura.API.model.VerificationToken;
+import com.Estructura.API.requests.auth.ResetPasswordRequest;
+import com.Estructura.API.responses.auth.PasswordResetResponse;
+import com.Estructura.API.responses.auth.RegisterResponse;
+import com.Estructura.API.responses.auth.ResetPasswordResponse;
+import com.Estructura.API.requests.auth.AuthenticationRequest;
+import com.Estructura.API.requests.auth.PasswordResetRequest;
+import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.service.AuthenticationService;
-import com.Estructura.API.controller.auth.requests.AuthenticationRequest;
-import com.Estructura.API.controller.auth.requests.PasswordResetRequest;
-import com.Estructura.API.controller.auth.requests.RegisterRequest;
-import com.Estructura.API.controller.auth.responses.PasswordResetResponse;
-import com.Estructura.API.controller.auth.responses.RegisterResponse;
 import com.Estructura.API.service.UserService;
 import com.Estructura.API.service.VerificationTokenService;
+
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -37,12 +46,13 @@ public class AuthenticationController {
     private final RegistrationCompleteEventListener eventListener;
     private final HttpServletRequest servletRequest;
     private final UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request,
             final HttpServletRequest servletRequest) {
         RegisterResponse response = service.register(request);
-        
+
         // Only send email with verify link if saving user is successful
         if (response.isSuccess()) {
             publisher.publishEvent(new RegistrationCompleteEvent(
@@ -55,36 +65,31 @@ public class AuthenticationController {
     }
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(@RequestParam("token") String token){
-        VerificationToken theToken= verificationTokenService.findByToken(token);
-        if (theToken.getUser().isVerified()){
+    public String verifyEmail(@RequestParam("token") String token) {
+        VerificationToken theToken = verificationTokenService.findByToken(token);
+        if (theToken.getUser().isVerified()) {
             return "This account has already been verified ,please login";
         }
         String verificationResult = verificationTokenService.validateVerificationToken(token);
-        if (verificationResult.equalsIgnoreCase("valid")) { //if expired
+        if (verificationResult.equalsIgnoreCase("valid")) { // if expired
             return "Email verified successfully. Now you can login to your account";
-        }
-        else {
-            String url=applicationUrl(servletRequest)+"/api/v1/auth/resend-verification-email?token="+theToken.getToken();
-            return "Invalid verification link,<a href=\""+url+"\">Get a new Verification Email.</a>";
+        } else {
+            String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
+                    + theToken.getToken();
+            return "Invalid verification link,<a href=\"" + url + "\">Get a new Verification Email.</a>";
         }
 
     }
 
     @PostMapping("/password-reset-request")
-    public PasswordResetResponse resetPasswordRequest(@RequestBody PasswordResetRequest passwordResetRequest){
+    public PasswordResetResponse resetPasswordRequest(
+            @RequestBody PasswordResetRequest passwordResetRequest) {
         PasswordResetResponse response = new PasswordResetResponse();
 
-        if(!passwordResetRequest.getNewPassword().equals(passwordResetRequest.getConfirmPassword())){
-            response.setSuccess(false);
-            response.setMessage("Password and Confirm Password do not match");
-            return response;
-        }
-
-        if(response.checkValidity(passwordResetRequest)) {
-            Optional<User> user=userService.findByEmail(passwordResetRequest.getEmail());
+        if (response.checkValidity(passwordResetRequest)) {
+            Optional<User> user = userService.findByEmail(passwordResetRequest.getEmail());
             if (user.isPresent()) {
-                publisher.publishEvent(new PasswordResetEvent(user.get(),applicationUrl(servletRequest)));
+                publisher.publishEvent(new PasswordResetEvent(user.get(), applicationUrl(servletRequest)));
                 response.setSuccess(true);
                 response.setMessage("Password reset link has been sent to your email");
             } else {
@@ -96,24 +101,24 @@ public class AuthenticationController {
         return response;
     }
 
-
     @PostMapping("/reset-password")
-    public PasswordResetResponse resetPassword(
-        @RequestBody PasswordResetRequest passwordResetRequest,
-        @RequestParam("token") String passwordRestToken
-    ) {
-        PasswordResetResponse response = new PasswordResetResponse();
-        String verificationResult=verificationTokenService.validateVerificationToken(passwordRestToken);
-        String url=applicationUrl(servletRequest)+"/api/v1/auth/resend-verification-email?token="+passwordRestToken;
-        if (!verificationResult.equalsIgnoreCase("valid")){
-            // return  "Token is not valid";
+    public ResetPasswordResponse resetPassword(
+            @RequestBody ResetPasswordRequest passwordResetRequest,
+            @RequestParam("token") String passwordRestToken) {
+        ResetPasswordResponse response = new ResetPasswordResponse();
+        String verificationResult = verificationTokenService.validateVerificationToken(passwordRestToken);
+        String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
+                + passwordRestToken;
+        if (!verificationResult.equalsIgnoreCase("valid")) {
+            // return "Token is not valid";
         }
-        Optional<User> user=verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
-        if (user.isPresent()){
+        Optional<User> user = verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
+        if (user.isPresent()) {
             userService.resetUserPassword(user.get(), passwordResetRequest.getNewPassword());
             // return "You successfully reset your password";
         }
-        // return "Invalid verification link,<a href=\""+url+"\">Get a new Verification Email.</a>";
+        // return "Invalid verification link,<a href=\""+url+"\">Get a new Verification
+        // Email.</a>";
         return response;
     }
 
@@ -126,16 +131,17 @@ public class AuthenticationController {
 
     @GetMapping("/resend-verification-email")
     public String resendVerificationEmail(@RequestParam("token") String oldToken,
-                                          final HttpServletRequest servletRequest) throws MessagingException, UnsupportedEncodingException {
+            final HttpServletRequest servletRequest) throws MessagingException, UnsupportedEncodingException {
         VerificationToken verificationToken = verificationTokenService.generateNewVerificationToken(oldToken);
         resendVerificationToken(applicationUrl(servletRequest), verificationToken);
         return "A new verification link has been sent to your email, please check your email to activate your";
     }
 
-    private void resendVerificationToken(String applicationUrl, VerificationToken verificationToken) throws MessagingException, UnsupportedEncodingException {
-        String url=applicationUrl+"/api/v1/auth/verifyEmail?token="+ verificationToken.getToken();
-        eventListener.sendEmailVerificationEmail(url);//handle exception
-        log.info("Click the link to verify your Email : {}",url);
+    private void resendVerificationToken(String applicationUrl, VerificationToken verificationToken)
+            throws MessagingException, UnsupportedEncodingException {
+        String url = applicationUrl + "/api/v1/auth/verifyEmail?token=" + verificationToken.getToken();
+        eventListener.sendEmailVerificationEmail(url);// handle exception
+        log.info("Click the link to verify your Email : {}", url);
     }
 
     @PostMapping("/refresh-token")

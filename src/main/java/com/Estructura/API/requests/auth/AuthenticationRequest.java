@@ -1,4 +1,4 @@
-package com.Estructura.API.controller.auth.requests;
+package com.Estructura.API.requests.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

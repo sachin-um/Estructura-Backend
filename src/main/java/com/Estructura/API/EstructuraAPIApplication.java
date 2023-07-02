@@ -1,6 +1,6 @@
 package com.Estructura.API;
 
-import com.Estructura.API.controller.auth.requests.RegisterRequest;
+import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.service.AuthenticationService;
 
 import org.springframework.boot.CommandLineRunner;

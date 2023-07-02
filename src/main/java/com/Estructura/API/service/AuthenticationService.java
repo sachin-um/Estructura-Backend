@@ -2,11 +2,11 @@ package com.Estructura.API.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
-import com.Estructura.API.controller.auth.requests.AuthenticationRequest;
-import com.Estructura.API.controller.auth.requests.RegisterRequest;
-import com.Estructura.API.controller.auth.responses.RegisterResponse;
 import com.Estructura.API.model.Token;
 import com.Estructura.API.repository.TokenRepository;
+import com.Estructura.API.requests.auth.AuthenticationRequest;
+import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.responses.auth.RegisterResponse;
 import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;

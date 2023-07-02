@@ -1,8 +1,8 @@
-package com.Estructura.API.controller.auth.responses;
+package com.Estructura.API.responses.auth;
 
 import com.Estructura.API.config.validation.ValidatedResponse;
-import com.Estructura.API.controller.auth.requests.RegisterRequest;
 import com.Estructura.API.model.User;
+import com.Estructura.API.requests.auth.RegisterRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -29,5 +29,4 @@ public class RegisterResponse extends ValidatedResponse<RegisterRequest>{
     private String accessToken;
     @JsonProperty("refresh_token")
     private String refreshToken;
-
 }
