@@ -29,7 +29,7 @@ public class EstructuraAPIApplication {
 					.password("password")
 					.role(ADMIN)
 					.build();
-			System.out.println("Admin token :" + service.register(admin).getAccessToken());
+			System.out.println("Admin token :" + service.register(admin,true).getAccessToken());
 		};
 	}
 }

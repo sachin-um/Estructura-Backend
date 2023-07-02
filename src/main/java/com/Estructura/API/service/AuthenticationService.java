@@ -7,6 +7,8 @@ import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
+import com.Estructura.API.model.Role;
+import com.Estructura.API.model.Token;
 import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import static com.Estructura.API.model.Role.CUSTOMER;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -31,12 +31,16 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request, boolean isAdmin) {
         var response = new RegisterResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
         if(userService.findByEmail(request.getEmail()).isPresent()) {
             response.addError("email", "Email is already taken");
+        }
+
+        if(request.getRole() != Role.CUSTOMER && !isAdmin) {
+            response.addError("role", "Role is invalid");
         }
 
         // Save tokens and user to database if user information is valid
