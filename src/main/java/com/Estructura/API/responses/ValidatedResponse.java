@@ -1,4 +1,4 @@
-package com.Estructura.API.config.validation;
+package com.Estructura.API.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

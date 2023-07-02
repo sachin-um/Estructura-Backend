@@ -1,7 +1,8 @@
 package com.Estructura.API;
 
+import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.service.AuthenticationService;
-import com.Estructura.API.auth.RegisterRequest;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +29,7 @@ public class EstructuraAPIApplication {
 					.password("password")
 					.role(ADMIN)
 					.build();
-			System.out.println("Admin token :" + service.register(admin).getAccessToken());
+			System.out.println("Admin token :" + service.register(admin,true).getAccessToken());
 		};
 	}
 }
