@@ -51,8 +51,8 @@ public class AuthenticationService {
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);
-
             response.setLoggedUser(savedUser);
+            response.setRole(savedUser.getRole());
             response.setAccessToken(jwtToken);
             response.setRefreshToken(refreshToken);
             response.setSuccess(true);
@@ -85,6 +85,7 @@ public class AuthenticationService {
                 saveUserToken(user,jwtToken);
                 response.setAccessToken(jwtToken);
                 response.setRefreshToken(refreshToken);
+                response.setRole(user.getRole());
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setSuccess(false);

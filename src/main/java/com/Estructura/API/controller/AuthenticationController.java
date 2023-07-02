@@ -57,6 +57,7 @@ public class AuthenticationController {
         if (response.isSuccess()) {
             publisher.publishEvent(new RegistrationCompleteEvent(
                     response.getLoggedUser(), applicationUrl(servletRequest)));
+            response.setLoggedUser(null); // Don't send user info back to client
             return ResponseEntity.ok(response);
         }
 

@@ -1,7 +1,6 @@
 package com.Estructura.API.responses.auth;
 
-import javax.management.relation.Role;
-
+import com.Estructura.API.model.Role;
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.responses.ValidatedResponse;
