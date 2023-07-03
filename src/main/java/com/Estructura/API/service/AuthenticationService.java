@@ -2,6 +2,7 @@ package com.Estructura.API.service;
 
 import com.Estructura.API.auth.AuthenticationRequest;
 import com.Estructura.API.auth.AuthenticationResponse;
+import com.Estructura.API.auth.CustomerRegisterRequest;
 import com.Estructura.API.auth.RegisterRequest;
 import com.Estructura.API.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,13 +19,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import static com.Estructura.API.model.Role.ADMIN;
-import static com.Estructura.API.model.Role.CUSTOMER;
+import static com.Estructura.API.model.Role.*;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserService userService;
+    private final CustomerService customerService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -33,16 +34,27 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         Role userRole=request.getRole();
         User user=null;
+        System.out.println(userRole);
+        if (userRole.equals(CUSTOMER)){
+            if (request instanceof CustomerRegisterRequest) {
+                CustomerRegisterRequest customerRegisterRequest = (CustomerRegisterRequest) request;
+                Customer customer = Customer.builder()
+                        .firstname(customerRegisterRequest.getFirstname())
+                        .lastname(customerRegisterRequest.getLastname())
+                        .email(customerRegisterRequest.getEmail())
+                        .password(passwordEncoder.encode(customerRegisterRequest.getPassword()))
+                        .role(userRole)
+                        .addressLine1(customerRegisterRequest.getAddressLine1())
+                        .addressLine2(customerRegisterRequest.getAddressLine2())
+                        .city(customerRegisterRequest.getCity())
+                        .district(customerRegisterRequest.getDistrict())
+                        .build();
 
-        if(userRole==ADMIN){
-            user= User.builder()
-                    .firstname(request.getFirstname())
-                    .lastname(request.getLastname())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(userRole)
-                    .build();
+                user = customer;
+                System.out.println("HI" + customer.toString());
+            }
         }
+
         var response = new AuthenticationResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
@@ -53,10 +65,9 @@ public class AuthenticationService {
         // Save tokens and user to database if user information is valid
         if (user!=null && response.checkValidity(user)){
             User savedUser=null;
-            if (user instanceof ServiceProvider){
-                savedUser=userService.saveUser(user);
+            if (user instanceof Customer){
+                savedUser=customerService.saveCustomer((Customer) user);
             }
-            savedUser=userService.saveUser(user);
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);

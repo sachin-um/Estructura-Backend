@@ -31,6 +31,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/api/v1/auth/**")
                         .permitAll()
+                        .requestMatchers("/api/v1/retailitems/all")
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
@@ -38,16 +40,16 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(l->l
                         .logoutUrl("/api/v1/auth/logout")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) ->
                                 SecurityContextHolder.clearContext())
                 )
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .formLogin(Customizer.withDefaults())
                 .exceptionHandling(e->e.accessDeniedPage("/access-denied"))
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(l->l.defaultSuccessUrl("/api/v1/retailitems/all"))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
