@@ -2,6 +2,7 @@ package com.Estructura.API.requests.auth;
 
 import com.Estructura.API.model.Role;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,26 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     private String password;
     private Role role;
+    //Customer
+    private String addressLine1;
+    private String addressLine2;
+    private String city;
+    private String district;
+    //Professional
+    private String introduction;
+    private Double minRate;
+    private Double maxRate;
+    //Admin
+    private String assignedArea;
+    //Architect
+    private String sLIARegNumber;
+    //RetailStore
+    private String businessName;
+    private String businessContactNo;
+    private String businessCategory;
+    private String registrationNo;
+    private String businessAddressLine1;
+    private String businessAddressLine2;
+    private String businessCity;
+    private String businessDistrict;
 }

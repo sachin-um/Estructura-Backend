@@ -1,5 +1,6 @@
 package com.Estructura.API.service;
 
+import com.Estructura.API.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.repository.TokenRepository;
@@ -7,10 +8,6 @@ import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
-import com.Estructura.API.model.Role;
-import com.Estructura.API.model.Token;
-import com.Estructura.API.model.TokenType;
-import com.Estructura.API.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +19,21 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+import static com.Estructura.API.model.Role.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserService userService;
+    private final CustomerService customerService;
+    private final AdminService adminService;
+    private final RetailStoreService retailStoreService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public RegisterResponse register(RegisterRequest request, boolean isAdmin) {
+    public RegisterResponse register(RegisterRequest request) {
         var response = new RegisterResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
@@ -39,20 +41,57 @@ public class AuthenticationService {
             response.addError("email", "Email is already taken");
         }
 
-        if(request.getRole() != Role.CUSTOMER && !isAdmin) {
-            response.addError("role", "Role is invalid");
-        }
 
         // Save tokens and user to database if user information is valid
         if (response.checkValidity(request)){
-            var user= User.builder()
-                    .firstname(request.getFirstname())
-                    .lastname(request.getLastname())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole())
-                    .build();
-            var savedUser=userService.saveUser(user);
+            User user=null;
+            User savedUser=null;
+            if(request.getRole().equals(CUSTOMER)){
+                Customer customer=Customer.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .addressLine1(request.getAddressLine1())
+                        .addressLine2(request.getAddressLine2())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
+                        .build();
+                user=customer;
+                savedUser=customerService.saveCustomer(customer);
+            }
+            else if(request.getRole().equals(ADMIN)){
+                Admin admin=Admin.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .assignedArea(request.getAssignedArea())
+                        .build();
+                user=admin;
+                savedUser=adminService.saveAdmin(admin);
+            }
+            else if(request.getRole().equals(RETAILOWNER)){
+                RetailStore retailStore=RetailStore.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .businessName(request.getBusinessName())
+                        .businessContactNo(request.getBusinessContactNo())
+                        .businessCategory(request.getBusinessCategory())
+                        .registrationNo(request.getRegistrationNo())
+                        .addressLine1(request.getBusinessAddressLine1())
+                        .addressLine2(request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .build();
+                user=retailStore;
+                savedUser=retailStoreService.saveRetailStore(retailStore);
+            }
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);

@@ -15,7 +15,7 @@ public class CustomerServiceImpl implements CustomerService{
     private final CustomerRepository customerRepository;
     @Override
     public Customer saveCustomer(Customer customer) {
-        Optional<User> theCustomer=customerRepository.findByEmail(customer.getEmail());
+        Optional<Customer> theCustomer=customerRepository.findByEmail(customer.getEmail());
         if (theCustomer.isPresent()){
             throw new UserAlreadyExistsException("A user with" +customer.getEmail() +"already exists");
         }
