@@ -8,8 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import static com.Estructura.API.model.Role.ADMIN;
-import static com.Estructura.API.model.Role.RETAILOWNER;
+import static com.Estructura.API.model.Role.*;
 
 @SpringBootApplication
 public class EstructuraAPIApplication {
@@ -42,10 +41,25 @@ public class EstructuraAPIApplication {
 					.businessCategory("Hardware")
 					.registrationNo("ALAL")
 					.businessAddressLine1("No:84")
+					.businessAddressLine2("Mathugama road")
+					.businessCity("Mathugama")
+					.businessDistrict("Kaluthara")
+					.build();
+			var architect=RegisterRequest.builder()
+					.firstname("Udawatta")
+					.lastname("Stores")
+					.email("architect@gmail.com")
+					.password("password")
+					.role(ARCHITECT)
+					.nic("981022017V")
+					.serviceProviderType("Architect")
+					.businessAddressLine1("No:84")
 					.businessAddressLine2("MAthuama road")
 					.businessCity("Agalawatta")
 					.businessDistrict("Kaluthra")
+					.sLIARegNumber("SLC22393")
 					.build();
+			System.out.println("Architect:"+service.register(architect).getAccessToken());
 			System.out.println("Admin token :" + service.register(admin).getAccessToken());
 			System.out.println("Retail Ower token :" + service.register(retailOwner).getAccessToken());
 		};

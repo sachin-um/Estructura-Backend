@@ -28,6 +28,7 @@ public class AuthenticationService {
     private final CustomerService customerService;
     private final AdminService adminService;
     private final RetailStoreService retailStoreService;
+    private final ArchitectService architectService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -91,6 +92,24 @@ public class AuthenticationService {
                         .build();
                 user=retailStore;
                 savedUser=retailStoreService.saveRetailStore(retailStore);
+            }
+            else if (request.getRole().equals(ARCHITECT)){
+                Architect architect=Architect.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(request.getServiceProviderType())
+                        .addressLine1(request.getBusinessAddressLine1())
+                        .addressLine2(request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .sLIARegNumber(request.getSLIARegNumber())
+                        .build();
+                user=architect;
+                savedUser=architectService.saveArchitect(architect);
             }
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
