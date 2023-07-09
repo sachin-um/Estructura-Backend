@@ -58,7 +58,9 @@ public class EstructuraAPIApplication {
 					.businessCity("Agalawatta")
 					.businessDistrict("Kaluthra")
 					.sLIARegNumber("SLC22393")
+					.qualification("Item1,Item2")
 					.build();
+			System.out.println("Architect:"+service.register(architect).getAccessToken());
 			System.out.println("Architect:"+service.register(architect).getAccessToken());
 			System.out.println("Admin token :" + service.register(admin).getAccessToken());
 			System.out.println("Retail Ower token :" + service.register(retailOwner).getAccessToken());
