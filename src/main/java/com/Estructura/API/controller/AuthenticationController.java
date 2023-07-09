@@ -51,7 +51,7 @@ public class AuthenticationController {
     public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request,
             final HttpServletRequest servletRequest) {
-        RegisterResponse response = service.register(request,false);
+        RegisterResponse response = service.register(request);
 
         // Only send email with verify link if saving user is successful
         if (response.isSuccess()) {

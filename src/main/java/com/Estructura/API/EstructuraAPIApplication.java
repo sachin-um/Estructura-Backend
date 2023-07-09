@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import static com.Estructura.API.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.RETAILOWNER;
 
 @SpringBootApplication
 public class EstructuraAPIApplication {
@@ -28,8 +29,25 @@ public class EstructuraAPIApplication {
 					.email("admin@gmail.com")
 					.password("password")
 					.role(ADMIN)
+					.assignedArea("Super")
 					.build();
-			System.out.println("Admin token :" + service.register(admin,true).getAccessToken());
+			var retailOwner=RegisterRequest.builder()
+					.firstname("Udawatta")
+					.lastname("Stores")
+					.email("retail@gmail.com")
+					.password("password")
+					.role(RETAILOWNER)
+					.businessName("Udawatta Stores")
+					.businessContactNo("0342247244")
+					.businessCategory("Hardware")
+					.registrationNo("ALAL")
+					.businessAddressLine1("No:84")
+					.businessAddressLine2("MAthuama road")
+					.businessCity("Agalawatta")
+					.businessDistrict("Kaluthra")
+					.build();
+			System.out.println("Admin token :" + service.register(admin).getAccessToken());
+			System.out.println("Retail Ower token :" + service.register(retailOwner).getAccessToken());
 		};
 	}
 }

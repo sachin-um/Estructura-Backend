@@ -10,18 +10,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="serviceProvider")
+@Table(name="customer")
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @PrimaryKeyJoinColumn(name="id")
-public class ServiceProvider extends User{
-
-    private String nic;
-    private Integer contactNumber;
-    private String serviceProviderType;
+public class Customer extends User{
     @Column(nullable = true)
     private String addressLine1;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String addressLine2;
     @Column(nullable = false)
     private String city;

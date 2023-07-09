@@ -5,6 +5,6 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class Architect extends ServiceProvider{
+public class Architect extends Professional{
     private String sLIARegNumber;
 }
