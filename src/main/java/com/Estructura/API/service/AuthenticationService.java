@@ -1,6 +1,8 @@
 package com.Estructura.API.service;
 
 import com.Estructura.API.model.*;
+import com.Estructura.API.repository.QualificationRepository;
+import com.Estructura.API.repository.SpecializationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.repository.TokenRepository;
@@ -36,6 +38,8 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final QualificationRepository qualificationRepository;
+    private final SpecializationRepository specializationRepository;
 
     public RegisterResponse register(RegisterRequest request) {
         var response = new RegisterResponse();
@@ -53,16 +57,6 @@ public class AuthenticationService {
             List<String> qualifications;
             List<String> specializations=null;
             List<String> serviceAreas;
-            if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
-                specializations= Arrays.stream(request.getSpecialization().split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-            }
-            if (request.getQualification()!=null && !request.getQualification().isBlank()){
-                specializations=Arrays.stream(request.getSpecialization().split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-            }
             if(request.getRole().equals(CUSTOMER)){
                 Customer customer=Customer.builder()
                         .firstname(request.getFirstname())
@@ -126,6 +120,25 @@ public class AuthenticationService {
                         .build();
                 user=architect;
                 savedUser=architectService.saveArchitect(architect);
+
+            }
+            if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
+                specializations= Arrays.stream(request.getSpecialization().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+                User finalSavedUSer=savedUser;
+                specializations.forEach(specialization->{
+                    saveSpecialization(finalSavedUSer,specialization);
+                });
+            }
+            if (request.getQualification()!=null && !request.getQualification().isBlank()){
+                qualifications=Arrays.stream(request.getQualification().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+                User finalSavedUser = savedUser;
+                qualifications.forEach(qualification->{
+                    saveQualification(finalSavedUser,qualification);
+                });
             }
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
@@ -194,6 +207,25 @@ public class AuthenticationService {
                 .expired(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    private void saveQualification(User user,String qualification){
+        var theQualification=Qualification.builder()
+                .qualification(qualification)
+                .build();
+        if (user.getRole().equals(ARCHITECT)){
+            theQualification.setArchitect((Architect) user);
+        }
+        qualificationRepository.save(theQualification);
+    }
+    private void saveSpecialization(User user,String specialization){
+        var theSpecialization=Specialization.builder()
+                .specialization(specialization)
+                .build();
+        if(user.getRole().equals(ARCHITECT)){
+            theSpecialization.setArchitect((Architect) user);
+        }
+        specializationRepository.save(theSpecialization);
     }
 
     public void refreshToken(
