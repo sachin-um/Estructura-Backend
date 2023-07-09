@@ -1,6 +1,9 @@
 package com.Estructura.API.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,16 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="architect")
+@Table(name="carpenter")
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class Architect extends Professional{
-    @Column(nullable = false)
-    private String sLIARegNumber;
-
-    @OneToMany(mappedBy = "architect")
+public class Carpenter extends Professional{
+    @OneToMany(mappedBy = "carpenter")
     private List<Specialization> specializations;
-
-    @OneToMany(mappedBy = "architect")
+    @OneToMany(mappedBy = "carpenter")
     private List<Qualification> qualifications;
 }

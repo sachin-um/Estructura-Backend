@@ -25,7 +25,8 @@ public enum Role {
     CUSTOMER(
             Collections.emptySet()
     ),
-    RETAILOWNER(Collections.emptySet())
+    RETAILOWNER(Collections.emptySet()),
+    ARCHITECT(Collections.emptySet())
     ;
 
     @Getter

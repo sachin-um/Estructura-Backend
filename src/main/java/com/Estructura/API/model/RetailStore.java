@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name="retailstore")
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class RetailStore extends User{
+public class RetailStore extends ServiceProvider{
     @Column(nullable = false)
     @NotBlank(message = "Business name required")
     private String businessName;
@@ -30,14 +30,5 @@ public class RetailStore extends User{
     @Column(nullable = false)
     @NotBlank(message = "Business Registration Number Required")
     private String registrationNo;
-    @Column(nullable = true)
-    private String addressLine1;
-    @Column(nullable = false)
-    private String addressLine2;
-    @Column(nullable = false)
-    @NotBlank(message = "City is required")
-    private String city;
-    @Column(nullable = false)
-    private String district;
 
 }

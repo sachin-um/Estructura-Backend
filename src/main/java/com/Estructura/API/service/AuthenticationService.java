@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.Estructura.API.model.Role.*;
 
@@ -28,6 +31,7 @@ public class AuthenticationService {
     private final CustomerService customerService;
     private final AdminService adminService;
     private final RetailStoreService retailStoreService;
+    private final ArchitectService architectService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -46,6 +50,19 @@ public class AuthenticationService {
         if (response.checkValidity(request)){
             User user=null;
             User savedUser=null;
+            List<String> qualifications;
+            List<String> specializations=null;
+            List<String> serviceAreas;
+            if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
+                specializations= Arrays.stream(request.getSpecialization().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+            }
+            if (request.getQualification()!=null && !request.getQualification().isBlank()){
+                specializations=Arrays.stream(request.getSpecialization().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+            }
             if(request.getRole().equals(CUSTOMER)){
                 Customer customer=Customer.builder()
                         .firstname(request.getFirstname())
@@ -91,6 +108,24 @@ public class AuthenticationService {
                         .build();
                 user=retailStore;
                 savedUser=retailStoreService.saveRetailStore(retailStore);
+            }
+            else if (request.getRole().equals(ARCHITECT)){
+                Architect architect=Architect.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(request.getServiceProviderType())
+                        .addressLine1(request.getBusinessAddressLine1())
+                        .addressLine2(request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .sLIARegNumber(request.getSLIARegNumber())
+                        .build();
+                user=architect;
+                savedUser=architectService.saveArchitect(architect);
             }
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);

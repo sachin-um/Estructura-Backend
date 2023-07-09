@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -27,4 +29,6 @@ public class ServiceProvider extends User{
     private String city;
     @Column(nullable = false)
     private String district;
+
+
 }
