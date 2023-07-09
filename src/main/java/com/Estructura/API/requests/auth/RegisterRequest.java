@@ -51,4 +51,7 @@ public class RegisterRequest {
     private String businessDistrict;
     private String nic;
     private String serviceProviderType;
+    private String serviceAreas;
+    private String specialization;
+    private String qualification;
 }

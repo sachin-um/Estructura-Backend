@@ -15,13 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="electrician")
+@Table(name="landscapeArchitect")
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
-public class Electrician extends ServiceProvider{
-    @OneToMany(mappedBy = "electrician")
+@PrimaryKeyJoinColumn(name="id")
+public class LandscapeArchitect extends Professional{
+    @OneToMany(mappedBy = "landscapeArchitect")
     private List<Specialization> specializations;
 
-    @OneToMany(mappedBy = "electrician")
+    @OneToMany(mappedBy = "landscapeArchitect")
     private List<Qualification> qualifications;
 }

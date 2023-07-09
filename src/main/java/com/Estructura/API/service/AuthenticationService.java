@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.Estructura.API.model.Role.*;
 
@@ -47,6 +50,19 @@ public class AuthenticationService {
         if (response.checkValidity(request)){
             User user=null;
             User savedUser=null;
+            List<String> qualifications;
+            List<String> specializations=null;
+            List<String> serviceAreas;
+            if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
+                specializations= Arrays.stream(request.getSpecialization().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+            }
+            if (request.getQualification()!=null && !request.getQualification().isBlank()){
+                specializations=Arrays.stream(request.getSpecialization().split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+            }
             if(request.getRole().equals(CUSTOMER)){
                 Customer customer=Customer.builder()
                         .firstname(request.getFirstname())
