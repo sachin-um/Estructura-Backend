@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class DevSecurityOverride implements WebMvcConfigurer {
-    private static final Long MAX_AGE = 3600L;
+    private static final Long MAX_AGE = 36L;
     private static final int CORS_FILTER_ORDER = -102;
 
     @Bean

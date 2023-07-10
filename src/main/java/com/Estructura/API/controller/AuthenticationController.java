@@ -21,6 +21,7 @@ import com.Estructura.API.model.VerificationToken;
 import com.Estructura.API.requests.auth.ResetPasswordRequest;
 import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.responses.auth.AuthenticationResponse;
+import com.Estructura.API.responses.auth.RefreshTokenResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.requests.auth.PasswordResetRequest;
@@ -148,10 +149,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh-token")
-    public void refreshToken(
+    public RefreshTokenResponse refreshToken(
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        service.refreshToken(request, response);
+        return service.refreshToken(request, response);
     }
 
     private String applicationUrl(HttpServletRequest request) {
