@@ -31,6 +31,7 @@ public class RetailItemController {
             case "HARDWARE" -> retailItemType = RetailItemType.HARDWARE;
             case "GARDENWARE" -> retailItemType = RetailItemType.GARDENWARE;
             case "BATHWARE" -> retailItemType = RetailItemType.BATHWARE;
+            case "LIGHTING" -> retailItemType = RetailItemType.LIGHTING;
             default -> {
                 // Handle invalid type
                 return Collections.emptyList();
