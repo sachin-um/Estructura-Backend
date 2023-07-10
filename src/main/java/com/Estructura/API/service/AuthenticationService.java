@@ -1,30 +1,43 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.*;
-import com.Estructura.API.repository.QualificationRepository;
-import com.Estructura.API.repository.SpecializationRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.Estructura.API.config.JwtService;
-import com.Estructura.API.repository.TokenRepository;
-import com.Estructura.API.requests.auth.AuthenticationRequest;
-import com.Estructura.API.requests.auth.RegisterRequest;
-import com.Estructura.API.responses.auth.AuthenticationResponse;
-import com.Estructura.API.responses.auth.RegisterResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import static com.Estructura.API.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.ARCHITECT;
+import static com.Estructura.API.model.Role.CUSTOMER;
+import static com.Estructura.API.model.Role.RETAILOWNER;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.Estructura.API.model.Role.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.Estructura.API.config.JwtService;
+import com.Estructura.API.model.Admin;
+import com.Estructura.API.model.Architect;
+import com.Estructura.API.model.Customer;
+import com.Estructura.API.model.Qualification;
+import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.model.Specialization;
+import com.Estructura.API.model.Token;
+import com.Estructura.API.model.TokenType;
+import com.Estructura.API.model.User;
+import com.Estructura.API.repository.QualificationRepository;
+import com.Estructura.API.repository.SpecializationRepository;
+import com.Estructura.API.repository.TokenRepository;
+import com.Estructura.API.requests.auth.AuthenticationRequest;
+import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.responses.auth.AuthenticationResponse;
+import com.Estructura.API.responses.auth.RefreshTokenResponse;
+import com.Estructura.API.responses.auth.RegisterResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +87,7 @@ public class AuthenticationService {
             }
             else if(request.getRole().equals(ADMIN)){
                 Admin admin=Admin.builder()
+                        .isVerified(true)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -228,7 +242,7 @@ public class AuthenticationService {
         specializationRepository.save(theSpecialization);
     }
 
-    public void refreshToken(
+    public RefreshTokenResponse refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
@@ -236,23 +250,41 @@ public class AuthenticationService {
         final String refreshToken;
         final  String userEmail;
         if (authHeader==null || !authHeader.startsWith("Bearer ")){
-            return;
+            return RefreshTokenResponse.builder()
+                    .success(false)
+                    .message("Refresh token is missing")
+                    .build();
         }
         refreshToken=authHeader.substring(7);
         userEmail= jwtService.extractUsername(refreshToken);
         if (userEmail != null){
             var user=this.userService.findByEmail(userEmail)
-                    .orElseThrow();
-            if (jwtService.isTokenValid(refreshToken,user)){
+                    .orElse(null);
+            if(user == null){
+                return RefreshTokenResponse.builder()
+                        .success(false)
+                        .message("User not found")
+                        .build();
+            } else if (jwtService.isTokenValid(refreshToken,user)){
                 var accessToken= jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user,accessToken);
-                var authResponse=RegisterResponse.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
+                return RefreshTokenResponse.builder()
+                        .success(true)
+                        .access_token(accessToken)
+                        .refresh_token(refreshToken)
                         .build();
-                new ObjectMapper().writeValue(response.getOutputStream(),authResponse);
+            } else {
+                return RefreshTokenResponse.builder()
+                        .success(false)
+                        .message("Refresh token is invalid")
+                        .build();
             }
+        } else {
+            return RefreshTokenResponse.builder()
+                    .success(false)
+                    .message("Refresh token is invalid")
+                    .build();
         }
     }
 }

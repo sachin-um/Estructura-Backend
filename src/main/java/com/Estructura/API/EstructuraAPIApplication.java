@@ -1,14 +1,16 @@
 package com.Estructura.API;
 
-import com.Estructura.API.requests.auth.RegisterRequest;
-import com.Estructura.API.service.AuthenticationService;
+import static com.Estructura.API.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.ARCHITECT;
+import static com.Estructura.API.model.Role.RETAILOWNER;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import static com.Estructura.API.model.Role.*;
+import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.service.AuthenticationService;
 
 @SpringBootApplication
 public class EstructuraAPIApplication {
@@ -19,10 +21,9 @@ public class EstructuraAPIApplication {
 
 	@Bean
 	public CommandLineRunner commandLineRunner(
-			AuthenticationService service
-	){
+			AuthenticationService service) {
 		return args -> {
-			var admin=RegisterRequest.builder()
+			var admin = RegisterRequest.builder()
 					.firstname("Admin")
 					.lastname("ADmin")
 					.email("admin@gmail.com")
@@ -30,7 +31,7 @@ public class EstructuraAPIApplication {
 					.role(ADMIN)
 					.assignedArea("Super")
 					.build();
-			var retailOwner=RegisterRequest.builder()
+			var retailOwner = RegisterRequest.builder()
 					.firstname("Udawatta")
 					.lastname("Stores")
 					.email("retail@gmail.com")
@@ -45,7 +46,7 @@ public class EstructuraAPIApplication {
 					.businessCity("Mathugama")
 					.businessDistrict("Kaluthara")
 					.build();
-			var architect=RegisterRequest.builder()
+			var architect = RegisterRequest.builder()
 					.firstname("Udawatta")
 					.lastname("Stores")
 					.email("architect@gmail.com")
@@ -60,8 +61,7 @@ public class EstructuraAPIApplication {
 					.sLIARegNumber("SLC22393")
 					.qualification("Item1,Item2")
 					.build();
-			System.out.println("Architect:"+service.register(architect).getAccessToken());
-			System.out.println("Architect:"+service.register(architect).getAccessToken());
+			System.out.println("Architect:" + service.register(architect).getAccessToken());
 			System.out.println("Admin token :" + service.register(admin).getAccessToken());
 			System.out.println("Retail Ower token :" + service.register(retailOwner).getAccessToken());
 		};
