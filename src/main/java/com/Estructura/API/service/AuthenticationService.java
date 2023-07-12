@@ -35,6 +35,7 @@ import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RefreshTokenResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -256,34 +257,41 @@ public class AuthenticationService {
                     .build();
         }
         refreshToken=authHeader.substring(7);
-        userEmail= jwtService.extractUsername(refreshToken);
-        if (userEmail != null){
-            var user=this.userService.findByEmail(userEmail)
-                    .orElse(null);
-            if(user == null){
-                return RefreshTokenResponse.builder()
-                        .success(false)
-                        .message("User not found")
-                        .build();
-            } else if (jwtService.isTokenValid(refreshToken,user)){
-                var accessToken= jwtService.generateToken(user);
-                revokeAllUserTokens(user);
-                saveUserToken(user,accessToken);
-                return RefreshTokenResponse.builder()
-                        .success(true)
-                        .access_token(accessToken)
-                        .refresh_token(refreshToken)
-                        .build();
+        try{
+            userEmail= jwtService.extractUsername(refreshToken);
+            if (userEmail != null){
+                var user=this.userService.findByEmail(userEmail)
+                        .orElse(null);
+                if(user == null){
+                    return RefreshTokenResponse.builder()
+                            .success(false)
+                            .message("User not found")
+                            .build();
+                } else if (jwtService.isTokenValid(refreshToken,user)){
+                    var accessToken= jwtService.generateToken(user);
+                    revokeAllUserTokens(user);
+                    saveUserToken(user,accessToken);
+                    return RefreshTokenResponse.builder()
+                            .success(true)
+                            .access_token(accessToken)
+                            .refresh_token(refreshToken)
+                            .build();
+                } else {
+                    return RefreshTokenResponse.builder()
+                            .success(false)
+                            .message("Refresh token is invalid")
+                            .build();
+                }
             } else {
                 return RefreshTokenResponse.builder()
                         .success(false)
                         .message("Refresh token is invalid")
                         .build();
             }
-        } else {
+        } catch (ExpiredJwtException e) {
             return RefreshTokenResponse.builder()
                     .success(false)
-                    .message("Refresh token is invalid")
+                    .message("Refresh token is expired")
                     .build();
         }
     }
