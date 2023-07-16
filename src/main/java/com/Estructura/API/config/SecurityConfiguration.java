@@ -33,6 +33,8 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/v1/retailitems/all")
                         .permitAll()
+                        .requestMatchers("/api/v1/projects/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
