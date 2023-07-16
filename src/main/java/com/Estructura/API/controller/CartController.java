@@ -4,12 +4,14 @@ import com.Estructura.API.model.OrderEntity;
 import com.Estructura.API.service.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.sound.midi.SysexMessage;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/cart")
-@CrossOrigin(origins = "*")
+
 
 public class CartController {
 
@@ -17,6 +19,7 @@ public class CartController {
 
     @PostMapping("/single")
     String addToCart(@RequestBody OrderRequestBody orderRequestBody){
+        System.out.println("orderRequestBody: " + orderRequestBody.toString());
         return cartService.addToCart(orderRequestBody);
     }
 
