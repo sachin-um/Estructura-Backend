@@ -1,5 +1,7 @@
 package com.Estructura.API.model;
 
 public enum TokenType {
-    BEARER
+    BEARER,
+    EMAIL_VERIFICATION,
+    REST_PASSWORD
 }

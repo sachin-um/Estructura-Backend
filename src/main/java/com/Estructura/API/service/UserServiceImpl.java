@@ -4,7 +4,7 @@ import com.Estructura.API.exception.UserAlreadyExistsException;
 import com.Estructura.API.model.User;
 import com.Estructura.API.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService{
-    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
     @Override
     public User saveUser(User user) {
         Optional<User> theUser=userRepository.findByEmail(user.getEmail());
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void resetUserPassword(User user, String newPassword) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
     }
 
 }

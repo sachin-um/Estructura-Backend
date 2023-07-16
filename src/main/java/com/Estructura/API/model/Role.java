@@ -23,13 +23,10 @@ public enum Role {
             )
     ),
     CUSTOMER(
-            Set.of(
-                    CUSTOMER_READ,
-                    CUSTOMER_CREATE,
-                    CUSTOMER_DELETE,
-                    CUSTOMER_UPDATE
-            )
-    )
+            Collections.emptySet()
+    ),
+    RETAILOWNER(Collections.emptySet()),
+    ARCHITECT(Collections.emptySet())
     ;
 
     @Getter

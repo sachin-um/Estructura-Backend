@@ -1,10 +1,12 @@
 package com.Estructura.API.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import lombok.Builder.Default;
+
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,26 +14,38 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="_user")
+@Table(name = "_user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank(message = "First name is required")
     private String firstname;
+    @NotBlank(message = "Last name is required")
     private String lastname;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+    @NotBlank(message = "Password is required")
     private String password;
+    @Default
+    private boolean isVerified = false;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VerificationToken> verificationTokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
