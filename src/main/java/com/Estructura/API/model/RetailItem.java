@@ -1,7 +1,6 @@
 package com.Estructura.API.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,10 +33,10 @@ public class RetailItem {
     @Enumerated(EnumType.STRING)
     private RetailItemType retailItemType;
 
-    //@Column(name = "item_Name",length = 255,nullable = false)
+    @Column(name = "item_Name",length = 255,nullable = false)
     private String name;
 
-    //@Column(name="price", columnDefinition = "numeric(10,2)")
+    @Column(name="price", columnDefinition = "numeric(10,2)")
     private Double price;
 
     private String image;

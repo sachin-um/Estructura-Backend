@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                 .sessionManagement(sess->sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .authenticationProvider(authenticationProvider)
                 .logout(l->l
                         .logoutUrl("/api/v1/auth/logout")
