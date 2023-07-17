@@ -27,44 +27,7 @@ public class PreviousProjectController {
     @PostMapping("/add")
     public ResponseEntity<?> addPreviousProject(
             @ModelAttribute ProjectRequest projectRequest) throws IOException {
-        Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
-        String mainImageName= StringUtils.cleanPath(projectRequest.getMainMultipartFile().getOriginalFilename());
-
-        if (professional.isPresent()){
-            PreviousProject previousProject=PreviousProject.builder()
-                    .name(projectRequest.getName())
-                    .description(projectRequest.getDescription())
-                    .cost(projectRequest.getCost())
-                    .projectFromEstructura(projectRequest.isProjectFromEstructura())
-                    .professional(professional.get())
-                    .MainImage(mainImageName)
-                    .build();
-            int count=0;
-            for (MultipartFile file:projectRequest.getExtraMultipartFile()){
-                if (!file.isEmpty()) {
-                    String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
-                    if(count==0) previousProject.setExtraImage1(extraImageName);
-                    if(count==1) previousProject.setExtraImage2(extraImageName);
-                    if(count==3) previousProject.setExtraImage3(extraImageName);
-                    count++;
-                }
-            };
-            PreviousProject project=previousProjectService.savePreviousProject(previousProject);
-            if (project!=null){
-                String uploadDir="./project-files/"+project.getId();
-                FileUploadUtil.saveFile(uploadDir, projectRequest.getMainMultipartFile(), mainImageName);
-                for (MultipartFile file:projectRequest.getExtraMultipartFile()){
-                    if (!file.isEmpty()) {
-                        String fileName=StringUtils.cleanPath(file.getOriginalFilename());
-                        FileUploadUtil.saveFile(uploadDir,file,fileName);
-                    }
-                }
-
-                return ResponseEntity.ok("Success");
-            }
-            else return ResponseEntity.badRequest().body("Somthing went wrong");
-        }
-        else return ResponseEntity.badRequest().body("Invalid professional ID");
+        return saveOrUpdateProject(projectRequest);
 
     }
     @GetMapping("/project/{projectId}")
@@ -88,45 +51,68 @@ public class PreviousProjectController {
             @ModelAttribute ProjectRequest projectRequest) throws IOException {
         Optional<PreviousProject> previousProject= previousProjectService.getPreviousProjectById(projectId);
         if (previousProject.isPresent()){
-            String mainImageName= StringUtils.cleanPath(projectRequest.getMainMultipartFile().getOriginalFilename());
-                PreviousProject projectt=PreviousProject.builder()
-                        .name(projectRequest.getName())
-                        .description(projectRequest.getDescription())
-                        .cost(projectRequest.getCost())
-                        .projectFromEstructura(projectRequest.isProjectFromEstructura())
-                        .professional(previousProject.get().getProfessional())
-                        .MainImage(mainImageName)
-                        .build();
-                int count=0;
-                for (MultipartFile file:projectRequest.getExtraMultipartFile()){
-                    if (!file.isEmpty()) {
-                        String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
-                        if(count==0)  projectt.setExtraImage1(extraImageName);
-                        if(count==1)  projectt.setExtraImage2(extraImageName);
-                        if(count==3)  projectt.setExtraImage3(extraImageName);
-                        count++;
-                    }
-                };
-                PreviousProject project=previousProjectService.savePreviousProject(projectt);
-                if (project!=null){
-                    String uploadDir="./project-files/"+project.getId();
-                    FileUploadUtil.saveFile(uploadDir,projectRequest.getMainMultipartFile(),mainImageName);
-                    for (MultipartFile file:projectRequest.getExtraMultipartFile()){
-                        if (!file.isEmpty()) {
-                            String fileName=StringUtils.cleanPath(file.getOriginalFilename());
-                            FileUploadUtil.saveFile(uploadDir,file,fileName);
-                        }
-                    };
-
-                    return ResponseEntity.ok("Success");
-                }
-                else return ResponseEntity.badRequest().body("Somthing went wrong");
-
+            return saveOrUpdateProject(projectRequest);
         }
         else {
             return ResponseEntity.notFound().build();
         }
 
+    }
+
+    private ResponseEntity<?> saveOrUpdateProject(@ModelAttribute ProjectRequest projectRequest) throws IOException {
+        Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
+        if (professional.isPresent()){
+            String mainImageName= StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
+            PreviousProject previousProject=PreviousProject.builder()
+                    .name(projectRequest.getName())
+                    .description(projectRequest.getDescription())
+                    .cost(projectRequest.getCost())
+                    .projectFromEstructura(projectRequest.isProjectFromEstructura())
+                    .professional(professional.get())
+                    .MainImage(mainImageName)
+                    .build();
+            int count=0;
+            for (MultipartFile file:projectRequest.getExtraImages()){
+                if (!file.isEmpty()) {
+                    String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
+                    if(count==0) previousProject.setExtraImage1(extraImageName);//check the image count is less than 3
+                    if(count==1) previousProject.setExtraImage2(extraImageName);
+                    if(count==3) previousProject.setExtraImage3(extraImageName);
+                    count++;
+                }
+            }
+            count=0;
+            for (MultipartFile document:projectRequest.getDocuments()){
+                if(!document.isEmpty()){
+                    String documentName=StringUtils.cleanPath(document.getOriginalFilename());
+                    if(count==0) previousProject.setDocument1(documentName);//check the image count is less than 3
+                    if(count==1) previousProject.setDocument2(documentName);
+                    if(count==3) previousProject.setDocument3(documentName);
+                    count++;
+                }
+            }
+            PreviousProject project=previousProjectService.savePreviousProject(previousProject);
+            if (project!=null){
+                String uploadDir="./project-files/"+project.getProfessional().getId()+"/"+project.getId();
+                FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), mainImageName);
+                for (MultipartFile file:projectRequest.getExtraImages()){
+                    if (!file.isEmpty()) {
+                        String fileName=StringUtils.cleanPath(file.getOriginalFilename());
+                        FileUploadUtil.saveFile(uploadDir,file,fileName);
+                    }
+                }
+                for (MultipartFile document:projectRequest.getDocuments()){
+                    if (!document.isEmpty()){
+                        String fileName=StringUtils.cleanPath(document.getOriginalFilename());
+                        FileUploadUtil.saveFile(uploadDir,document,fileName);
+                    }
+                }
+
+                return ResponseEntity.ok("Success");
+            }
+            else return ResponseEntity.badRequest().body("Somthing went wrong");
+        }
+        else return ResponseEntity.badRequest().body("Invalid professional ID");
     }
 
     @DeleteMapping("/delete/{projectId}")
