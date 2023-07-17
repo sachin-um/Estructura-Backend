@@ -2,6 +2,7 @@ package com.Estructura.API.service;
 
 import com.Estructura.API.model.*;
 import com.Estructura.API.repository.QualificationRepository;
+import com.Estructura.API.repository.ServiceAreaRepository;
 import com.Estructura.API.repository.SpecializationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Estructura.API.config.JwtService;
@@ -40,6 +41,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final QualificationRepository qualificationRepository;
     private final SpecializationRepository specializationRepository;
+    private final ServiceAreaRepository serviceAreaRepository;
 
     public RegisterResponse register(RegisterRequest request) {
         var response = new RegisterResponse();
@@ -140,6 +142,12 @@ public class AuthenticationService {
                     saveQualification(finalSavedUser,qualification);
                 });
             }
+            if (request.getServiceAreas()!=null){
+                User finalSavedUser = savedUser;
+                request.getServiceAreas().forEach(serviceArea->{
+                    saveServiceArea(finalSavedUser,serviceArea);
+                });
+            }
             var jwtToken= jwtService.generateToken(user);
             var refreshToken= jwtService.generateRefreshToken(user);
             saveUserToken(savedUser, jwtToken);
@@ -217,6 +225,15 @@ public class AuthenticationService {
             theQualification.setArchitect((Architect) user);
         }
         qualificationRepository.save(theQualification);
+    }
+    private void saveServiceArea(User user,String serviceArea){
+        var theServiceArea=ServiceArea.builder()
+                .serviceArea(serviceArea)
+                .build();
+        if (user.getRole().equals(ARCHITECT)){
+            theServiceArea.setProfessional((Professional) user);
+        }
+        serviceAreaRepository.save(theServiceArea);
     }
     private void saveSpecialization(User user,String specialization){
         var theSpecialization=Specialization.builder()
