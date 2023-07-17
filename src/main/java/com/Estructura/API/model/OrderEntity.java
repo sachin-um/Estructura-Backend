@@ -1,6 +1,5 @@
 package com.Estructura.API.model;
 
-import com.Estructura.API.model.RetailItem;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
@@ -30,7 +29,8 @@ public class OrderEntity {
     private Long id;
     private Integer quantity;
 
-    @OneToOne
+    //check the relationship
+    @ManyToOne
     private RetailItem retailItem;
 
     public OrderEntity(Integer quantity, RetailItem retailItem){
