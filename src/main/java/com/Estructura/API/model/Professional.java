@@ -29,4 +29,7 @@ public class Professional extends ServiceProvider{
     private String businessContactNo;
     @OneToMany(mappedBy = "professional")
     private List<ServiceArea> serviceAreas;
+
+    @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL)
+    private List<PreviousProject> previousProjects;
 }
