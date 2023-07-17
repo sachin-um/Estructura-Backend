@@ -18,6 +18,7 @@ public class ProjectRequest {
     private Double cost;
     private boolean projectFromEstructura;
     private Integer professionalId;
-    private MultipartFile mainMultipartFile;
-    private List<MultipartFile> extraMultipartFile;
+    private MultipartFile mainImage;
+    private List<MultipartFile> extraImages;
+    private List<MultipartFile> documents;
 }

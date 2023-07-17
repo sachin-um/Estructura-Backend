@@ -39,6 +39,15 @@ public class PreviousProject {
     @Column(nullable = true)
     private String ExtraImage3;
 
+    @Column(nullable = true)
+    private String Document1;
+
+    @Column(nullable = true)
+    private String Document2;
+
+    @Column(nullable = true)
+    private String Document3;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
     private Professional professional;
