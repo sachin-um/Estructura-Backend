@@ -4,9 +4,9 @@ import com.Estructura.API.model.PreviousProject;
 import com.Estructura.API.model.Professional;
 import com.Estructura.API.repository.PreviousProjectRepository;
 import com.Estructura.API.requests.projects.ProjectRequest;
+import com.Estructura.API.responses.projects.ProjectResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +23,8 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
 
 
     @Override
-    public ResponseEntity<?> saveOrUpdateProject(ProjectRequest projectRequest) throws IOException {
+    public ProjectResponse saveOrUpdateProject(ProjectRequest projectRequest) throws IOException {
+        ProjectResponse response=new ProjectResponse();
         Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
         if (professional.isPresent()){
             String mainImageName= StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
@@ -71,31 +72,68 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                         FileUploadUtil.saveFile(uploadDir,document,fileName);
                     }
                 }
-
-                return ResponseEntity.ok("Success");
+                response.setSuccess(true);
+                response.setProject(previousProject);
+                return response;
             }
-            else return ResponseEntity.badRequest().body("Somthing went wrong");
+
+            else {
+                response.setErrormessage("Somthing went wrong");
+                return response;
+            }
         }
-        else return ResponseEntity.badRequest().body("Invalid professional ID");
+        else {
+            response.setErrormessage("Invalid professional ID");
+            return response;
+        }
     }
 
     @Override
-    public Optional<PreviousProject> getPreviousProjectById(Integer id) {
-        return previousProjectRepository.findById(id);
+    public ProjectResponse getPreviousProjectById(Integer id) {
+        ProjectResponse response=new ProjectResponse();
+        Optional<PreviousProject> previousProject= previousProjectRepository.findById(id);
+        if (previousProject.isPresent()){
+            response.setSuccess(true);
+            response.setProject(previousProject.get());
+            return response;
+        }
+        else {
+            response.setErrormessage("Cannot find the project");
+            return response;
+        }
     }
 
     @Override
-    public List<PreviousProject> getPreviousProjectByProfessional(Professional professional) {
-        return previousProjectRepository.findAllByProfessional(professional);
+    public ProjectResponse getPreviousProjectByProfessional(Professional professional) {
+        ProjectResponse response=new ProjectResponse();
+        List<PreviousProject> previousProjects= previousProjectRepository.findAllByProfessional(professional);
+        if (!previousProjects.isEmpty()){
+            response.setSuccess(true);
+            response.setProjects(previousProjects);
+            return  response;
+        }
+        else {
+            response.setErrormessage("No Projects");
+            return response;
+        }
     }
 
-    @Override
-    public void editPreviousProject(PreviousProject previousProject) {
-        previousProjectRepository.save(previousProject);
-    }
+
 
     @Override
-    public void deletePreviousProject(PreviousProject previousProject) {
+    public ProjectResponse deletePreviousProject(PreviousProject previousProject) {
+        ProjectResponse response=new ProjectResponse();
         previousProjectRepository.delete(previousProject);
+        Optional<PreviousProject> project= previousProjectRepository.findById(previousProject.getId());
+        if (project.isPresent()){
+            response.setErrormessage("Cannot find the project");
+            return response;
+
+        }
+        else {
+            response.setSuccess(true);
+            return response;
+        }
+
     }
 }

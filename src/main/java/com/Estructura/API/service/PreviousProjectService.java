@@ -3,6 +3,7 @@ package com.Estructura.API.service;
 import com.Estructura.API.model.PreviousProject;
 import com.Estructura.API.model.Professional;
 import com.Estructura.API.requests.projects.ProjectRequest;
+import com.Estructura.API.responses.projects.ProjectResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -11,9 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PreviousProjectService {
-    public ResponseEntity<?> saveOrUpdateProject(@ModelAttribute ProjectRequest projectRequest) throws IOException;
-    public Optional<PreviousProject> getPreviousProjectById(Integer id);
-    public List<PreviousProject> getPreviousProjectByProfessional(Professional professional);
-    public void editPreviousProject(PreviousProject previousProject);
-    public void deletePreviousProject(PreviousProject previousProject);
+    public ProjectResponse saveOrUpdateProject(@ModelAttribute ProjectRequest projectRequest) throws IOException;
+    public ProjectResponse getPreviousProjectById(Integer id);
+    public ProjectResponse getPreviousProjectByProfessional(Professional professional);
+    public ProjectResponse deletePreviousProject(PreviousProject previousProject);
 }
