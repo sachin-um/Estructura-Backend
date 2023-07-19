@@ -25,6 +25,9 @@ public class PreviousProject {
     @Column(columnDefinition = "numeric(10,2)")
     private Double cost;
 
+    @Column(nullable = true)
+    private String location;
+
     private boolean projectFromEstructura=false;
 
     @Column(nullable = true)

@@ -36,6 +36,9 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                     .professional(professional.get())
                     .MainImage(mainImageName)
                     .build();
+            if (projectRequest.getLocation()!=null){
+                previousProject.setLocation(projectRequest.getLocation());
+            }
             int count=0;
             for (MultipartFile file:projectRequest.getExtraImages()){
                 if (!file.isEmpty()) {
