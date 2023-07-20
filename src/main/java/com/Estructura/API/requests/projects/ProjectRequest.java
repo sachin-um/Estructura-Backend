@@ -16,6 +16,7 @@ public class ProjectRequest {
     private String name;
     private String description;
     private Double cost;
+    private String location;
     private boolean projectFromEstructura;
     private Integer professionalId;
     private MultipartFile mainImage;

@@ -1,5 +1,6 @@
 package com.Estructura.API.utils;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 public class FileUploadUtil {
     public static void saveFile(String uploadDir, MultipartFile multipartFile,String fileName) throws IOException {
@@ -24,5 +26,9 @@ public class FileUploadUtil {
         }catch (IOException e){
             throw new IOException("Could not save uploaded file"+ fileName);
         }
+    }
+    public static String generateFileName(String originalFilename) {
+        String extension = StringUtils.getFilenameExtension(originalFilename);
+        return UUID.randomUUID().toString() + "." + extension;
     }
 }

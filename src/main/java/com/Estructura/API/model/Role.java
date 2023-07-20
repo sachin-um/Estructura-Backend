@@ -26,7 +26,8 @@ public enum Role {
             Collections.emptySet()
     ),
     RETAILOWNER(Collections.emptySet()),
-    ARCHITECT(Collections.emptySet())
+    ARCHITECT(Collections.emptySet()),
+    RENTER(Collections.emptySet())
     ;
 
     @Getter

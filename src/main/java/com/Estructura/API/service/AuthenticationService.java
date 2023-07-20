@@ -105,6 +105,25 @@ public class AuthenticationService {
                 user=retailStore;
                 savedUser=retailStoreService.saveRetailStore(retailStore);
             }
+            else if(request.getRole().equals(RENTER)){
+                RetailStore retailStore=RetailStore.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .businessName(request.getBusinessName())
+                        .businessContactNo(request.getBusinessContactNo())
+                        .businessCategory(request.getBusinessCategory())
+                        .registrationNo(request.getRegistrationNo())
+                        .addressLine1(request.getBusinessAddressLine1())
+                        .addressLine2(request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .build();
+                user=retailStore;
+                savedUser=retailStoreService.saveRetailStore(retailStore);
+            }
             else if (request.getRole().equals(ARCHITECT)){
                 Architect architect=Architect.builder()
                         .firstname(request.getFirstname())
