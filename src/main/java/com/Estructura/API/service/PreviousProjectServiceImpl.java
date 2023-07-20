@@ -4,9 +4,11 @@ import com.Estructura.API.model.PreviousProject;
 import com.Estructura.API.model.Professional;
 import com.Estructura.API.repository.PreviousProjectRepository;
 import com.Estructura.API.requests.projects.ProjectRequest;
-import com.Estructura.API.responses.projects.ProjectResponse;
+import com.Estructura.API.responses.GenericAddOrUpdateResponse;
+import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,113 +25,133 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
 
 
     @Override
-    public ProjectResponse saveOrUpdateProject(ProjectRequest projectRequest) throws IOException {
-        ProjectResponse response=new ProjectResponse();
-        Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
-        if (professional.isPresent()){
-            String mainImageName= StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
-            PreviousProject previousProject=PreviousProject.builder()
-                    .name(projectRequest.getName())
-                    .description(projectRequest.getDescription())
-                    .cost(projectRequest.getCost())
-                    .projectFromEstructura(projectRequest.isProjectFromEstructura())
-                    .professional(professional.get())
-                    .MainImage(mainImageName)
-                    .build();
-            if (projectRequest.getLocation()!=null){
-                previousProject.setLocation(projectRequest.getLocation());
-            }
-            int count=0;
-            for (MultipartFile file:projectRequest.getExtraImages()){
-                if (!file.isEmpty()) {
-                    String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
-                    if(count==0) previousProject.setExtraImage1(extraImageName);//check the image count is less than 3
-                    if(count==1) previousProject.setExtraImage2(extraImageName);
-                    if(count==3) previousProject.setExtraImage3(extraImageName);
-                    count++;
+    public GenericAddOrUpdateResponse<ProjectRequest> saveOrUpdateProject(ProjectRequest projectRequest) throws IOException {
+        GenericAddOrUpdateResponse<ProjectRequest> response=new GenericAddOrUpdateResponse<>();
+        if (response.checkValidity(projectRequest)){
+            Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
+            if (professional.isPresent()){
+                String mainImageName= StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
+                PreviousProject previousProject=PreviousProject.builder()
+                        .name(projectRequest.getName())
+                        .description(projectRequest.getDescription())
+                        .cost(projectRequest.getCost())
+                        .projectFromEstructura(projectRequest.isProjectFromEstructura())
+                        .professional(professional.get())
+                        .MainImage(mainImageName)
+                        .MainImageName(FileUploadUtil.generateFileName(mainImageName))
+                        .build();
+                if (projectRequest.getLocation()!=null){
+                    previousProject.setLocation(projectRequest.getLocation());
                 }
-            }
-            count=0;
-            for (MultipartFile document:projectRequest.getDocuments()){
-                if(!document.isEmpty()){
-                    String documentName=StringUtils.cleanPath(document.getOriginalFilename());
-                    if(count==0) previousProject.setDocument1(documentName);//check the image count is less than 3
-                    if(count==1) previousProject.setDocument2(documentName);
-                    if(count==3) previousProject.setDocument3(documentName);
-                    count++;
-                }
-            }
-            PreviousProject project=previousProjectRepository.save(previousProject);
-            if (project!=null){
-                String uploadDir="./project-files/"+project.getProfessional().getId()+"/"+project.getId();
-                FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), mainImageName);
+                int count=0;
                 for (MultipartFile file:projectRequest.getExtraImages()){
                     if (!file.isEmpty()) {
-                        String fileName=StringUtils.cleanPath(file.getOriginalFilename());
-                        FileUploadUtil.saveFile(uploadDir,file,fileName);
+                        String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
+                        if(count==0) previousProject.setExtraImage1(extraImageName); previousProject.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
+                        if(count==1) previousProject.setExtraImage2(extraImageName);previousProject.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
+                        if(count==3) previousProject.setExtraImage3(extraImageName);previousProject.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                        count++;
                     }
                 }
+                count=0;
                 for (MultipartFile document:projectRequest.getDocuments()){
-                    if (!document.isEmpty()){
-                        String fileName=StringUtils.cleanPath(document.getOriginalFilename());
-                        FileUploadUtil.saveFile(uploadDir,document,fileName);
+                    if(!document.isEmpty()){
+                        String documentName=StringUtils.cleanPath(document.getOriginalFilename());
+                        if(count==0) previousProject.setDocument1(documentName); previousProject.setDocument1Name(FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
+                        if(count==1) previousProject.setDocument2(documentName); previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                        if(count==3) previousProject.setDocument3(documentName); previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                        count++;
                     }
                 }
-                response.setSuccess(true);
-                response.setProject(previousProject);
-                return response;
-            }
+                PreviousProject project=previousProjectRepository.save(previousProject);
+                count=0;
+                if (project!=null){
+                    String uploadDir="./project-files/"+project.getProfessional().getId()+"/"+project.getId();
+                    FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), project.getMainImageName());
+                    for (MultipartFile file:projectRequest.getExtraImages()){
+                        if (!file.isEmpty()) {
+                            if(count==0){
+                                String fileName=StringUtils.cleanPath(project.getExtraImage1Name());
+                                FileUploadUtil.saveFile(uploadDir,file,fileName);
+                            }
+                            if(count==1){
+                                String fileName=StringUtils.cleanPath(project.getExtraImage2Name());
+                                FileUploadUtil.saveFile(uploadDir,file,fileName);
+                            }
+                            if(count==2){
+                                String fileName=StringUtils.cleanPath(project.getExtraImage3Name());
+                                FileUploadUtil.saveFile(uploadDir,file,fileName);
+                            }
+                            count++;
 
+                        }
+                    }
+                    count=0;
+                    for (MultipartFile document:projectRequest.getDocuments()){
+                        if (!document.isEmpty()){
+                            if(count==0){
+                                String fileName=StringUtils.cleanPath(project.getDocument1Name());
+                                FileUploadUtil.saveFile(uploadDir,document,fileName);
+                            }
+                            if(count==1){
+                                String fileName=StringUtils.cleanPath(project.getDocument2Name());
+                                FileUploadUtil.saveFile(uploadDir,document,fileName);
+                            }
+                            if(count==2){
+                                String fileName=StringUtils.cleanPath(project.getDocument3Name());
+                                FileUploadUtil.saveFile(uploadDir,document,fileName);
+                            }
+                            count++;
+                            String fileName=StringUtils.cleanPath(document.getOriginalFilename());
+                            FileUploadUtil.saveFile(uploadDir,document,fileName);
+                        }
+                    }
+                    response.setSuccess(true);
+                    response.setId(project.getId());
+                    return response;
+                }
+
+                else {
+                    response.addError("fatal","Somthing went wrong");
+                    return response;
+                }
+            }
             else {
-                response.setErrormessage("Somthing went wrong");
+                response.addError("fatal","Invalid professional ID");
                 return response;
             }
+
         }
-        else {
-            response.setErrormessage("Invalid professional ID");
-            return response;
-        }
+        return response;
     }
 
     @Override
-    public ProjectResponse getPreviousProjectById(Integer id) {
-        ProjectResponse response=new ProjectResponse();
+    public ResponseEntity<PreviousProject> getPreviousProjectById(Integer id) {
         Optional<PreviousProject> previousProject= previousProjectRepository.findById(id);
-        if (previousProject.isPresent()){
-            response.setSuccess(true);
-            response.setProject(previousProject.get());
-            return response;
-        }
-        else {
-            response.setErrormessage("Cannot find the project");
-            return response;
-        }
+        return previousProject.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+//
     @Override
-    public ProjectResponse getPreviousProjectByProfessional(Professional professional) {
-        ProjectResponse response=new ProjectResponse();
+    public ResponseEntity<List<PreviousProject>> getPreviousProjectByProfessional(Professional professional) {
         List<PreviousProject> previousProjects= previousProjectRepository.findAllByProfessional(professional);
         if (!previousProjects.isEmpty()){
-            response.setSuccess(true);
-            response.setProjects(previousProjects);
-            return  response;
+            return  ResponseEntity.ok(previousProjects);
         }
         else {
-            response.setErrormessage("No Projects");
-            return response;
+            return ResponseEntity.noContent().build();
         }
     }
 
-
-
+//
+//
     @Override
-    public ProjectResponse deletePreviousProject(PreviousProject previousProject) {
-        ProjectResponse response=new ProjectResponse();
+    public GenericDeleteResponse<Integer> deletePreviousProject(PreviousProject previousProject) {
+        GenericDeleteResponse<Integer> response=new GenericDeleteResponse<>();
         previousProjectRepository.delete(previousProject);
         Optional<PreviousProject> project= previousProjectRepository.findById(previousProject.getId());
         if (project.isPresent()){
-            response.setErrormessage("Cannot find the project");
+            response.setSuccess(false);
+            response.setMessage("Somthing went wrong please try again");
             return response;
 
         }

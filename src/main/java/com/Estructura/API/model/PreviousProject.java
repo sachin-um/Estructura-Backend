@@ -1,6 +1,7 @@
 package com.Estructura.API.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,27 +33,43 @@ public class PreviousProject {
 
     @Column(nullable = true)
     private String MainImage;
+    @Column(nullable = true)
+    private String MainImageName;
 
     @Column(nullable = true)
     private String ExtraImage1;
+    @Column(nullable = true)
+    private String ExtraImage1Name;
 
     @Column(nullable = true)
     private String ExtraImage2;
+    @Column(nullable = true)
+    private String ExtraImage2Name;
 
     @Column(nullable = true)
     private String ExtraImage3;
+    @Column(nullable = true)
+    private String ExtraImage3Name;
 
     @Column(nullable = true)
     private String Document1;
+    @Column(nullable = true)
+    private String Document1Name;
 
     @Column(nullable = true)
     private String Document2;
+    @Column(nullable = true)
+    private String Document2Name;
 
     @Column(nullable = true)
     private String Document3;
 
+    @Column(nullable = true)
+    private String Document3Name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
+    @JsonIgnore
     private Professional professional;
 
 }
