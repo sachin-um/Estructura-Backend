@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="rentalStore")
+@Table(name="renter")
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class Renter extends ServiceProvider{
@@ -27,6 +27,6 @@ public class Renter extends ServiceProvider{
     @NotBlank(message = "Business Registration Number Required")
     private String registrationNo;
 
-    @OneToMany(mappedBy = "rentalStore", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
     private List<RentingItem> rentingItems;
 }
