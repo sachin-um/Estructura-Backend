@@ -2,7 +2,6 @@ package com.Estructura.API.service;
 
 import com.Estructura.API.exception.UserAlreadyExistsException;
 import com.Estructura.API.model.Renter;
-import com.Estructura.API.model.RetailStore;
 import com.Estructura.API.repository.RenterRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,4 +20,10 @@ public class RenterServiceImpl implements RenterService{
         }
         return renterRepository.save(renter);
     }
+
+    @Override
+    public Optional<Renter> findById(Integer id) {
+        return renterRepository.findById(id);
+    }
+
 }

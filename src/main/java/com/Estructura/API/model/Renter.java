@@ -1,12 +1,11 @@
 package com.Estructura.API.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -25,10 +24,9 @@ public class Renter extends ServiceProvider{
     @NotBlank(message = "Business contact number required")
     private String businessContactNo;
     @Column(nullable = false)
-    @NotBlank(message = "Business Category Required")
-    private String rentingCategory;
-    @Column(nullable = false)
     @NotBlank(message = "Business Registration Number Required")
     private String registrationNo;
 
+    @OneToMany(mappedBy = "rentalStore", cascade = CascadeType.ALL)
+    private List<RentingItem> rentingItems;
 }

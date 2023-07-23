@@ -107,7 +107,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                         }
                     }
                     response.setSuccess(true);
-                    response.setId(project.getId());
+                    response.setId(Long.valueOf(project.getId()));
                     return response;
                 }
 

@@ -14,5 +14,5 @@ public class GenericAddOrUpdateResponse<RequestClass> extends ValidatedResponse<
     @JsonProperty("message")
     private String message;
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 }
