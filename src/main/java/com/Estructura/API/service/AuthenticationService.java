@@ -125,7 +125,6 @@ public class AuthenticationService {
                         .role(request.getRole())
                         .businessName(request.getBusinessName())
                         .businessContactNo(request.getBusinessContactNo())
-                        .rentingCategory(request.getRentingCategory())
                         .registrationNo(request.getRegistrationNo())
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
