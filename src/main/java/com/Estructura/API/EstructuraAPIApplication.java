@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+
 import static com.Estructura.API.model.Role.*;
 
 @SpringBootApplication
@@ -59,8 +61,8 @@ public class EstructuraAPIApplication {
 					.businessDistrict("Kaluthra")
 					.sLIARegNumber("SLC22393")
 					.qualification("Item1,Item2")
+					.serviceAreas(List.of("Colombo","Gampaha","Kaluthra"))
 					.build();
-			System.out.println("Architect:"+service.register(architect).getAccessToken());
 			System.out.println("Architect:"+service.register(architect).getAccessToken());
 			System.out.println("Admin token :" + service.register(admin).getAccessToken());
 			System.out.println("Retail Ower token :" + service.register(retailOwner).getAccessToken());

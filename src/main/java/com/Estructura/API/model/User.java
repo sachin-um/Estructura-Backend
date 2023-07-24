@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Default
     private boolean isVerified = false;
 
+    private String ProfileImage;
+    private String ProfileImageName;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

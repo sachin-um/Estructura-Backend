@@ -30,80 +30,100 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
         if (response.checkValidity(projectRequest)){
             Optional<Professional> professional=professionalService.findById(projectRequest.getProfessionalId());
             if (professional.isPresent()){
-                String mainImageName= StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
+                String mainImageName=null;
+                if (projectRequest.getMainImage()!=null) {
+                    mainImageName = StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
+                }
                 PreviousProject previousProject=PreviousProject.builder()
                         .name(projectRequest.getName())
                         .description(projectRequest.getDescription())
                         .cost(projectRequest.getCost())
                         .projectFromEstructura(projectRequest.isProjectFromEstructura())
                         .professional(professional.get())
-                        .MainImage(mainImageName)
-                        .MainImageName(FileUploadUtil.generateFileName(mainImageName))
                         .build();
+                if (mainImageName!=null){
+                    previousProject.setMainImage(mainImageName);
+                    previousProject.setMainImageName(FileUploadUtil.generateFileName(mainImageName));
+                }
                 if (projectRequest.getLocation()!=null){
                     previousProject.setLocation(projectRequest.getLocation());
                 }
                 int count=0;
-                for (MultipartFile file:projectRequest.getExtraImages()){
-                    if (!file.isEmpty()) {
-                        String extraImageName=StringUtils.cleanPath(file.getOriginalFilename());
-                        if(count==0) previousProject.setExtraImage1(extraImageName); previousProject.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
-                        if(count==1) previousProject.setExtraImage2(extraImageName);previousProject.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
-                        if(count==3) previousProject.setExtraImage3(extraImageName);previousProject.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
-                        count++;
+                if (projectRequest.getExtraImages()!=null) {
+                    for (MultipartFile file : projectRequest.getExtraImages()) {
+                        if (!file.isEmpty()) {
+                            String extraImageName = StringUtils.cleanPath(file.getOriginalFilename());
+                            if (count == 0) previousProject.setExtraImage1(extraImageName);
+                            previousProject.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
+                            if (count == 1) previousProject.setExtraImage2(extraImageName);
+                            previousProject.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
+                            if (count == 3) previousProject.setExtraImage3(extraImageName);
+                            previousProject.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                            count++;
+                        }
                     }
                 }
                 count=0;
-                for (MultipartFile document:projectRequest.getDocuments()){
-                    if(!document.isEmpty()){
-                        String documentName=StringUtils.cleanPath(document.getOriginalFilename());
-                        if(count==0) previousProject.setDocument1(documentName); previousProject.setDocument1Name(FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
-                        if(count==1) previousProject.setDocument2(documentName); previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
-                        if(count==3) previousProject.setDocument3(documentName); previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
-                        count++;
+                if (projectRequest.getDocuments()!=null) {
+                    for (MultipartFile document : projectRequest.getDocuments()) {
+                        if (!document.isEmpty()) {
+                            String documentName = StringUtils.cleanPath(document.getOriginalFilename());
+                            if (count == 0) previousProject.setDocument1(documentName);
+                            previousProject.setDocument1Name(FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
+                            if (count == 1) previousProject.setDocument2(documentName);
+                            previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                            if (count == 3) previousProject.setDocument3(documentName);
+                            previousProject.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                            count++;
+                        }
                     }
                 }
                 PreviousProject project=previousProjectRepository.save(previousProject);
                 count=0;
-                if (project!=null){
                     String uploadDir="./project-files/"+project.getProfessional().getId()+"/"+project.getId();
-                    FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), project.getMainImageName());
-                    for (MultipartFile file:projectRequest.getExtraImages()){
-                        if (!file.isEmpty()) {
-                            if(count==0){
-                                String fileName=StringUtils.cleanPath(project.getExtraImage1Name());
-                                FileUploadUtil.saveFile(uploadDir,file,fileName);
-                            }
-                            if(count==1){
-                                String fileName=StringUtils.cleanPath(project.getExtraImage2Name());
-                                FileUploadUtil.saveFile(uploadDir,file,fileName);
-                            }
-                            if(count==2){
-                                String fileName=StringUtils.cleanPath(project.getExtraImage3Name());
-                                FileUploadUtil.saveFile(uploadDir,file,fileName);
-                            }
-                            count++;
+                    if (projectRequest.getMainImage()!=null){
+                        FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), project.getMainImageName());
+                    }
+                    if (projectRequest.getExtraImages()!=null) {
+                        for (MultipartFile file : projectRequest.getExtraImages()) {
+                            if (!file.isEmpty()) {
+                                if (count == 0) {
+                                    String fileName = StringUtils.cleanPath(project.getExtraImage1Name());
+                                    FileUploadUtil.saveFile(uploadDir, file, fileName);
+                                }
+                                if (count == 1) {
+                                    String fileName = StringUtils.cleanPath(project.getExtraImage2Name());
+                                    FileUploadUtil.saveFile(uploadDir, file, fileName);
+                                }
+                                if (count == 2) {
+                                    String fileName = StringUtils.cleanPath(project.getExtraImage3Name());
+                                    FileUploadUtil.saveFile(uploadDir, file, fileName);
+                                }
+                                count++;
 
+                            }
                         }
                     }
                     count=0;
-                    for (MultipartFile document:projectRequest.getDocuments()){
-                        if (!document.isEmpty()){
-                            if(count==0){
-                                String fileName=StringUtils.cleanPath(project.getDocument1Name());
-                                FileUploadUtil.saveFile(uploadDir,document,fileName);
+                    if (projectRequest.getDocuments()!=null) {
+                        for (MultipartFile document : projectRequest.getDocuments()) {
+                            if (!document.isEmpty()) {
+                                if (count == 0) {
+                                    String fileName = StringUtils.cleanPath(project.getDocument1Name());
+                                    FileUploadUtil.saveFile(uploadDir, document, fileName);
+                                }
+                                if (count == 1) {
+                                    String fileName = StringUtils.cleanPath(project.getDocument2Name());
+                                    FileUploadUtil.saveFile(uploadDir, document, fileName);
+                                }
+                                if (count == 2) {
+                                    String fileName = StringUtils.cleanPath(project.getDocument3Name());
+                                    FileUploadUtil.saveFile(uploadDir, document, fileName);
+                                }
+                                count++;
+                                String fileName = StringUtils.cleanPath(document.getOriginalFilename());
+                                FileUploadUtil.saveFile(uploadDir, document, fileName);
                             }
-                            if(count==1){
-                                String fileName=StringUtils.cleanPath(project.getDocument2Name());
-                                FileUploadUtil.saveFile(uploadDir,document,fileName);
-                            }
-                            if(count==2){
-                                String fileName=StringUtils.cleanPath(project.getDocument3Name());
-                                FileUploadUtil.saveFile(uploadDir,document,fileName);
-                            }
-                            count++;
-                            String fileName=StringUtils.cleanPath(document.getOriginalFilename());
-                            FileUploadUtil.saveFile(uploadDir,document,fileName);
                         }
                     }
                     response.setSuccess(true);
@@ -115,11 +135,12 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                     response.addError("fatal","Somthing went wrong");
                     return response;
                 }
+
             }
             else {
                 response.addError("fatal","Invalid professional ID");
-                return response;
             }
+            return response;
 
         }
         return response;

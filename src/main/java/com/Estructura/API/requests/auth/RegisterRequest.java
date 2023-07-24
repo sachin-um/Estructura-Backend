@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -25,6 +28,7 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     private String password;
     private Role role;
+    private MultipartFile ProfileImage;
     //Customer
     private String addressLine1;
     private String addressLine2;
@@ -43,6 +47,8 @@ public class RegisterRequest {
     private String businessContactNo;
     private String businessCategory;
     private String registrationNo;
+    //Renter
+    private String rentingCategory;
     //ServiceProvider
 
     private String businessAddressLine1;
@@ -51,7 +57,7 @@ public class RegisterRequest {
     private String businessDistrict;
     private String nic;
     private String serviceProviderType;
-    private String serviceAreas;
     private String specialization;
     private String qualification;
+    private List<String> serviceAreas;
 }
