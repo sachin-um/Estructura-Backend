@@ -81,29 +81,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                 PreviousProject project = previousProjectRepository.save(previousProject);
                 count = 0;
                 String uploadDir = "./project-files/" + project.getProfessional().getId() + "/" + project.getId();
-                if (projectRequest.getMainImage() != null) {
-                    FileUploadUtil.saveFile(uploadDir, projectRequest.getMainImage(), project.getMainImageName());
-                }
-                if (projectRequest.getExtraImages() != null) {
-                    for (MultipartFile file : projectRequest.getExtraImages()) {
-                        if (!file.isEmpty()) {
-                            if (count == 0) {
-                                String fileName = StringUtils.cleanPath(project.getExtraImage1Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            if (count == 1) {
-                                String fileName = StringUtils.cleanPath(project.getExtraImage2Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            if (count == 2) {
-                                String fileName = StringUtils.cleanPath(project.getExtraImage3Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            count++;
-
-                        }
-                    }
-                }
+                FileUploadUtil.saveImages(count, uploadDir, projectRequest.getMainImage(), project.getMainImageName(), projectRequest.getExtraImages(), project.getExtraImage1Name(), project.getExtraImage2Name(), project.getExtraImage3Name());
                 count = 0;
                 if (projectRequest.getDocuments() != null) {
                     for (MultipartFile document : projectRequest.getDocuments()) {
@@ -131,12 +109,11 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
             } else {
                 response.addError("fatal", "Invalid professional ID");
             }
-            return response;
         }
         else {
             response.addError("fatal", "Bad Request");
-            return response;
         }
+        return response;
     }
 
     @Override

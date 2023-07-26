@@ -9,6 +9,7 @@ public interface UserService {
     public User saveUser(User user);
     public List<User> getAllUsers();
     public Optional<User> findByEmail(String email);
+    public Optional<User> findById(Integer id);
 
     void resetUserPassword(User user, String newPassword);
 }
