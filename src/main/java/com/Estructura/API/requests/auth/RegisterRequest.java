@@ -47,8 +47,7 @@ public class RegisterRequest {
     private String businessContactNo;
     private String businessCategory;
     private String registrationNo;
-    //Renter
-    private String rentingCategory;
+
     //ServiceProvider
 
     private String businessAddressLine1;

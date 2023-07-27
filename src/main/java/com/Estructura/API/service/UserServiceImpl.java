@@ -35,6 +35,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public void resetUserPassword(User user, String newPassword) {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);

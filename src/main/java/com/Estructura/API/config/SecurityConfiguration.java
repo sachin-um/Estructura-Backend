@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/v1/projects/**")
                         .permitAll()
+                        .requestMatchers("/api/v1/blogs/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
                 )

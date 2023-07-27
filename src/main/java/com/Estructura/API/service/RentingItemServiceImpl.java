@@ -61,29 +61,7 @@ public class RentingItemServiceImpl implements RentingItemService{
                 RentingItem rentingItem=rentingItemRepository.save(item);
                 count=0;
                 String uploadDir = "./renting-item-files/" + rentingItem.getRenter().getId() + "/" + rentingItem.getId();
-                if (rentingItemRequest.getMainImage()!=null){
-                    FileUploadUtil.saveFile(uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName());
-                }
-                if (rentingItemRequest.getExtraImages()!=null) {
-                    for (MultipartFile file : rentingItemRequest.getExtraImages()) {
-                        if (!file.isEmpty()) {
-                            if (count == 0) {
-                                String fileName = StringUtils.cleanPath(rentingItem.getExtraImage1Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            if (count == 1) {
-                                String fileName = StringUtils.cleanPath(rentingItem.getExtraImage2Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            if (count == 2) {
-                                String fileName = StringUtils.cleanPath(rentingItem.getExtraImage3Name());
-                                FileUploadUtil.saveFile(uploadDir, file, fileName);
-                            }
-                            count++;
-
-                        }
-                    }
-                }
+                FileUploadUtil.saveImages(count, uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName(), rentingItemRequest.getExtraImages(), rentingItem.getExtraImage1Name(), rentingItem.getExtraImage2Name(), rentingItem.getExtraImage3Name());
                 response.setSuccess(true);
                 response.setId(rentingItem.getId());
                 return response;
@@ -96,6 +74,8 @@ public class RentingItemServiceImpl implements RentingItemService{
         }
         return response;
     }
+
+
 
     @Override
     public ResponseEntity<RentingItem> getPreviousItemById(Long id) {
@@ -133,12 +113,11 @@ public class RentingItemServiceImpl implements RentingItemService{
         if (item.isPresent()){
             response.setSuccess(false);
             response.setMessage("Somthing went wrong please try again");
-            return response;
 
         }
         else {
             response.setSuccess(true);
-            return response;
         }
+        return response;
     }
 }
