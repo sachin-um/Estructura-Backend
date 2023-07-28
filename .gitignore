@@ -1,7 +1,6 @@
 HELP.md
 target/
-project-files/
-blog-files/
+files/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

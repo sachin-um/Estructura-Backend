@@ -52,7 +52,7 @@ public class BlogServiceImpl implements BlogService{
                         saveBlogTag(theBlog,blogTag);
                     });
                 }
-                String uploadDir = "./blog-files/" + theBlog.getUser().getId() + "/" + theBlog.getId();
+                String uploadDir = "./files/blog-files/" + theBlog.getUser().getId() + "/" + theBlog.getId();
                 if (blogRequest.getMainImage() !=null){
                     FileUploadUtil.saveFile(uploadDir, blogRequest.getMainImage(), mainImageName);
                 }
