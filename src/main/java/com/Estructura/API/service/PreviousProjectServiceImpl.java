@@ -80,7 +80,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                 }
                 PreviousProject project = previousProjectRepository.save(previousProject);
                 count = 0;
-                String uploadDir = "./project-files/" + project.getProfessional().getId() + "/" + project.getId();
+                String uploadDir = "./files/project-files/" + project.getProfessional().getId() + "/" + project.getId();
                 FileUploadUtil.saveImages(count, uploadDir, projectRequest.getMainImage(), project.getMainImageName(), projectRequest.getExtraImages(), project.getExtraImage1Name(), project.getExtraImage2Name(), project.getExtraImage3Name());
                 count = 0;
                 if (projectRequest.getDocuments() != null) {

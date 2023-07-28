@@ -60,7 +60,7 @@ public class RentingItemServiceImpl implements RentingItemService{
                 }
                 RentingItem rentingItem=rentingItemRepository.save(item);
                 count=0;
-                String uploadDir = "./renting-item-files/" + rentingItem.getRenter().getId() + "/" + rentingItem.getId();
+                String uploadDir = "./files/renting-item-files/" + rentingItem.getRenter().getId() + "/" + rentingItem.getId();
                 FileUploadUtil.saveImages(count, uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName(), rentingItemRequest.getExtraImages(), rentingItem.getExtraImage1Name(), rentingItem.getExtraImage2Name(), rentingItem.getExtraImage3Name());
                 response.setSuccess(true);
                 response.setId(rentingItem.getId());
