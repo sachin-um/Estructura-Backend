@@ -3,6 +3,9 @@ package com.Estructura.API.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -50,6 +53,9 @@ public class RentingItem {
     private String ExtraImage3;
     @Column(nullable = true)
     private String ExtraImage3Name;
+    @Column( nullable = false, updatable = false)
+    @CreationTimestamp
+    private Date dateAdded;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id")
