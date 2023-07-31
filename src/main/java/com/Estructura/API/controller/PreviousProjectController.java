@@ -52,14 +52,7 @@ public class PreviousProjectController {
     public GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(
             @PathVariable("projectId") int projectId,
             @ModelAttribute ProjectRequest projectRequest) throws IOException {
-        GenericAddOrUpdateResponse<ProjectRequest> response=new GenericAddOrUpdateResponse<>();
-        if (previousProjectService.getPreviousProjectById(projectId).getStatusCode().is2xxSuccessful()){
-            return previousProjectService.saveOrUpdateProject(projectRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
+        return previousProjectService.updatePreviousProject(projectRequest,projectId);
 
     }
 //
