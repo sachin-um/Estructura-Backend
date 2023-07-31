@@ -1,11 +1,8 @@
 package com.Estructura.API.controller;
 
 import com.Estructura.API.model.Blog;
-import com.Estructura.API.model.PreviousProject;
-import com.Estructura.API.model.Professional;
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.blogs.BlogRequest;
-import com.Estructura.API.requests.projects.ProjectRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.service.BlogService;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -58,20 +54,7 @@ public class BlogController {
             @PathVariable("blogId") Long blogId,
             @ModelAttribute BlogRequest blogRequest) throws IOException {
         GenericAddOrUpdateResponse<BlogRequest> response=new GenericAddOrUpdateResponse<>();
-        var existingBlog = blogService.getBlogById(blogId);
-        if (existingBlog.getStatusCode().is2xxSuccessful()){
-            if(!Objects.requireNonNull(existingBlog.getBody())
-                            .getCreatedBy().equals(blogRequest.getUserId())) {
-                response.addError("fatal","mismatched user ids!");
-                return  response;
-            }
-            return blogService.saveOrUpdateBlog(blogRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
-
+        return blogService.updateBlog(blogRequest,blogId);
     }
 
     @DeleteMapping("/delete/{blogId}") // generic bool

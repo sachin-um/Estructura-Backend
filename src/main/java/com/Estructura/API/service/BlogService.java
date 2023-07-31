@@ -13,6 +13,7 @@ import java.util.Set;
 
 public interface BlogService {
     public GenericAddOrUpdateResponse<BlogRequest> saveOrUpdateBlog(@ModelAttribute BlogRequest blogRequest) throws IOException;
+    public GenericAddOrUpdateResponse<BlogRequest> updateBlog(@ModelAttribute BlogRequest blogRequest,long blogId) throws IOException;
     public ResponseEntity<Blog> getBlogById(Long id);
     public ResponseEntity<List<Blog>> getBlogsbyUser(User user);
 
