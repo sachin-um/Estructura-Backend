@@ -1,11 +1,8 @@
 package com.Estructura.API.controller;
 
 import com.Estructura.API.model.Blog;
-import com.Estructura.API.model.PreviousProject;
-import com.Estructura.API.model.Professional;
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.blogs.BlogRequest;
-import com.Estructura.API.requests.projects.ProjectRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.service.BlogService;
@@ -57,14 +54,7 @@ public class BlogController {
             @PathVariable("blogId") Long blogId,
             @ModelAttribute BlogRequest blogRequest) throws IOException {
         GenericAddOrUpdateResponse<BlogRequest> response=new GenericAddOrUpdateResponse<>();
-        if (blogService.getBlogById(blogId).getStatusCode().is2xxSuccessful()){
-            return blogService.saveOrUpdateBlog(blogRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
-
+        return blogService.updateBlog(blogRequest,blogId);
     }
 
     @DeleteMapping("/delete/{blogId}") // generic bool

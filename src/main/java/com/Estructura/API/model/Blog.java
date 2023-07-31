@@ -27,9 +27,9 @@ public class Blog {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String MainImage;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String MainImageName;
 
     @Column( nullable = false, updatable = false)
@@ -43,4 +43,6 @@ public class Blog {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    private Integer createdBy;
 }
