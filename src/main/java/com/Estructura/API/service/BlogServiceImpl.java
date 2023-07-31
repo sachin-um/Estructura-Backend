@@ -39,6 +39,7 @@ public class BlogServiceImpl implements BlogService{
                         .title(blogRequest.getTitle())
                         .content(blogRequest.getContent())
                         .user(user.get())
+                        .createdBy(blogRequest.getUserId())
                         .build();
 
                 if (mainImageName != null) {
