@@ -3,6 +3,7 @@ package com.Estructura.API.service;
 import static com.Estructura.API.model.Role.ADMIN;
 import static com.Estructura.API.model.Role.ARCHITECT;
 import static com.Estructura.API.model.Role.CUSTOMER;
+import static com.Estructura.API.model.Role.RENTER;
 import static com.Estructura.API.model.Role.RETAILOWNER;
 
 import java.io.IOException;
@@ -15,18 +16,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.model.Admin;
 import com.Estructura.API.model.Architect;
 import com.Estructura.API.model.Customer;
+import com.Estructura.API.model.Professional;
 import com.Estructura.API.model.Qualification;
+import com.Estructura.API.model.Renter;
 import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.model.ServiceArea;
 import com.Estructura.API.model.Specialization;
 import com.Estructura.API.model.Token;
 import com.Estructura.API.model.TokenType;
 import com.Estructura.API.model.User;
 import com.Estructura.API.repository.QualificationRepository;
+import com.Estructura.API.repository.ServiceAreaRepository;
 import com.Estructura.API.repository.SpecializationRepository;
 import com.Estructura.API.repository.TokenRepository;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
@@ -34,6 +40,7 @@ import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RefreshTokenResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
+import com.Estructura.API.utils.FileUploadUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +54,7 @@ public class AuthenticationService {
     private final CustomerService customerService;
     private final AdminService adminService;
     private final RetailStoreService retailStoreService;
+    private final RenterService renterService;
     private final ArchitectService architectService;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -54,6 +62,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final QualificationRepository qualificationRepository;
     private final SpecializationRepository specializationRepository;
+    private final ServiceAreaRepository serviceAreaRepository;
 
     public RegisterResponse register(RegisterRequest request) {
         var response = new RegisterResponse();
@@ -71,6 +80,10 @@ public class AuthenticationService {
             List<String> qualifications;
             List<String> specializations=null;
             List<String> serviceAreas;
+            String ProfileImageName=null;
+            if(request.getProfileImage()!=null){
+                ProfileImageName = StringUtils.cleanPath(request.getProfileImage().getOriginalFilename());
+            }
             if(request.getRole().equals(CUSTOMER)){
                 Customer customer=Customer.builder()
                         .firstname(request.getFirstname())
@@ -115,8 +128,34 @@ public class AuthenticationService {
                         .city(request.getBusinessCity())
                         .district(request.getBusinessDistrict())
                         .build();
+                if (ProfileImageName!=null){
+                    retailStore.setProfileImage(ProfileImageName);
+                    retailStore.setProfileImageName(FileUploadUtil.generateFileName(ProfileImageName));
+                }
                 user=retailStore;
                 savedUser=retailStoreService.saveRetailStore(retailStore);
+            }
+            else if(request.getRole().equals(RENTER)){
+                Renter renter=Renter.builder()
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .businessName(request.getBusinessName())
+                        .businessContactNo(request.getBusinessContactNo())
+                        .registrationNo(request.getRegistrationNo())
+                        .addressLine1(request.getBusinessAddressLine1())
+                        .addressLine2(request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .build();
+                if (ProfileImageName!=null){
+                    renter.setProfileImage(ProfileImageName);
+                    renter.setProfileImageName(FileUploadUtil.generateFileName(ProfileImageName));
+                }
+                user=renter;
+                savedUser=renterService.saveRenter(renter);
             }
             else if (request.getRole().equals(ARCHITECT)){
                 Architect architect=Architect.builder()
@@ -133,6 +172,10 @@ public class AuthenticationService {
                         .district(request.getBusinessDistrict())
                         .sLIARegNumber(request.getSLIARegNumber())
                         .build();
+                if (ProfileImageName!=null){
+                    architect.setProfileImage(ProfileImageName);
+                    architect.setProfileImageName(FileUploadUtil.generateFileName(ProfileImageName));
+                }
                 user=architect;
                 savedUser=architectService.saveArchitect(architect);
 
@@ -153,6 +196,12 @@ public class AuthenticationService {
                 User finalSavedUser = savedUser;
                 qualifications.forEach(qualification->{
                     saveQualification(finalSavedUser,qualification);
+                });
+            }
+            if (request.getServiceAreas()!=null){
+                User finalSavedUser = savedUser;
+                request.getServiceAreas().forEach(serviceArea->{
+                    saveServiceArea(finalSavedUser,serviceArea);
                 });
             }
             var jwtToken= jwtService.generateToken(user);
@@ -232,6 +281,15 @@ public class AuthenticationService {
             theQualification.setArchitect((Architect) user);
         }
         qualificationRepository.save(theQualification);
+    }
+    private void saveServiceArea(User user,String serviceArea){
+        var theServiceArea=ServiceArea.builder()
+                .serviceArea(serviceArea)
+                .build();
+        if (user.getRole().equals(ARCHITECT)){
+            theServiceArea.setProfessional((Professional) user);
+        }
+        serviceAreaRepository.save(theServiceArea);
     }
     private void saveSpecialization(User user,String specialization){
         var theSpecialization=Specialization.builder()

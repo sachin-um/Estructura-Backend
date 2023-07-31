@@ -4,6 +4,8 @@ import static com.Estructura.API.model.Role.ADMIN;
 import static com.Estructura.API.model.Role.ARCHITECT;
 import static com.Estructura.API.model.Role.RETAILOWNER;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -60,6 +62,7 @@ public class EstructuraAPIApplication {
 					.businessDistrict("Kaluthra")
 					.sLIARegNumber("SLC22393")
 					.qualification("Item1,Item2")
+					.serviceAreas(List.of("Colombo", "Gampaha", "Kaluthra"))
 					.build();
 			System.out.println("Architect:" + service.register(architect).getAccessToken());
 			System.out.println("Admin token :" + service.register(admin).getAccessToken());

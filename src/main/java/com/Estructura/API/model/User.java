@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Default
     private boolean isVerified = false;
 
+    private String ProfileImage;
+    private String ProfileImageName;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -46,6 +49,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VerificationToken> verificationTokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Blog> blog;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

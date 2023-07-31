@@ -32,12 +32,19 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/v1/retailitems/all")
                         .permitAll()
+                        .requestMatchers("/api/v1/projects/**")
+                        .permitAll()
+                        .requestMatchers("/api/v1/blogs/**")
+                        .permitAll()
+                        .requestMatchers("/files/blog-files/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
                 .sessionManagement(sess->sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .authenticationProvider(authenticationProvider)
                 .logout(l->l
                         .logoutUrl("/api/v1/auth/logout")

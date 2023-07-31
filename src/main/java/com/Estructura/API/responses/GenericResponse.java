@@ -19,3 +19,4 @@ public class GenericResponse<RequestClass> extends ValidatedResponse<RequestClas
     @JsonProperty("message")
     private String message;
 }
+// long bool etc keepayak oone

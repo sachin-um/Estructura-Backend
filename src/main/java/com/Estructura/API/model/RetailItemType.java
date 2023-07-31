@@ -5,5 +5,6 @@ public enum RetailItemType {
     FURNITURE,
     BATHWARE,
     HARDWARE,
-    GARDENWARE
+    GARDENWARE,
+    LIGHTING
 }
