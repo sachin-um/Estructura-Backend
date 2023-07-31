@@ -34,11 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final  String userEmail;
         System.out.println(request.getRequestURI());
-//        if(request.getRequestURI().contains("/api/v1/projects")){
-//
-//            filterChain.doFilter(request,response);
-//            return;
-//        }
+        if(request.getRequestURI().equals("/api/v1/auth/refresh-token")){
+            System.out.println("refresh token");
+            filterChain.doFilter(request,response);
+            return;
+        }
         if (authHeader==null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response);
             return;
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var isTokenValid=tokenRepository.findByToken(jwt)
                     .map(t->!t.isExpired() && !t.isRevoked())
                     .orElse(false);
-            if (jwtService.isTokenValid(jwt,userDetails) && isTokenValid){
+            if (isTokenValid && jwtService.isTokenValid(jwt,userDetails)){
                 UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

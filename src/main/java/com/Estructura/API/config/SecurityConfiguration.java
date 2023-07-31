@@ -53,9 +53,9 @@ public class SecurityConfiguration {
                         .logoutSuccessHandler((request, response, authentication) ->
                                 SecurityContextHolder.clearContext())
                 )
-                .formLogin(Customizer.withDefaults())
-                .exceptionHandling(e->e.accessDeniedPage("/access-denied"))
-                .oauth2Login(l->l.defaultSuccessUrl("/api/v1/retailitems/all"))
+                // .formLogin(Customizer.withDefaults())
+                // .exceptionHandling(e->e.accessDeniedPage("/access-denied"))
+                // .oauth2Login(l->l.defaultSuccessUrl("/api/v1/retailitems/all"))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
