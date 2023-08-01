@@ -1,6 +1,5 @@
 package com.Estructura.API.responses.auth;
 
-import com.Estructura.API.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -13,8 +12,6 @@ public class RefreshTokenResponse {
     private boolean success;
     @JsonProperty("error_message")
     private String message;
-    @JsonProperty("role")
-    private Role role;
     @JsonProperty("access_token")
     private String access_token;
     @JsonProperty("refresh_token")

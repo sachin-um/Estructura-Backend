@@ -53,7 +53,6 @@ public class BlogController {
     public GenericAddOrUpdateResponse<BlogRequest> updateBlog(
             @PathVariable("blogId") Long blogId,
             @ModelAttribute BlogRequest blogRequest) throws IOException {
-        GenericAddOrUpdateResponse<BlogRequest> response=new GenericAddOrUpdateResponse<>();
         return blogService.updateBlog(blogRequest,blogId);
     }
 
