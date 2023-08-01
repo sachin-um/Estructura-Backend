@@ -55,13 +55,7 @@ public class RentingItemController {
             @PathVariable("itemId") Long itemId,
             @ModelAttribute RentingItemRequest rentingItemRequest) throws IOException {
         GenericAddOrUpdateResponse<RentingItemRequest> response=new GenericAddOrUpdateResponse<>();
-        if (rentingItemService.getItemById(itemId).getStatusCode().is2xxSuccessful()){
-            return rentingItemService.saveOrUpdateItem(rentingItemRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
+       return rentingItemService.updateItem(rentingItemRequest,itemId);
 
     }
     //
