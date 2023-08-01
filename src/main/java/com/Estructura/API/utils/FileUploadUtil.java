@@ -35,7 +35,8 @@ public class FileUploadUtil {
         return UUID.randomUUID().toString() + "." + extension;
     }
 
-    public static void saveImages(int count, String uploadDir, MultipartFile mainImage, String mainImageName2, List<MultipartFile> extraImages, String extraImage1Name, String extraImage2Name, String extraImage3Name) throws IOException {
+    public static void saveImages(String uploadDir, MultipartFile mainImage, String mainImageName2, List<MultipartFile> extraImages, String extraImage1Name, String extraImage2Name, String extraImage3Name) throws IOException {
+        int count=0;
         if (mainImage !=null){
             FileUploadUtil.saveFile(uploadDir, mainImage, mainImageName2);
         }
