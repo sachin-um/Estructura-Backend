@@ -45,4 +45,6 @@ public class Blog {
     private User user;
 
     private Integer createdBy;
+
+    private String creatorName;
 }

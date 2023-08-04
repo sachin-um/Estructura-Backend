@@ -38,6 +38,7 @@ public class BlogServiceImpl implements BlogService{
                         .content(blogRequest.getContent())
                         .user(user.get())
                         .createdBy(blogRequest.getUserId())
+                        .creatorName(user.get().getFirstname() + " " + user.get().getLastname())
                         .build();
 
                 Blog theBlog=blogRepository.save(blog);
