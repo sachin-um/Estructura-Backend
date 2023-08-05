@@ -51,7 +51,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request,
-            final HttpServletRequest servletRequest) {
+            final HttpServletRequest servletRequest) throws IOException {
         RegisterResponse response = service.register(request);
 
         // Only send email with verify link if saving user is successful

@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,6 +18,7 @@ public class ServiceArea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String serviceArea;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
     private Professional professional;
