@@ -54,6 +54,16 @@ public class RentingItemServiceImpl implements RentingItemService{
         return response;
     }
 
+    @Override
+    public ResponseEntity<List<RentingItem>> getAllItem() {
+        List<RentingItem> rentingItems=rentingItemRepository.findAll();
+        if (!rentingItems.isEmpty()){
+            return ResponseEntity.ok(rentingItems);
+        }
+        else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 
 
     @Override
