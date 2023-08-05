@@ -30,7 +30,7 @@ public class RentingItemController {
     }
     @GetMapping("/item/{itemId}") // resp entity <Project>
     public ResponseEntity<RentingItem> RentingItem(@PathVariable("itemId") Long itemId){
-        return rentingItemService.getPreviousItemById(itemId);
+        return rentingItemService.getItemById(itemId);
 
 
     }
@@ -55,20 +55,14 @@ public class RentingItemController {
             @PathVariable("itemId") Long itemId,
             @ModelAttribute RentingItemRequest rentingItemRequest) throws IOException {
         GenericAddOrUpdateResponse<RentingItemRequest> response=new GenericAddOrUpdateResponse<>();
-        if (rentingItemService.getPreviousItemById(itemId).getStatusCode().is2xxSuccessful()){
-            return rentingItemService.saveOrUpdateItem(rentingItemRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
+       return rentingItemService.updateItem(rentingItemRequest,itemId);
 
     }
     //
     @DeleteMapping("/delete/{itemId}") // generic bool
     public GenericDeleteResponse<Long> deleteItem(@PathVariable("itemId") Long itemId) {
         GenericDeleteResponse<Long> response=new GenericDeleteResponse<>();
-        ResponseEntity<RentingItem> item=rentingItemService.getPreviousItemById(itemId);
+        ResponseEntity<RentingItem> item=rentingItemService.getItemById(itemId);
 
         if (item.getStatusCode().is2xxSuccessful()) {
             return rentingItemService.deleteItem(item.getBody());
