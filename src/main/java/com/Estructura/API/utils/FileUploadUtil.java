@@ -1,7 +1,7 @@
 package com.Estructura.API.utils;
 
-import com.Estructura.API.model.PreviousProject;
-import com.Estructura.API.requests.projects.ProjectRequest;
+import com.Estructura.API.model.RentingItem;
+import com.Estructura.API.requests.rentingItems.RentingItemRequest;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +35,7 @@ public class FileUploadUtil {
         return UUID.randomUUID().toString() + "." + extension;
     }
 
-    public static void saveImages(String uploadDir, MultipartFile mainImage, String mainImageName2, List<MultipartFile> extraImages, String extraImage1Name, String extraImage2Name, String extraImage3Name) throws IOException {
+    public static void uploadImages(String uploadDir, MultipartFile mainImage, String mainImageName2, List<MultipartFile> extraImages, String extraImage1Name, String extraImage2Name, String extraImage3Name) throws IOException {
         int count=0;
         if (mainImage !=null){
             FileUploadUtil.saveFile(uploadDir, mainImage, mainImageName2);

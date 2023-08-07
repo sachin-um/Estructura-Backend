@@ -2,13 +2,20 @@ package com.Estructura.API.controller;
 
 import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.model.RetailItemType;
+import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.requests.retailItems.RetailItemRequest;
+import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.service.RetailItemService;
+import com.Estructura.API.service.RetailStoreService;
 import com.sun.mail.imap.protocol.INTERNALDATE;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -17,50 +24,77 @@ import java.util.List;
 public class RetailItemController {
 
     private final RetailItemService retailItemService;
+    private final RetailStoreService retailStoreService;
+    @GetMapping("/add")
+    public GenericAddOrUpdateResponse<RetailItemRequest> addRetaiItem(
+            @ModelAttribute RetailItemRequest retailItemRequest) throws IOException {
+        return retailItemService.saveItem(retailItemRequest);
+    }
 
     @GetMapping("/all")
-    List<RetailItem> fetchAllRetailItems() {
-        return retailItemService.fetchAll();
+    public ResponseEntity<List<RetailItem>> getAllItems(){
+        return retailItemService.getAllItems();
     }
 
-    @GetMapping("/type/{type}")
-    List<RetailItem> fetchByType(@PathVariable("type") String type) {
-        RetailItemType retailItemType;
-        switch (type.toUpperCase()) {
-            case "FURNITURE" -> retailItemType = RetailItemType.FURNITURE;
-            case "HARDWARE" -> retailItemType = RetailItemType.HARDWARE;
-            case "GARDENWARE" -> retailItemType = RetailItemType.GARDENWARE;
-            case "BATHWARE" -> retailItemType = RetailItemType.BATHWARE;
-            case "LIGHTING" -> retailItemType = RetailItemType.LIGHTING;
-            default -> {
-                // Handle invalid type
-                return Collections.emptyList();
-            }
+    @GetMapping("/category/{type}")
+    public ResponseEntity<List<RetailItem>> getAllItemsByType(@PathVariable("type") RetailItemType type){
+        return retailItemService.getItemsByType(type);
+    }
+
+    @GetMapping("/store/{store_id}")
+    public ResponseEntity<List<RetailItem>> getAllItemByRetailStore(@PathVariable("store_id") int id){
+        Optional<RetailStore> retailStore=retailStoreService.findById(id);
+        if (retailStore.isPresent()){
+            return retailItemService.getItemsByRetailStore(retailStore.get());
         }
-        return retailItemService.fetchByType(retailItemType);
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
-
-    @GetMapping("/id/{id}")
-    List<RetailItem> fetchByID(@PathVariable("id") Long id){
-        System.out.println("ID: " + id);
-        return retailItemService.fetchByID(id);
-    }
-
-    @PostMapping("/additem")
-    public void addRetailItem(@RequestBody RetailItem retailItem) {
-
-        RetailItem obj1 = new RetailItem(
-                RetailItemType.GARDENWARE,
-                "Plant",
-                1999.99,
-                "plant.jpg",
-                "Comfortable plant for your living room",
-                10
-        );
-
-        System.out.println(obj1.getDescription());
-        retailItemService.addRetailItem(retailItem);
-        retailItemService.addRetailItem(obj1);
-    }
+//
+//    @GetMapping("/all")
+//    List<RetailItem> fetchAllRetailItems() {
+//        return retailItemService.fetchAll();
+//    }
+//
+//    @GetMapping("/type/{type}")
+//    List<RetailItem> fetchByType(@PathVariable("type") String type) {
+//        RetailItemType retailItemType;
+//        switch (type.toUpperCase()) {
+//            case "FURNITURE" -> retailItemType = RetailItemType.FURNITURE;
+//            case "HARDWARE" -> retailItemType = RetailItemType.HARDWARE;
+//            case "GARDENWARE" -> retailItemType = RetailItemType.GARDENWARE;
+//            case "BATHWARE" -> retailItemType = RetailItemType.BATHWARE;
+//            case "LIGHTING" -> retailItemType = RetailItemType.LIGHTING;
+//            default -> {
+//                // Handle invalid type
+//                return Collections.emptyList();
+//            }
+//        }
+//        return retailItemService.fetchByType(retailItemType);
+//    }
+//
+//    @GetMapping("/id/{id}")
+//    List<RetailItem> fetchByID(@PathVariable("id") Long id){
+//        System.out.println("ID: " + id);
+//        return retailItemService.fetchByID(id);
+//    }
+//
+//    @PostMapping("/additem")
+//    public void addRetailItem(@RequestBody RetailItem retailItem) {
+//
+//        RetailItem obj1 = new RetailItem(
+//                RetailItemType.GARDENWARE,
+//                "Plant",
+//                1999.99,
+//                "plant.jpg",
+//                "Comfortable plant for your living room",
+//                10
+//        );
+//
+//        System.out.println(obj1.getDescription());
+//        retailItemService.addRetailItem(retailItem);
+//        retailItemService.addRetailItem(obj1);
+//    }
 
 }

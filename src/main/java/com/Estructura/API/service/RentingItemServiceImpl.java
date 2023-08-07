@@ -40,15 +40,14 @@ public class RentingItemServiceImpl implements RentingItemService{
 
                 RentingItem rentingItem=rentingItemRepository.save(item);
                 String uploadDir = "./files/renting-item-files/" + rentingItem.getRenter().getId() + "/" + rentingItem.getId();
-                FileUploadUtil.saveImages(uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName(), rentingItemRequest.getExtraImages(), rentingItem.getExtraImage1Name(), rentingItem.getExtraImage2Name(), rentingItem.getExtraImage3Name());
+                FileUploadUtil.uploadImages(uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName(), rentingItemRequest.getExtraImages(), rentingItem.getExtraImage1Name(), rentingItem.getExtraImage2Name(), rentingItem.getExtraImage3Name());
                 response.setSuccess(true);
                 response.setId(rentingItem.getId());
-                return response;
             }
             else {
                 response.addError("fatal","Invalid professional ID");
-                return response;
             }
+            return response;
 
         }
         return response;
@@ -88,7 +87,7 @@ public class RentingItemServiceImpl implements RentingItemService{
                 saveImages(rentingItemRequest, item);
                 item=rentingItemRepository.save(item);
                 String uploadDir = "./files/renting-item-files/" + item.getRenter().getId() + "/" + item.getId();
-                FileUploadUtil.saveImages(uploadDir, rentingItemRequest.getMainImage(), item.getMainImageName(), rentingItemRequest.getExtraImages(), item.getExtraImage1Name(), item.getExtraImage2Name(), item.getExtraImage3Name());
+                FileUploadUtil.uploadImages(uploadDir, rentingItemRequest.getMainImage(), item.getMainImageName(), rentingItemRequest.getExtraImages(), item.getExtraImage1Name(), item.getExtraImage2Name(), item.getExtraImage3Name());
                 response.setSuccess(true);
                 response.setId(item.getId());
             }

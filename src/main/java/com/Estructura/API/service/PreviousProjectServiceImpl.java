@@ -87,7 +87,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
     private void uploadImagesAndDocuments(ProjectRequest projectRequest, PreviousProject project) throws IOException {
         int count= 0;
         String uploadDir = "./files/project-files/" + project.getProfessional().getId() + "/" + project.getId();
-        FileUploadUtil.saveImages(uploadDir, projectRequest.getMainImage(), project.getMainImageName(), projectRequest.getExtraImages(), project.getExtraImage1Name(), project.getExtraImage2Name(), project.getExtraImage3Name());
+        FileUploadUtil.uploadImages(uploadDir, projectRequest.getMainImage(), project.getMainImageName(), projectRequest.getExtraImages(), project.getExtraImage1Name(), project.getExtraImage2Name(), project.getExtraImage3Name());
         if (projectRequest.getDocuments() != null) {
             for (MultipartFile document : projectRequest.getDocuments()) {
                 if (!document.isEmpty()) {
