@@ -34,8 +34,12 @@ public class RentingItemController {
 
 
     }
+    @GetMapping("/all")
+    public ResponseEntity<List<RentingItem>> getAllRentingItem(){
+        return rentingItemService.getAllItem();
+    }
     //
-    @GetMapping("/all/{userid}") // resp ent <List<Project
+    @GetMapping("/allByUser/{userid}") // resp ent <List<Project
     public ResponseEntity<List<RentingItem>> getRentingItems(@PathVariable("userid") int userid){
         Optional<Renter> renter=renterService.findById(userid);
         if (renter.isPresent()){
@@ -45,7 +49,7 @@ public class RentingItemController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/all/{category}") // resp ent <List<Project
+    @GetMapping("/allbyCategory/{category}") // resp ent <List<Project
     public ResponseEntity<List<RentingItem>> getAllRentingItemsByCategory(@PathVariable("category") RentingCategory category){
         return rentingItemService.getItemsbyCategory(category);
     }
