@@ -67,6 +67,8 @@ public class PreviousProject {
     @Column(nullable = true)
     private String Document3Name;
 
+    private Integer createdBy;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
     @JsonIgnore

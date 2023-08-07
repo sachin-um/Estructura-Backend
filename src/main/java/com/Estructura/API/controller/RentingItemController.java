@@ -30,12 +30,16 @@ public class RentingItemController {
     }
     @GetMapping("/item/{itemId}") // resp entity <Project>
     public ResponseEntity<RentingItem> RentingItem(@PathVariable("itemId") Long itemId){
-        return rentingItemService.getPreviousItemById(itemId);
+        return rentingItemService.getItemById(itemId);
 
 
     }
+    @GetMapping("/all")
+    public ResponseEntity<List<RentingItem>> getAllRentingItem(){
+        return rentingItemService.getAllItem();
+    }
     //
-    @GetMapping("/all/{userid}") // resp ent <List<Project
+    @GetMapping("/allByUser/{userid}") // resp ent <List<Project
     public ResponseEntity<List<RentingItem>> getRentingItems(@PathVariable("userid") int userid){
         Optional<Renter> renter=renterService.findById(userid);
         if (renter.isPresent()){
@@ -45,7 +49,7 @@ public class RentingItemController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/all/{category}") // resp ent <List<Project
+    @GetMapping("/allbyCategory/{category}") // resp ent <List<Project
     public ResponseEntity<List<RentingItem>> getAllRentingItemsByCategory(@PathVariable("category") RentingCategory category){
         return rentingItemService.getItemsbyCategory(category);
     }
@@ -55,20 +59,14 @@ public class RentingItemController {
             @PathVariable("itemId") Long itemId,
             @ModelAttribute RentingItemRequest rentingItemRequest) throws IOException {
         GenericAddOrUpdateResponse<RentingItemRequest> response=new GenericAddOrUpdateResponse<>();
-        if (rentingItemService.getPreviousItemById(itemId).getStatusCode().is2xxSuccessful()){
-            return rentingItemService.saveOrUpdateItem(rentingItemRequest);
-        }
-        else {
-            response.addError("fatal","project not found");
-            return response;
-        }
+       return rentingItemService.updateItem(rentingItemRequest,itemId);
 
     }
     //
     @DeleteMapping("/delete/{itemId}") // generic bool
     public GenericDeleteResponse<Long> deleteItem(@PathVariable("itemId") Long itemId) {
         GenericDeleteResponse<Long> response=new GenericDeleteResponse<>();
-        ResponseEntity<RentingItem> item=rentingItemService.getPreviousItemById(itemId);
+        ResponseEntity<RentingItem> item=rentingItemService.getItemById(itemId);
 
         if (item.getStatusCode().is2xxSuccessful()) {
             return rentingItemService.deleteItem(item.getBody());

@@ -27,10 +27,7 @@ public class RentingItemServiceImpl implements RentingItemService{
         if (response.checkValidity(rentingItemRequest)){
             Optional<Renter> renter=renterService.findById(rentingItemRequest.getRenterId());
             if (renter.isPresent()){
-                String mainImageName=null;
-                if (rentingItemRequest.getMainImage()!=null) {
-                    mainImageName = StringUtils.cleanPath(rentingItemRequest.getMainImage().getOriginalFilename());
-                }
+
                 RentingItem item=RentingItem.builder()
                         .name(rentingItemRequest.getName())
                         .description(rentingItemRequest.getDescription())
@@ -39,27 +36,9 @@ public class RentingItemServiceImpl implements RentingItemService{
                         .scale(rentingItemRequest.getScale())
                         .renter(renter.get())
                         .build();
-                if (mainImageName!=null){
-                    item.setMainImage(mainImageName);
-                    item.setMainImageName(FileUploadUtil.generateFileName(mainImageName));
-                }
-                int count=0;
-                if (rentingItemRequest.getExtraImages()!=null) {
-                    for (MultipartFile file : rentingItemRequest.getExtraImages()) {
-                        if (!file.isEmpty()) {
-                            String extraImageName = StringUtils.cleanPath(file.getOriginalFilename());
-                            if (count == 0) item.setExtraImage1(extraImageName);
-                            item.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
-                            if (count == 1) item.setExtraImage2(extraImageName);
-                            item.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
-                            if (count == 3) item.setExtraImage3(extraImageName);
-                            item.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
-                            count++;
-                        }
-                    }
-                }
+                saveImages(rentingItemRequest, item);
+
                 RentingItem rentingItem=rentingItemRepository.save(item);
-                count=0;
                 String uploadDir = "./files/renting-item-files/" + rentingItem.getRenter().getId() + "/" + rentingItem.getId();
                 FileUploadUtil.saveImages(uploadDir, rentingItemRequest.getMainImage(), rentingItem.getMainImageName(), rentingItemRequest.getExtraImages(), rentingItem.getExtraImage1Name(), rentingItem.getExtraImage2Name(), rentingItem.getExtraImage3Name());
                 response.setSuccess(true);
@@ -75,10 +54,20 @@ public class RentingItemServiceImpl implements RentingItemService{
         return response;
     }
 
+    @Override
+    public ResponseEntity<List<RentingItem>> getAllItem() {
+        List<RentingItem> rentingItems=rentingItemRepository.findAll();
+        if (!rentingItems.isEmpty()){
+            return ResponseEntity.ok(rentingItems);
+        }
+        else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 
 
     @Override
-    public ResponseEntity<RentingItem> getPreviousItemById(Long id) {
+    public ResponseEntity<RentingItem> getItemById(Long id) {
         Optional<RentingItem> item= rentingItemRepository.findById(id);
         return item.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -91,6 +80,58 @@ public class RentingItemServiceImpl implements RentingItemService{
         }
         else {
             return ResponseEntity.noContent().build();
+        }
+    }
+
+    @Override
+    public GenericAddOrUpdateResponse<RentingItemRequest> updateItem(RentingItemRequest rentingItemRequest, Long id) throws IOException {
+        GenericAddOrUpdateResponse<RentingItemRequest> response=new GenericAddOrUpdateResponse<>();
+        if (response.checkValidity(rentingItemRequest)){
+            Optional<RentingItem> existingItem=rentingItemRepository.findById(id);
+            if (existingItem.isPresent()){
+                RentingItem item=existingItem.get();
+                item.setName(rentingItemRequest.getName());
+                item.setDescription(rentingItemRequest.getDescription());
+                item.setScale(rentingItemRequest.getScale());
+                item.setPrice(rentingItemRequest.getPrice());
+                item.setCategory(rentingItemRequest.getCategory());
+                saveImages(rentingItemRequest, item);
+                item=rentingItemRepository.save(item);
+                String uploadDir = "./files/renting-item-files/" + item.getRenter().getId() + "/" + item.getId();
+                FileUploadUtil.saveImages(uploadDir, rentingItemRequest.getMainImage(), item.getMainImageName(), rentingItemRequest.getExtraImages(), item.getExtraImage1Name(), item.getExtraImage2Name(), item.getExtraImage3Name());
+                response.setSuccess(true);
+                response.setId(item.getId());
+            }
+            else {
+                response.addError("fatal","Item doesn't exist");
+            }
+        }
+        return response;
+    }
+
+    private void saveImages(RentingItemRequest rentingItemRequest, RentingItem item) {
+        String mainImageName=null;
+        if (rentingItemRequest.getMainImage()!=null) {
+            mainImageName = StringUtils.cleanPath(rentingItemRequest.getMainImage().getOriginalFilename());
+        }
+        if (mainImageName!=null){
+            item.setMainImage(mainImageName);
+            item.setMainImageName(FileUploadUtil.generateFileName(mainImageName));
+        }
+        int count=0;
+        if (rentingItemRequest.getExtraImages()!=null) {
+            for (MultipartFile file : rentingItemRequest.getExtraImages()) {
+                if (!file.isEmpty()) {
+                    String extraImageName = StringUtils.cleanPath(file.getOriginalFilename());
+                    if (count == 0) item.setExtraImage1(extraImageName);
+                    item.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
+                    if (count == 1) item.setExtraImage2(extraImageName);
+                    item.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
+                    if (count == 3) item.setExtraImage3(extraImageName);
+                    item.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                    count++;
+                }
+            }
         }
     }
 

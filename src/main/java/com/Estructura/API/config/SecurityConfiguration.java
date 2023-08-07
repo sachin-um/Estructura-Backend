@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers(("/api/v1/retailStore/**"))
                         .permitAll()
                         .requestMatchers(("/api/v1/users/**"))
+                        .requestMatchers(("/api/v1/renting-items/**"))
                         .permitAll()
                         .anyRequest()
                         .authenticated()
