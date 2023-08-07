@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface RetailItemService {
@@ -32,7 +31,7 @@ public interface RetailItemService {
 
     public ResponseEntity<List<RetailItem>> getAllItems();
 
-    public ResponseEntity<RetailItem> getItemByItem(Long id);
+    public ResponseEntity<RetailItem> getItemById(Long id);
 
     public ResponseEntity<List<RetailItem>> getItemsByType(RetailItemType type);
 

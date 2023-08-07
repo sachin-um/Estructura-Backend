@@ -5,15 +5,15 @@ import com.Estructura.API.model.RetailItemType;
 import com.Estructura.API.model.RetailStore;
 import com.Estructura.API.requests.retailItems.RetailItemRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
+import com.Estructura.API.responses.GenericDeleteResponse;
+import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.service.RetailItemService;
 import com.Estructura.API.service.RetailStoreService;
-import com.sun.mail.imap.protocol.INTERNALDATE;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +51,31 @@ public class RetailItemController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/item/{item_id}")
+    public  ResponseEntity<RetailItem> retailItem(@PathVariable("item_id") Long itemId){
+        return retailItemService.getItemById(itemId);
+    }
+
+    @PostMapping("/update/{item_id}")
+    public GenericAddOrUpdateResponse<RetailItemRequest> updateItem(@PathVariable("item_id") Long itemid,
+                                                                    @ModelAttribute RetailItemRequest retailItemRequest) throws IOException {
+        return retailItemService.updateItem(retailItemRequest,itemid);
+    }
+
+    @DeleteMapping("/delete/{item_id}")
+    public GenericDeleteResponse<Long> deleteItem(@PathVariable("item_id") Long itemId){
+        GenericDeleteResponse<Long> response=new GenericDeleteResponse<>();
+        ResponseEntity<RetailItem> item=retailItemService.getItemById(itemId);
+        if (item.getStatusCode().is2xxSuccessful()){
+            return retailItemService.deleteItem(item.getBody());
+        }
+        else {
+            response.setSuccess(false);
+            return response;
+        }
+    }
+
 //
 //    @GetMapping("/all")
 //    List<RetailItem> fetchAllRetailItems() {

@@ -1,10 +1,8 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.RentingItem;
 import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.model.RetailItemType;
 import com.Estructura.API.model.RetailStore;
-import com.Estructura.API.requests.rentingItems.RentingItemRequest;
 import com.Estructura.API.requests.retailItems.RetailItemRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +93,7 @@ public class RetailItemServiceImpl implements RetailItemService {
     }
 
     @Override
-    public ResponseEntity<RetailItem> getItemByItem(Long id) {
+    public ResponseEntity<RetailItem> getItemById(Long id) {
         Optional<RetailItem> item=retailItemRepository.findById(id);
         return item.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
