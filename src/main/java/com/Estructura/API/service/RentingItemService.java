@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface RentingItemService {
     public GenericAddOrUpdateResponse<RentingItemRequest> saveOrUpdateItem(@ModelAttribute RentingItemRequest rentingItemRequest) throws IOException;
+
+    public ResponseEntity<List<RentingItem>> getAllItem();
     public ResponseEntity<RentingItem> getItemById(Long id);
     public ResponseEntity<List<RentingItem>> getItemsbyRenter(Renter renter);
 

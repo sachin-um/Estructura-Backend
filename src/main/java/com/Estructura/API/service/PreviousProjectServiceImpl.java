@@ -37,6 +37,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                         .cost(projectRequest.getCost())
                         .projectFromEstructura(projectRequest.isProjectFromEstructura())
                         .professional(professional.get())
+                        .createdBy(projectRequest.getProfessionalId())
                         .build();
                 saveImagesAndDocuments(projectRequest, previousProject);
                 PreviousProject project = previousProjectRepository.save(previousProject);
@@ -71,6 +72,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                 project.setCost(projectRequest.getCost());
                 project.setProjectFromEstructura(projectRequest.isProjectFromEstructura());
                 project.setLocation(projectRequest.getLocation());
+                project.setCreatedBy(projectRequest.getProfessionalId());
                 saveImagesAndDocuments(projectRequest, project);
                 project = previousProjectRepository.save(project);
                 uploadImagesAndDocuments(projectRequest, project);
@@ -104,8 +106,6 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                         FileUploadUtil.saveFile(uploadDir, document, fileName);
                     }
                     count++;
-                    String fileName = StringUtils.cleanPath(document.getOriginalFilename());
-                    FileUploadUtil.saveFile(uploadDir, document, fileName);
                 }
             }
         }
