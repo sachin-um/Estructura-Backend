@@ -132,7 +132,7 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                     project.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
                     if (count == 1) project.setExtraImage2(extraImageName);
                     project.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
-                    if (count == 3) project.setExtraImage3(extraImageName);
+                    if (count == 2) project.setExtraImage3(extraImageName);
                     project.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
                     count++;
                 }
@@ -147,8 +147,8 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                     project.setDocument1Name(FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
                     if (count == 1) project.setDocument2(documentName);
                     project.setDocument2Name(FileUploadUtil.generateFileName(documentName));
-                    if (count == 3) project.setDocument3(documentName);
-                    project.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                    if (count == 2) project.setDocument3(documentName);
+                    project.setDocument3Name(FileUploadUtil.generateFileName(documentName));
                     count++;
                 }
             }
