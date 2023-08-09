@@ -1,6 +1,16 @@
 package com.Estructura.API;
 
-import static com.Estructura.API.model.Role.*;
+import static com.Estructura.API.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.ARCHITECT;
+import static com.Estructura.API.model.Role.CARPENTER;
+import static com.Estructura.API.model.Role.CONSTRUCTIONCOMPANY;
+import static com.Estructura.API.model.Role.CUSTOMER;
+import static com.Estructura.API.model.Role.INTERIORDESIGNER;
+import static com.Estructura.API.model.Role.LANDSCAPEARCHITECT;
+import static com.Estructura.API.model.Role.MASONWORKER;
+import static com.Estructura.API.model.Role.PAINTER;
+import static com.Estructura.API.model.Role.RENTER;
+import static com.Estructura.API.model.Role.RETAILSTORE;
 
 import java.util.List;
 
@@ -9,7 +19,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.Estructura.API.model.Renter;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.service.AuthenticationService;
 
@@ -105,30 +114,24 @@ public class EstructuraAPIApplication {
 				.build();
 
 		var constructionCompany = RegisterRequest.builder()
-				// Page 1
 				.email("construction@gmail.com")
 				.password("password")
-				// Page 2
 				.firstname("Gumudi")
 				.lastname("Paruge")
 				.businessName("Gumudi Construction")
 				.businessContactNo("0116547896")
-				// Address Line should be converted from request??
 				.businessAddressLine1("No:84")
 				.businessAddressLine2("MAthuama road")
 				.businessCity("Agalawatta")
 				.businessDistrict("Kaluthra")
 				.teamSize(50)
-				// Page 3
 				.nic("9510220170V")
 				.website("www.gumudiconstruction.com")
-				.registrationNo("ALBL") // Certificate not here
-				// Page 4
+				.registrationNo("ALBL")
 				.serviceAreas(List.of("Colombo", "Gampaha", "Kaluthra"))
 				.specialization("foundations,small homes")
 				.minRate(10000000.0)
 				.maxRate(100000000.0)
-				// Photo?
 				.role(CONSTRUCTIONCOMPANY)
 				.build();
 
@@ -176,95 +179,77 @@ public class EstructuraAPIApplication {
 				.build();
 
 		var masonWorker = RegisterRequest.builder()
-				// Page 1
 				.email("mason@gmail.com")
 				.password("password")
-				// Page 2
 				.firstname("Unuru")
 				.lastname("Sadana")
 				.businessName("Sadana & sons")
 				.businessContactNo("0117539515")
 				.registrationNo("ALBL")
-				// Address Line should be converted from request??
 				.businessAddressLine1("No:94")
 				.businessAddressLine2("MAthuama road")
 				.businessCity("Agalawatta")
 				.businessDistrict("Kaluthra")
-				// Page 3
 				.nic("9510288170V")
 				.website("www.sadanaandsons.com")
-				.registrationNo("ALBL") // Certificate not here
-				// Page 4
+				.registrationNo("ALBL")
 				.serviceAreas(List.of("Colombo", "Gampaha", "Kaluthra"))
 				.specialization("small homes,cottages")
 				.minRate(10000000.0)
 				.maxRate(100000000.0)
-				// Photo?
 				.role(MASONWORKER)
 				.build();
 
 		var painter = RegisterRequest.builder()
-				// Page 1
 				.email("painter@gmail.com")
 				.password("password")
-				// Page 2
 				.firstname("Abudu")
 				.lastname("Punuradha")
 				.businessName("Abudu Painters")
 				.businessContactNo("0119999999")
 				.registrationNo("ALBL")
-				// Address Line should be converted from request??
 				.businessAddressLine1("No:666666")
 				.businessAddressLine2("MAthuama road")
 				.businessCity("Agalawatta")
 				.businessDistrict("Kaluthra")
-				// Page 3
 				.nic("200027000666")
 				.website("www.abudupaints.com")
-				.registrationNo("ALBL") // Certificate not here
-				// Page 4
+				.registrationNo("ALBL")
 				.serviceAreas(List.of("Colombo", "Gampaha", "Kaluthra"))
 				.qualification("Item1,Item2")
 				.specialization("walls,roof painting")
 				.minRate(10000000.0)
 				.maxRate(100000000.0)
-				// Photo?
 				.role(PAINTER)
 				.build();
 
 		var carpenter = RegisterRequest.builder()
-				// Page 1
 				.email("carpenter@gmail.com")
 				.password("password")
-				// Page 2
 				.firstname("Sabudu")
 				.lastname("Puthurusinghe")
 				.businessName("Sabudu Carpenters")
 				.businessContactNo("0326666666")
 				.registrationNo("ALBL")
-				// Address Line should be converted from request??
 				.businessAddressLine1("No:999999")
 				.businessAddressLine2("MAthuama road")
 				.businessCity("Agalawatta")
 				.businessDistrict("Kaluthra")
-				// Page 3
 				.nic("200027000999")
 				.website("www.sabuduwood.com")
-				.registrationNo("ALBL") // Certificate not here
-				// Page 4
+				.registrationNo("ALBL")
 				.serviceAreas(List.of("Colombo", "Gampaha", "Kaluthra"))
 				.qualification("Item1,Item2")
 				.specialization("desks,pantry cupboards")
 				.minRate(10000000.0)
 				.maxRate(100000000.0)
-				// Photo?
 				.role(CARPENTER)
 				.build();
 
 		System.out.println("Architect:" + service.register(architect, true).getAccessToken()); // ✅
 		System.out.println("Admin token :" + service.register(admin, true).getAccessToken()); // ✅
 		System.out.println("Retail Owner token :" + service.register(retailStore, true).getAccessToken()); // ✅
-		System.out.println("Customer token :" + service.register(customer, true).getAccessToken()); // ✅ 
+		System.out.println("Customer token :" + service.register(customer, true).getAccessToken()); // ✅
 		System.out.println("Renter token :" + service.register(renter, true).getAccessToken()); // ✅
 		System.out.println("Con Company token :" + service.register(constructionCompany, true).getAccessToken()); // ✅
 		System.out.println("Interior token :" + service.register(interiorDesigner, true).getAccessToken()); // ✅
