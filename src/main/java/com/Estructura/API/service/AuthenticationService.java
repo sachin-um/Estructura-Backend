@@ -162,6 +162,7 @@ public class AuthenticationService {
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
+                        .businessContactNo(request.getBusinessContactNo())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
