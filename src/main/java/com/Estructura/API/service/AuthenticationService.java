@@ -376,7 +376,11 @@ public class AuthenticationService {
                 saveUserToken(savedUser, jwtToken);
                 if (savedUser.getProfileImageName()!=null){
                     String uploadDir = "./files/proflie-images/" + savedUser.getId();
-                    FileUploadUtil.saveFile(uploadDir,request.getProfileImage(),savedUser.getProfileImageName());
+                    try {
+                        FileUploadUtil.saveFile(uploadDir,request.getProfileImage(),savedUser.getProfileImageName());
+                    } catch (IOException e) {
+                        System.out.println("Error saving file");
+                    }
                 }
                 response.setLoggedUser(savedUser);
                 response.setRole(savedUser.getRole());
