@@ -131,6 +131,7 @@ public class AuthenticationService {
                 savedUser = adminService.saveAdmin(admin);
             } else if (request.getRole().equals(RETAILSTORE)) {
                 RetailStore retailStore = RetailStore.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -153,6 +154,7 @@ public class AuthenticationService {
                 savedUser = retailStoreService.saveRetailStore(retailStore);
             } else if (request.getRole().equals(RENTER)) {
                 Renter renter = Renter.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -174,6 +176,7 @@ public class AuthenticationService {
                 savedUser = renterService.saveRenter(renter);
             } else if (request.getRole().equals(LANDSCAPEARCHITECT)) {
                 LandscapeArchitect landscapeArchitect = LandscapeArchitect.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -197,6 +200,7 @@ public class AuthenticationService {
                 savedUser = landscapeArchitectService.saveLandscapeArchitect(landscapeArchitect);
             } else if (request.getRole().equals(ARCHITECT)) {
                 Architect architect = Architect.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -222,6 +226,7 @@ public class AuthenticationService {
                 savedUser = architectService.saveArchitect(architect);
             } else if (request.getRole().equals(CONSTRUCTIONCOMPANY)) {
                 ConstructionCompany constructionCompany = ConstructionCompany.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -249,6 +254,7 @@ public class AuthenticationService {
                 savedUser = constructionCompanyService.saveConstructionCompany(constructionCompany);
             } else if (request.getRole().equals(INTERIORDESIGNER)) {
                 InteriorDesigner interiorDesigner = InteriorDesigner.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -274,6 +280,7 @@ public class AuthenticationService {
                 savedUser = interiorDesignerService.saveInteriorDesigner(interiorDesigner);
             } else if (request.getRole().equals(MASONWORKER)) {
                 MasonWorker masonWorker = MasonWorker.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -298,6 +305,7 @@ public class AuthenticationService {
                 savedUser = masonWorkerService.saveMasonWorker(masonWorker);
             } else if (request.getRole().equals(PAINTER)) {
                 Painter painter = Painter.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
@@ -322,6 +330,7 @@ public class AuthenticationService {
                 savedUser = painterService.savePainter(painter);
             } else if (request.getRole().equals(CARPENTER)) {
                 Carpenter carpenter = Carpenter.builder()
+                        .isVerified(preVerified)
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
