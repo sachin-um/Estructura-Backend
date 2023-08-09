@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
@@ -26,10 +27,11 @@ public class Professional extends ServiceProvider{
     @Column(columnDefinition = "numeric(10,2)")
     private Double maxRate;
 
-    private String businessContactNo;
+
     @OneToMany(mappedBy = "professional")
     private List<ServiceArea> serviceAreas;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL)
     private List<PreviousProject> previousProjects;
 }

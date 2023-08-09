@@ -57,6 +57,8 @@ public class RentingItem {
     @CreationTimestamp
     private Date dateAdded;
 
+    private Integer createdBy;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id")
     @JsonIgnore

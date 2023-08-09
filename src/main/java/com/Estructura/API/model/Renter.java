@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -21,12 +22,9 @@ public class Renter extends ServiceProvider{
     @NotBlank(message = "Business name required")
     private String businessName;
     @Column(nullable = false)
-    @NotBlank(message = "Business contact number required")
-    private String businessContactNo;
-    @Column(nullable = false)
     @NotBlank(message = "Business Registration Number Required")
     private String registrationNo;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
     private List<RentingItem> rentingItems;
 }
