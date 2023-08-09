@@ -54,6 +54,7 @@ public class EstructuraAPIApplication {
 					.password("password")
 					.role(ARCHITECT)
 					.nic("981022017V")
+					.businessContactNo("0342247244")
 					.serviceProviderType("Architect")
 					.businessAddressLine1("No:84")
 					.businessAddressLine2("MAthuama road")
