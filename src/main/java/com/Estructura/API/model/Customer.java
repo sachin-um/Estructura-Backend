@@ -1,7 +1,14 @@
 package com.Estructura.API.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Data
@@ -10,10 +17,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="customer")
+@Table(name = "customer")
 @Entity
-@PrimaryKeyJoinColumn(name="id")
-public class Customer extends User{
+@PrimaryKeyJoinColumn(name = "id")
+public class Customer extends User {
     @Column(nullable = true)
     private String addressLine1;
     @Column(nullable = false)
@@ -22,4 +29,6 @@ public class Customer extends User{
     private String city;
     @Column(nullable = false)
     private String district;
+    @Column(nullable = false)
+    private String contactNo;
 }

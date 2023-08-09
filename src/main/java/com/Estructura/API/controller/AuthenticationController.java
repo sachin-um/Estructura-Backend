@@ -18,14 +18,14 @@ import com.Estructura.API.event.RegistrationCompleteEvent;
 import com.Estructura.API.event.listener.RegistrationCompleteEventListener;
 import com.Estructura.API.model.User;
 import com.Estructura.API.model.VerificationToken;
+import com.Estructura.API.requests.auth.AuthenticationRequest;
+import com.Estructura.API.requests.auth.PasswordResetRequest;
+import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.requests.auth.ResetPasswordRequest;
 import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RefreshTokenResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
-import com.Estructura.API.requests.auth.AuthenticationRequest;
-import com.Estructura.API.requests.auth.PasswordResetRequest;
-import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.service.AuthenticationService;
 import com.Estructura.API.service.UserService;
 import com.Estructura.API.service.VerificationTokenService;
@@ -52,7 +52,7 @@ public class AuthenticationController {
     public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request,
             final HttpServletRequest servletRequest) {
-        RegisterResponse response = service.register(request);
+        RegisterResponse response = service.register(request,false);
 
         // Only send email with verify link if saving user is successful
         if (response.isSuccess()) {

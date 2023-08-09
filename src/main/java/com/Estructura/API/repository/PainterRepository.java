@@ -1,7 +1,11 @@
 package com.Estructura.API.repository;
 
-import com.Estructura.API.model.Painter;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PainterRepository extends JpaRepository<Painter,Integer> {
+import com.Estructura.API.model.Painter;
+
+public interface PainterRepository extends JpaRepository<Painter, Integer> {
+    public Optional<Painter> findByEmail(String email);
 }

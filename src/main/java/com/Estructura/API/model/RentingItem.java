@@ -26,7 +26,7 @@ public class RentingItem {
     private String description;
 
 
-    @Column(columnDefinition = "numeric(10,2)", nullable = false)
+    @Column(columnDefinition = "numeric(20,2)", nullable = false)
     private Double price;
     @Column(nullable = false)
     private String scale;
