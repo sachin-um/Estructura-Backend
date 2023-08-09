@@ -1,7 +1,9 @@
 package com.Estructura.API.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.Estructura.API.exception.UserAlreadyExistsException;
@@ -22,6 +24,17 @@ public class RetailStoreServiceImpl implements RetailStoreService {
             throw new UserAlreadyExistsException("A user with" + retailStore.getEmail() + "already exists");
         }
         return retailStoreRepository.save(retailStore);
+    }
+
+    @Override
+    public ResponseEntity<List<RetailStore>> getAllRetailStore() {
+        List<RetailStore> retailStores= retailStoreRepository.findAll();
+        if (!retailStores.isEmpty()){
+            return ResponseEntity.ok(retailStores);
+        }
+        else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override
