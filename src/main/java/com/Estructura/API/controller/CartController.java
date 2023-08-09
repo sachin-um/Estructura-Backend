@@ -17,20 +17,20 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("/single")
-    String addToCart(@RequestBody OrderRequestBody orderRequestBody){
-        System.out.println("orderRequestBody: " + orderRequestBody.toString());
-        return cartService.addToCart(orderRequestBody);
-    }
-
-    @PostMapping("/all")
-    String addToCartMultiple(@RequestBody List<OrderRequestBody> orders){
-        return cartService.addToCartMultiple(orders);
-    }
-
-    @GetMapping()
-    List<OrderEntity> findOrderedRetailItems(){
-        return cartService.findOrderedRetailItems();
-    }
+//    @PostMapping("/single")
+//    String addToCart(@RequestBody OrderRequestBody orderRequestBody){
+//        System.out.println("orderRequestBody: " + orderRequestBody.toString());
+//        return cartService.addToCart(orderRequestBody);
+//    }
+//
+//    @PostMapping("/all")
+//    String addToCartMultiple(@RequestBody List<OrderRequestBody> orders){
+//        return cartService.addToCartMultiple(orders);
+//    }
+//
+//    @GetMapping()
+//    List<OrderEntity> findOrderedRetailItems(){
+//        return cartService.findOrderedRetailItems();
+//    }
 
 }

@@ -20,4 +20,9 @@ public class RetailStoreServiceImpl implements RetailStoreService{
         }
         return retailStoreRepository.save(retailStore);
     }
+
+    @Override
+    public Optional<RetailStore> findById(Integer id) {
+        return retailStoreRepository.findById(id);
+    }
 }
