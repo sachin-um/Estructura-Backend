@@ -1,7 +1,7 @@
 package com.Estructura.API.controller;
 
-import com.Estructura.API.model.ServiceProvider;
-import com.Estructura.API.service.ServiceProviderService;
+import com.Estructura.API.model.Renter;
+import com.Estructura.API.service.RenterService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +12,11 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/serviceProviders")
-public class ServiceProviderController {
-    private final ServiceProviderService serviceProviderService;
-
+@RequestMapping("/api/v1/rentingStore")
+public class RentingStoreController {
+    private final RenterService renterService;
     @GetMapping("/all")
-    public ResponseEntity<List<ServiceProvider>> getAllServiceProviders(){
-        return serviceProviderService.getAllServiceProviders();
+    public ResponseEntity<List<Renter>> getAllRentingStores(){
+        return renterService.findAll();
     }
 }

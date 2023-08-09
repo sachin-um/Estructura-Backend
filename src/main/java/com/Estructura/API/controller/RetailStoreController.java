@@ -1,7 +1,7 @@
 package com.Estructura.API.controller;
 
-import com.Estructura.API.model.ServiceProvider;
-import com.Estructura.API.service.ServiceProviderService;
+import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.service.RetailStoreService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/serviceProviders")
-public class ServiceProviderController {
-    private final ServiceProviderService serviceProviderService;
+@RequestMapping("/api/v1/retailStore")
+public class RetailStoreController {
+    private final RetailStoreService retailStoreService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ServiceProvider>> getAllServiceProviders(){
-        return serviceProviderService.getAllServiceProviders();
+    public ResponseEntity<List<RetailStore>> getAllRetailStores(){
+        return retailStoreService.getAllRetailStore();
     }
 }

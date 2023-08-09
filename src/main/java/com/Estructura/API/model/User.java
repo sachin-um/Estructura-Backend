@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +34,7 @@ public class User implements UserDetails {
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
     private String email;
+    @JsonIgnore
     @NotBlank(message = "Password is required")
     private String password;
     @Default
@@ -44,12 +46,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VerificationToken> verificationTokens;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Blog> blog;
 

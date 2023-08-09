@@ -1,14 +1,18 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.exception.UserAlreadyExistsException;
-import com.Estructura.API.model.User;
-import com.Estructura.API.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.Estructura.API.exception.UserAlreadyExistsException;
+import com.Estructura.API.model.Role;
+import com.Estructura.API.model.User;
+import com.Estructura.API.repository.UserRepository;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -25,13 +29,31 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return null;
+    public ResponseEntity<List<User>> getAllUsers() {
+
+        List<User> users= userRepository.findAll();
+        if (!users.isEmpty()){
+            return ResponseEntity.ok(users);
+        }
+        else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public ResponseEntity<List<User>> findByRole(Role role) {
+        List<User> users=userRepository.findByRole(role);
+        if (!users.isEmpty()){
+            return ResponseEntity.ok(users);
+        }
+        else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @Override

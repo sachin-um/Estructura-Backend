@@ -64,7 +64,7 @@ public class AuthenticationService {
     private final SpecializationRepository specializationRepository;
     private final ServiceAreaRepository serviceAreaRepository;
 
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) throws IOException {
         var response = new RegisterResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
@@ -180,38 +180,52 @@ public class AuthenticationService {
                 savedUser=architectService.saveArchitect(architect);
 
             }
-            if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
-                specializations= Arrays.stream(request.getSpecialization().split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-                User finalSavedUSer=savedUser;
-                specializations.forEach(specialization->{
-                    saveSpecialization(finalSavedUSer,specialization);
-                });
+
+
+
+            if (savedUser != null) {
+                if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
+                    specializations= Arrays.stream(request.getSpecialization().split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
+                    User finalSavedUSer=savedUser;
+                    specializations.forEach(specialization->{
+                        saveSpecialization(finalSavedUSer,specialization);
+                    });
+                }
+                if (request.getQualification()!=null && !request.getQualification().isBlank()){
+                    qualifications=Arrays.stream(request.getQualification().split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
+                    User finalSavedUser = savedUser;
+                    qualifications.forEach(qualification->{
+                        saveQualification(finalSavedUser,qualification);
+                    });
+                }
+                if (request.getServiceAreas()!=null){
+                    User finalSavedUser = savedUser;
+                    request.getServiceAreas().forEach(serviceArea->{
+                        saveServiceArea(finalSavedUser,serviceArea);
+                    });
+                }
+                var jwtToken= jwtService.generateToken(user);
+                var refreshToken= jwtService.generateRefreshToken(user);
+                saveUserToken(savedUser, jwtToken);
+                if (savedUser.getProfileImageName()!=null){
+                    String uploadDir = "./files/proflie-images/" + savedUser.getId();
+                    FileUploadUtil.saveFile(uploadDir,request.getProfileImage(),savedUser.getProfileImageName());
+                }
+                response.setLoggedUser(savedUser);
+                response.setRole(savedUser.getRole());
+                response.setAccessToken(jwtToken);
+                response.setRefreshToken(refreshToken);
+                response.setSuccess(true);
             }
-            if (request.getQualification()!=null && !request.getQualification().isBlank()){
-                qualifications=Arrays.stream(request.getQualification().split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-                User finalSavedUser = savedUser;
-                qualifications.forEach(qualification->{
-                    saveQualification(finalSavedUser,qualification);
-                });
+            else {
+                response.setSuccess(false);
+                response.setErrormessage("Something went wrong please try again");
             }
-            if (request.getServiceAreas()!=null){
-                User finalSavedUser = savedUser;
-                request.getServiceAreas().forEach(serviceArea->{
-                    saveServiceArea(finalSavedUser,serviceArea);
-                });
-            }
-            var jwtToken= jwtService.generateToken(user);
-            var refreshToken= jwtService.generateRefreshToken(user);
-            saveUserToken(savedUser, jwtToken);
-            response.setLoggedUser(savedUser);
-            response.setRole(savedUser.getRole());
-            response.setAccessToken(jwtToken);
-            response.setRefreshToken(refreshToken);
-            response.setSuccess(true);
+
         }
         
         return response;
