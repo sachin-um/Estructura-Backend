@@ -32,5 +32,9 @@ public class RetailStoreServiceImpl implements RetailStoreService{
         else {
             return ResponseEntity.noContent().build();
         }
+
+    @Override
+    public Optional<RetailStore> findById(Integer id) {
+        return retailStoreRepository.findById(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 
 @Data
@@ -20,14 +24,7 @@ import lombok.Setter;
 public class RetailItem {
 
     @Id
-    @SequenceGenerator(
-            name = "retail_item_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "retail_item_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Enumerated(EnumType.STRING)
@@ -39,20 +36,48 @@ public class RetailItem {
     @Column(name="price", columnDefinition = "numeric(10,2)")
     private Double price;
 
-    private String image;
+    @Column(nullable = false)
+    private String MainImage;
+    @Column(nullable = false)
+    private String MainImageName;
 
+    @Column(nullable = true)
+    private String ExtraImage1;
+    @Column(nullable = true)
+    private String ExtraImage1Name;
+
+    @Column(nullable = true)
+    private String ExtraImage2;
+    @Column(nullable = true)
+    private String ExtraImage2Name;
+
+    @Column(nullable = true)
+    private String ExtraImage3;
+    @Column(nullable = true)
+    private String ExtraImage3Name;
+    @Column( nullable = false, updatable = false)
+    @CreationTimestamp
+    private Date dateAdded;
+
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private Integer quantity;// different quantity types
 
-    public RetailItem(RetailItemType retailItemType, String name, Double price, String image, String description, Integer quantity){
-        this.retailItemType = retailItemType;
-        this.name = name;
-        this.price = price;
-        this.image = image;
-        this.description = description;
-        this.quantity = quantity;
-    }
+    private Integer createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "retailStore_id")
+    @JsonIgnore
+    private RetailStore retailStore;
+//    public RetailItem(RetailItemType retailItemType, String name, Double price, String image, String description, Integer quantity){
+//        this.retailItemType = retailItemType;
+//        this.name = name;
+//        this.price = price;
+//        this.image = image;
+//        this.description = description;
+//        this.quantity = quantity;
+//    }
 
 
 }
