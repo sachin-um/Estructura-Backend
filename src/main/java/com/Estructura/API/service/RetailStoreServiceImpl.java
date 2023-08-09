@@ -1,14 +1,16 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.exception.UserAlreadyExistsException;
-import com.Estructura.API.model.RetailStore;
-import com.Estructura.API.repository.RetailStoreRepository;
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.Estructura.API.exception.UserAlreadyExistsException;
+import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.repository.RetailStoreRepository;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +34,7 @@ public class RetailStoreServiceImpl implements RetailStoreService{
         else {
             return ResponseEntity.noContent().build();
         }
+    }
 
     @Override
     public Optional<RetailStore> findById(Integer id) {

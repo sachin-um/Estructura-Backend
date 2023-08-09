@@ -1,18 +1,28 @@
 package com.Estructura.API.controller;
 
-import com.Estructura.API.model.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.Estructura.API.model.Renter;
+import com.Estructura.API.model.RentingCategory;
+import com.Estructura.API.model.RentingItem;
 import com.Estructura.API.requests.rentingItems.RentingItemRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.service.RenterService;
 import com.Estructura.API.service.RentingItemService;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor

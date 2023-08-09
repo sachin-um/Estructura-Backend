@@ -1,13 +1,14 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.exception.UserAlreadyExistsException;
-import com.Estructura.API.model.Customer;
-import com.Estructura.API.model.User;
-import com.Estructura.API.repository.CustomerRepository;
-import lombok.AllArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.Estructura.API.exception.UserAlreadyExistsException;
+import com.Estructura.API.model.Customer;
+import com.Estructura.API.repository.CustomerRepository;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
