@@ -4,7 +4,7 @@ import static com.Estructura.API.model.Role.ADMIN;
 import static com.Estructura.API.model.Role.ARCHITECT;
 import static com.Estructura.API.model.Role.CUSTOMER;
 import static com.Estructura.API.model.Role.RENTER;
-import static com.Estructura.API.model.Role.RETAILOWNER;
+import static com.Estructura.API.model.Role.RETAILSTORE;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -112,7 +112,7 @@ public class AuthenticationService {
                 user=admin;
                 savedUser=adminService.saveAdmin(admin);
             }
-            else if(request.getRole().equals(RETAILOWNER)){
+            else if(request.getRole().equals(RETAILSTORE)){
                 RetailStore retailStore=RetailStore.builder()
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())

@@ -1,16 +1,18 @@
 package com.Estructura.API;
 
-import com.Estructura.API.requests.auth.RegisterRequest;
-import com.Estructura.API.service.AuthenticationService;
+import static com.Estructura.API.model.Role.ADMIN;
+import static com.Estructura.API.model.Role.ARCHITECT;
+import static com.Estructura.API.model.Role.RETAILSTORE;
+
+import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
-
-import static com.Estructura.API.model.Role.*;
+import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.service.AuthenticationService;
 
 @SpringBootApplication
 public class EstructuraAPIApplication {
@@ -37,7 +39,7 @@ public class EstructuraAPIApplication {
 					.lastname("Stores")
 					.email("retail@gmail.com")
 					.password("password")
-					.role(RETAILOWNER)
+					.role(RETAILSTORE)
 					.businessName("Udawatta Stores")
 					.businessContactNo("0342247244")
 					.businessCategory("Hardware")
