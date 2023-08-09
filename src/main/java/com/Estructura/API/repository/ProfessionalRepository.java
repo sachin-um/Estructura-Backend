@@ -1,7 +1,11 @@
 package com.Estructura.API.repository;
 
-import com.Estructura.API.model.Professional;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProfessionalRepository extends JpaRepository<Professional,Integer> {
+import com.Estructura.API.model.Professional;
+
+public interface ProfessionalRepository extends JpaRepository<Professional, Integer> {
+    public Optional<Professional> findByEmail(String email);
 }

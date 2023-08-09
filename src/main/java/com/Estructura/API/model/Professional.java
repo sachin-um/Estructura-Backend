@@ -22,11 +22,13 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name="id")
 public class Professional extends ServiceProvider{
     private String introduction;
-    @Column(columnDefinition = "numeric(10,2)")
+    @Column(columnDefinition = "numeric(20,2)")
     private Double minRate;
-    @Column(columnDefinition = "numeric(10,2)")
+    @Column(columnDefinition = "numeric(20,2)")
     private Double maxRate;
 
+    @Column(nullable = false)
+    private String businessName;
 
     @OneToMany(mappedBy = "professional")
     private List<ServiceArea> serviceAreas;

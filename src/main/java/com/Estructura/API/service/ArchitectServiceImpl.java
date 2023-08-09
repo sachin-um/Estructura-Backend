@@ -1,7 +1,6 @@
 package com.Estructura.API.service;
 
 import com.Estructura.API.exception.UserAlreadyExistsException;
-import com.Estructura.API.model.Admin;
 import com.Estructura.API.model.Architect;
 import com.Estructura.API.repository.ArchitectRepository;
 import lombok.AllArgsConstructor;

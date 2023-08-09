@@ -1,7 +1,11 @@
 package com.Estructura.API.repository;
 
-import com.Estructura.API.model.MasonWorker;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MasonWorkerRepository extends JpaRepository<MasonWorker,Integer> {
+import com.Estructura.API.model.MasonWorker;
+
+public interface MasonWorkerRepository extends JpaRepository<MasonWorker, Integer> {
+    public Optional<MasonWorker> findByEmail(String email);
 }
