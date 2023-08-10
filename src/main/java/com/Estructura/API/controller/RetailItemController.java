@@ -25,7 +25,7 @@ public class RetailItemController {
 
     private final RetailItemService retailItemService;
     private final RetailStoreService retailStoreService;
-    @GetMapping("/add")
+    @PostMapping("/add")
     public GenericAddOrUpdateResponse<RetailItemRequest> addRetaiItem(
             @ModelAttribute RetailItemRequest retailItemRequest) throws IOException {
         return retailItemService.saveItem(retailItemRequest);

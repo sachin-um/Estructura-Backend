@@ -69,12 +69,19 @@ public class RetailItemServiceImpl implements RetailItemService {
             for (MultipartFile file : retailItemRequest.getExtraImages()) {
                 if (!file.isEmpty()) {
                     String extraImageName = StringUtils.cleanPath(file.getOriginalFilename());
-                    if (count == 0) item.setExtraImage1(extraImageName);
-                    item.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
-                    if (count == 1) item.setExtraImage2(extraImageName);
-                    item.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
-                    if (count == 3) item.setExtraImage3(extraImageName);
-                    item.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                    if (count == 0) {
+                        item.setExtraImage1(extraImageName);
+                        item.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
+                    }
+                    if (count == 1) {
+                        item.setExtraImage2(extraImageName);
+                        item.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
+                    }
+                    if (count == 2) {
+                        item.setExtraImage3(extraImageName);
+                        item.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                    }
+
                     count++;
                 }
             }
