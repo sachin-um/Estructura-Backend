@@ -1,6 +1,7 @@
 package com.Estructura.API.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -19,7 +20,9 @@ import java.util.List;
 public class ServiceProvider extends User{
 
     private String nic;
-    private Integer contactNumber;
+    @Column(nullable = false)
+    @NotBlank(message = "Business contact number required")
+    private String businessContactNo;
     private String serviceProviderType;
     @Column(nullable = true)
     private String addressLine1;

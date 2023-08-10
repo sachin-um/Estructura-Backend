@@ -14,13 +14,14 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class RetailStoreServiceImpl implements RetailStoreService{
+public class RetailStoreServiceImpl implements RetailStoreService {
     private final RetailStoreRepository retailStoreRepository;
+
     @Override
     public RetailStore saveRetailStore(RetailStore retailStore) {
-        Optional<RetailStore> theRetailStore=retailStoreRepository.findByEmail(retailStore.getEmail());
-        if (theRetailStore.isPresent()){
-            throw new UserAlreadyExistsException("A user with" +retailStore.getEmail() +"already exists");
+        Optional<RetailStore> theRetailStore = retailStoreRepository.findByEmail(retailStore.getEmail());
+        if (theRetailStore.isPresent()) {
+            throw new UserAlreadyExistsException("A user with" + retailStore.getEmail() + "already exists");
         }
         return retailStoreRepository.save(retailStore);
     }

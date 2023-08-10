@@ -23,7 +23,7 @@ public class PreviousProject {
     @Column(nullable = false)
     private String description;
 
-    @Column(columnDefinition = "numeric(10,2)")
+    @Column(columnDefinition = "numeric(20,2)")
     private Double cost;
 
     @Column(nullable = true)

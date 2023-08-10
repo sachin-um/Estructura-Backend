@@ -22,9 +22,6 @@ public class RetailStore extends ServiceProvider{
     @NotBlank(message = "Business name required")
     private String businessName;
     @Column(nullable = false)
-    @NotBlank(message = "Business contact number required")
-    private String businessContactNo;
-    @Column(nullable = false)
     @NotBlank(message = "Business Category Required")
     private String businessCategory;
     @Column(nullable = false)

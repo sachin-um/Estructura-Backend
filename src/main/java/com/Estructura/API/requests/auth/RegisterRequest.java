@@ -27,28 +27,35 @@ public class RegisterRequest {
     private String email;
     @NotBlank(message = "Password is required")
     private String password;
+    private String confirmPassword;
     private Role role;
-    private MultipartFile ProfileImage;
-    //Customer
+    private MultipartFile ProfileImage; // Service provider page 7
+    // Customer
+    private String contactNo;
     private String addressLine1;
     private String addressLine2;
     private String city;
     private String district;
-    //Professional
+    // Professional
+    private String website; // Construction Company
+    private Integer teamSize;
+    private MultipartFile registrationCertificate; // Construction Company
     private String introduction;
-    private Double minRate;
-    private Double maxRate;
-    //Admin
+    private Double minRate; // Service provider page 6
+    private Double maxRate; // Service provider page 6
+    // Admin
     private String assignedArea;
-    //Architect
+    // Architect
     private String sLIARegNumber;
-    //RetailStore
+    // InteriorDesigner
+    private String sLIDRegNumber;
+    // RetailStore
     private String businessName;
     private String businessContactNo;
     private String businessCategory;
     private String registrationNo;
 
-    //ServiceProvider
+    // ServiceProvider
 
     private String businessAddressLine1;
     private String businessAddressLine2;
@@ -56,7 +63,7 @@ public class RegisterRequest {
     private String businessDistrict;
     private String nic;
     private String serviceProviderType;
-    private String specialization;
+    private String specialization; // Service provider page 5
     private String qualification;
-    private List<String> serviceAreas;
+    private List<String> serviceAreas; // Service provider page 4
 }

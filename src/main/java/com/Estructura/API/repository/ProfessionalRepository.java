@@ -1,11 +1,14 @@
 package com.Estructura.API.repository;
 
-import com.Estructura.API.model.Professional;
-import com.Estructura.API.model.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.Optional;
 import java.util.List;
 
-public interface ProfessionalRepository extends JpaRepository<Professional,Integer> {
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.Estructura.API.model.Role;
+
+import com.Estructura.API.model.Professional;
+
+public interface ProfessionalRepository extends JpaRepository<Professional, Integer> {
+    public Optional<Professional> findByEmail(String email);
     List<Professional> findProfessionalByRole(Role role);
 }

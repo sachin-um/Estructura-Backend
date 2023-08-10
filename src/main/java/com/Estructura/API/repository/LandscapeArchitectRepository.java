@@ -1,7 +1,11 @@
 package com.Estructura.API.repository;
 
-import com.Estructura.API.model.LandscapeArchitect;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface LandscapeArchitectRepository extends JpaRepository<LandscapeArchitect,Integer> {
+import com.Estructura.API.model.LandscapeArchitect;
+
+public interface LandscapeArchitectRepository extends JpaRepository<LandscapeArchitect, Integer> {
+    Optional<LandscapeArchitect> findByEmail(String email);
 }
