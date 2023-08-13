@@ -18,14 +18,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-    @NotBlank(message = "First name is required")
     private String firstname;
-    @NotBlank(message = "Last name is required")
     private String lastname;
-    @NotBlank(message = "Email is required")
-    @Email
     private String email;
-    @NotBlank(message = "Password is required")
     private String password;
     private String confirmPassword;
     private Role role;

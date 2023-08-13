@@ -24,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.Estructura.API.config.JwtService;
 import com.Estructura.API.model.Admin;
@@ -83,7 +84,7 @@ public class AuthenticationService {
     private final SpecializationRepository specializationRepository;
     private final ServiceAreaRepository serviceAreaRepository;
 
-    public RegisterResponse register(RegisterRequest request, boolean preVerified) {
+    public RegisterResponse register(@ModelAttribute RegisterRequest request, boolean preVerified) {
         var response = new RegisterResponse();
 
         // Pre check fields that aren't checked by response.checkValidity()
@@ -215,8 +216,8 @@ public class AuthenticationService {
                         .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
-                        .city(request.getBusinessCity())
-                        .district(request.getBusinessDistrict())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
                         .sLIARegNumber(request.getSLIARegNumber())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
