@@ -124,7 +124,6 @@ public class EstructuraAPIApplication {
 				.businessAddressLine2("MAthuama road")
 				.businessCity("Agalawatta")
 				.businessDistrict("Kaluthra")
-				.teamSize(50)
 				.nic("9510220170V")
 				.website("www.gumudiconstruction.com")
 				.registrationNo("ALBL")
