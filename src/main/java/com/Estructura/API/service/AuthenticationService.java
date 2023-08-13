@@ -244,10 +244,8 @@ public class AuthenticationService {
                         .role(request.getRole())
                         .serviceProviderType(PROFESSIONAL)
                         .nic(request.getNic())
-                        .teamSize(request.getTeamSize())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
-                        .teamSize(request.getTeamSize())
                         .isVerified(preVerified)
                         .build();
                 if (ProfileImageName != null) {

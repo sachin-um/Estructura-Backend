@@ -25,8 +25,6 @@ public class ConstructionCompany extends ServiceProvider{
     @Column(nullable = false)
     private String businessRegNumber;
     @Column(nullable = false)
-    private Integer teamSize;
-    @Column(nullable = false)
     private String businessName;
     @Column(columnDefinition = "numeric(20,2)")
     private Double minRate;
