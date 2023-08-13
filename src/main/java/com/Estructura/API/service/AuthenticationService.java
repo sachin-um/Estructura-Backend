@@ -196,6 +196,8 @@ public class AuthenticationService {
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
                         .district(request.getBusinessDistrict())
+                        .minRate(request.getMinRate())
+                        .maxRate(request.getMaxRate())
                         .sLIARegNumber(request.getSLIARegNumber())
                         .build();
                 if (ProfileImageName != null) {
@@ -236,11 +238,11 @@ public class AuthenticationService {
                         .firstname(request.getFirstname())
                         .lastname(request.getLastname())
                         .email(request.getEmail())
-                        .password(request.getPassword())
+                        .password(passwordEncoder.encode(request.getPassword()))
                         .businessRegNumber(request.getRegistrationNo())
                         .businessName(request.getBusinessName())
                         .addressLine1(request.getBusinessAddressLine1())
-                        .addressLine2(request.getAddressLine2())
+                        .addressLine2(request.getBusinessAddressLine2())
                         .businessContactNo(request.getBusinessContactNo())
                         .city(request.getBusinessCity())
                         .district(request.getBusinessDistrict())
@@ -249,7 +251,6 @@ public class AuthenticationService {
                         .nic(request.getNic())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
-                        .isVerified(preVerified)
                         .build();
                 if (ProfileImageName != null) {
                     constructionCompany.setProfileImage(ProfileImageName);
@@ -361,7 +362,9 @@ public class AuthenticationService {
             }
 
             if (savedUser != null) {
+                System.out.println("Hiiiiiiiiiiiiiiiiiiiiiiiiii");
                 if (request.getSpecialization()!=null && !request.getSpecialization().isBlank()){
+                    System.out.println("Byeeeeeeeeeeeeeeeeeee");
                     specializations= Arrays.stream(request.getSpecialization().split(","))
                             .map(String::trim)
                             .collect(Collectors.toList());

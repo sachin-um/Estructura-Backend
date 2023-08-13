@@ -21,15 +21,9 @@ import lombok.experimental.SuperBuilder;
 @Table(name="constructionCompany")
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class ConstructionCompany extends ServiceProvider{
+public class ConstructionCompany extends Professional{
     @Column(nullable = false)
     private String businessRegNumber;
-    @Column(nullable = false)
-    private String businessName;
-    @Column(columnDefinition = "numeric(20,2)")
-    private Double minRate;
-    @Column(columnDefinition = "numeric(20,2)")
-    private Double maxRate;
 
     @OneToMany(mappedBy = "constructionCompany")
     private List<Specialization> specializations;
