@@ -23,7 +23,7 @@ public class ServiceProvider extends User{
     @Column(nullable = false)
     @NotBlank(message = "Business contact number required")
     private String businessContactNo;
-    private String serviceProviderType;
+    private ServiceProviderType serviceProviderType;
     @Column(nullable = true)
     private String addressLine1;
     @Column(nullable = true)

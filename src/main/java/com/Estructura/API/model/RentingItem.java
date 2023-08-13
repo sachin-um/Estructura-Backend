@@ -22,7 +22,7 @@ public class RentingItem {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length=1500)
     private String description;
 
 
@@ -57,7 +57,7 @@ public class RentingItem {
     @CreationTimestamp
     private Date dateAdded;
 
-    private Integer createBy;
+    private Integer createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id")

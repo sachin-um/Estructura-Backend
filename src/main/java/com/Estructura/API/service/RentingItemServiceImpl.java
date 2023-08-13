@@ -35,7 +35,7 @@ public class RentingItemServiceImpl implements RentingItemService{
                         .category(rentingItemRequest.getCategory())
                         .scale(rentingItemRequest.getScale())
                         .renter(renter.get())
-                        .createBy(renter.get().getId())
+                        .createdBy(renter.get().getId())
                         .build();
                 saveImages(rentingItemRequest, item);
 

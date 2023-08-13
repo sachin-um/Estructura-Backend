@@ -18,7 +18,7 @@ public class RetailItemRequest {
     private Double price;
     private String description;
     private Integer quantity;
-    private Integer RetailStoreId;
+    private Integer retailStoreId;
     private RetailItemType retailItemType;
     private MultipartFile mainImage;
     private List<MultipartFile> extraImages;
