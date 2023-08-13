@@ -433,6 +433,18 @@ public class AuthenticationService {
                 response.setRefreshToken(refreshToken);
                 response.setId(user.getId());
                 response.setRole(user.getRole());
+                if (user.getRole() == ARCHITECT || user.getRole() == CARPENTER
+                        || user.getRole() == INTERIORDESIGNER || user.getRole() == LANDSCAPEARCHITECT
+                        || user.getRole() == MASONWORKER || user.getRole() == PAINTER
+                        || user.getRole() == CONSTRUCTIONCOMPANY) {
+                    response.setServiceProviderType(PROFESSIONAL);
+                } else if (user.getRole() == RETAILSTORE) {
+                    response.setServiceProviderType(RETAILER);
+                } else if (user.getRole() == RENTER) {
+                    response.setServiceProviderType(RENTINGCOMPANY);
+                } else {
+                    response.setServiceProviderType(null);
+                }
                 response.setFirstname(user.getFirstname());
                 response.setLastname(user.getLastname());
                 response.setEmail(user.getEmail());
