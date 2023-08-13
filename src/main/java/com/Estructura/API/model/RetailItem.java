@@ -55,7 +55,7 @@ public class RetailItem {
     private String ExtraImage3;
     @Column(nullable = true)
     private String ExtraImage3Name;
-    @Column( nullable = false, updatable = false)
+    @Column( nullable = false)
     @CreationTimestamp
     private Date dateAdded;
 

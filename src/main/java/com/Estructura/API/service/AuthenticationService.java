@@ -11,6 +11,7 @@ import static com.Estructura.API.model.Role.MASONWORKER;
 import static com.Estructura.API.model.Role.PAINTER;
 import static com.Estructura.API.model.Role.RENTER;
 import static com.Estructura.API.model.Role.RETAILSTORE;
+import static com.Estructura.API.model.ServiceProviderType.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -137,6 +138,7 @@ public class AuthenticationService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
+                        .serviceProviderType(RETAILER)
                         .businessName(request.getBusinessName())
                         .businessContactNo(request.getBusinessContactNo())
                         .businessCategory(request.getBusinessCategory())
@@ -160,6 +162,7 @@ public class AuthenticationService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
+                        .serviceProviderType(RENTINGCOMPANY)
                         .businessName(request.getBusinessName())
                         .businessContactNo(request.getBusinessContactNo())
                         .registrationNo(request.getRegistrationNo())
@@ -185,7 +188,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
@@ -209,7 +212,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
@@ -239,6 +242,7 @@ public class AuthenticationService {
                         .city(request.getBusinessCity())
                         .district(request.getBusinessDistrict())
                         .role(request.getRole())
+                        .serviceProviderType(PROFESSIONAL)
                         .nic(request.getNic())
                         .teamSize(request.getTeamSize())
                         .minRate(request.getMinRate())
@@ -263,7 +267,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
@@ -289,7 +293,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
@@ -314,7 +318,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
@@ -339,7 +343,7 @@ public class AuthenticationService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
                         .nic(request.getNic())
-                        .serviceProviderType(request.getServiceProviderType())
+                        .serviceProviderType(PROFESSIONAL)
                         .addressLine1(request.getBusinessAddressLine1())
                         .addressLine2(request.getBusinessAddressLine2())
                         .city(request.getBusinessCity())
