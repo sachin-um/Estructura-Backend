@@ -1,6 +1,7 @@
 package com.Estructura.API.responses.auth;
 
 import com.Estructura.API.model.Role;
+import com.Estructura.API.model.ServiceProviderType;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.responses.ValidatedResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,6 +42,8 @@ public class AuthenticationResponse extends ValidatedResponse<AuthenticationRequ
     private String profileImage;
     @JsonProperty("ProfileImageName")
     private String profileImageName;
+    @JsonProperty("serviceProviderType")
+    private ServiceProviderType serviceProviderType;
 }
 
 
