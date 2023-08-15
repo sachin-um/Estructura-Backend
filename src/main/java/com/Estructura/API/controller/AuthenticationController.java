@@ -6,7 +6,14 @@ import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.Estructura.API.event.PasswordResetEvent;
 import com.Estructura.API.event.RegistrationCompleteEvent;
@@ -47,7 +54,7 @@ public class AuthenticationController {
     public ResponseEntity<RegisterResponse> register(
             @ModelAttribute RegisterRequest request,
             final HttpServletRequest servletRequest) {
-        RegisterResponse response = service.register(request,false);
+        RegisterResponse response = service.register(request, false);
 
         // Only send email with verify link if saving user is successful
         if (response.isSuccess()) {
@@ -62,20 +69,28 @@ public class AuthenticationController {
     }
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(@RequestParam("token") String token) {
+    public RedirectView verifyEmail(@RequestParam("token") String token) {
+        RedirectView redirect = new RedirectView();
+        System.out.println(token);
         VerificationToken theToken = verificationTokenService.findByToken(token);
         if (theToken.getUser().isVerified()) {
-            return "This account has already been verified ,please login";
+            System.out.println(
+                    "Email already verified. Now you can login to your account");
+            redirect.setUrl("http://localhost:3000/emailVerifiec");
         }
         String verificationResult = verificationTokenService.validateVerificationToken(token);
         if (verificationResult.equalsIgnoreCase("valid")) { // if expired
-            return "Email verified successfully. Now you can login to your account";
+            System.out.println(
+                    "Email verified successfully. Now you can login to your account");
+            redirect.setUrl("http://localhost:3000/emailVerified");
         } else {
             String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
                     + theToken.getToken();
-            return "Invalid verification link,<a href=\"" + url + "\">Get a new Verification Email.</a>";
+            System.out.println(
+                    "Invalid verification link,<a href=\"" + url + "\">Get a new Verification Email.</a>");
+            redirect.setUrl("http://localhost:3000/unauthorized"); // ! URLS should be chenaged
         }
-
+        return redirect;
     }
 
     @PostMapping("/password-reset-request")
@@ -104,12 +119,13 @@ public class AuthenticationController {
             @RequestParam("token") String passwordRestToken) {
         GenericResponse<ResetPasswordRequest> response = new GenericResponse<ResetPasswordRequest>();
         String verificationResult = verificationTokenService.validateVerificationToken(passwordRestToken);
-        // String url = applicationUrl(servletRequest) + "/api/v1/auth/resend-verification-email?token="
-        //         + passwordRestToken;
+        // String url = applicationUrl(servletRequest) +
+        // "/api/v1/auth/resend-verification-email?token="
+        // + passwordRestToken;
         if (!verificationResult.equalsIgnoreCase("valid")) {
             response.addError("token", "Invalid token");
         }
-        if(response.checkValidity(passwordResetRequest)){
+        if (response.checkValidity(passwordResetRequest)) {
             Optional<User> user = verificationTokenService.findUserByPasswordRestToken(passwordRestToken);
             if (user.isPresent()) {
                 userService.resetUserPassword(user.get(), passwordResetRequest.getNewPassword());
@@ -144,10 +160,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh-token")
-    public RefreshTokenResponse refreshToken (
+    public RefreshTokenResponse refreshToken(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
+            HttpServletResponse response) throws IOException {
         return service.refreshToken(request, response);
     }
 
