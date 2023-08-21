@@ -392,7 +392,7 @@ public class AuthenticationService {
                 var refreshToken= jwtService.generateRefreshToken(user);
                 saveUserToken(savedUser, jwtToken);
                 if (savedUser.getProfileImageName()!=null){
-                    String uploadDir = "./files/proflie-images/" + savedUser.getId();
+                    String uploadDir = "./files/profile-images/" + savedUser.getId();
                     try {
                         FileUploadUtil.saveFile(uploadDir,request.getProfileImage(),savedUser.getProfileImageName());
                     } catch (IOException e) {
