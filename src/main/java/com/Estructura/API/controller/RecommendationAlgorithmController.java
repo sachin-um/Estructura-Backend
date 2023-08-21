@@ -1,6 +1,5 @@
 package com.Estructura.API.controller;
 
-import com.Estructura.API.model.RecommendationAlgorithm;
 import com.Estructura.API.service.RecommendationAlgorithmService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
