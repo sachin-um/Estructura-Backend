@@ -1,5 +1,7 @@
 package com.Estructura.API.controller;
 
+import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
+import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
 import com.Estructura.API.service.RecommendationAlgorithmService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +12,14 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/recommendationAlgorithm")
+@RequestMapping("/api/v1/recommendation")
 public class RecommendationAlgorithmController {
-
     private final RecommendationAlgorithmService recommendationAlgorithmService;
+
+//    @GetMapping()
+//    public ResponseEntity<RecommendationResponse> recommend(@ModelAttribute RecommendationRequest recommendationRequest){
+//
+//    }
 
 }
 
