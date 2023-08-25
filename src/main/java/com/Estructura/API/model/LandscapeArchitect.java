@@ -18,7 +18,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id")
 public class LandscapeArchitect extends Professional {
     @Column(nullable = false)
-    private String sLIARegNumber;
+    private String sliaRegNumber;
     @OneToMany(mappedBy = "landscapeArchitect")
     private List<Specialization> specializations;
     @OneToMany(mappedBy = "landscapeArchitect")

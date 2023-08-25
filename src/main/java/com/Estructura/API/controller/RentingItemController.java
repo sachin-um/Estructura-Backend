@@ -53,7 +53,7 @@ public class RentingItemController {
         }
     }
 
-    @GetMapping("/allbyCategory/{category}")
+    @GetMapping("/allByCategory/{category}")
     public ResponseEntity<List<RentingItem>> getAllRentingItemsByCategory(
         @PathVariable("category") RentingCategory category) {
         return rentingItemService.getItemsbyCategory(category);

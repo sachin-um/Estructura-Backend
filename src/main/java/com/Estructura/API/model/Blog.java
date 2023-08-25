@@ -20,31 +20,21 @@ public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String title;
-
     @Column(nullable = false, length = 5000)
     private String content;
-
-    //    @Column(nullable = false)
     private String mainImage;
-    //    @Column(nullable = false)
     private String mainImageName;
-
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date dateAdded;
-
     @OneToMany(mappedBy = "blog")
     private List<BlogTag> tags;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-
     private Integer createdBy;
-
     private String creatorName;
 }
