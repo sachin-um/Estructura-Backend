@@ -3,7 +3,7 @@ package com.Estructura.API.repository;
 import com.Estructura.API.model.Blog;
 import com.Estructura.API.model.Tag;
 import com.Estructura.API.model.User;
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
