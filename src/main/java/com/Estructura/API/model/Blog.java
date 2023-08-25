@@ -24,15 +24,15 @@ public class Blog {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length=5000)
+    @Column(nullable = false, length = 5000)
     private String content;
 
-//    @Column(nullable = false)
-    private String MainImage;
-//    @Column(nullable = false)
-    private String MainImageName;
+    //    @Column(nullable = false)
+    private String mainImage;
+    //    @Column(nullable = false)
+    private String mainImageName;
 
-    @Column( nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date dateAdded;
 

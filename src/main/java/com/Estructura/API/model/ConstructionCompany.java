@@ -1,30 +1,25 @@
 package com.Estructura.API.model;
 
-import java.util.List;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="constructionCompany")
+@Table(name = "constructionCompany")
 @Entity
-@PrimaryKeyJoinColumn(name="id")
-public class ConstructionCompany extends Professional{
+@PrimaryKeyJoinColumn(name = "id")
+public class ConstructionCompany extends Professional {
     @Column(nullable = false)
     private String businessRegNumber;
-
     @OneToMany(mappedBy = "constructionCompany")
     private List<Specialization> specializations;
     @OneToMany(mappedBy = "constructionCompany")

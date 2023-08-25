@@ -10,13 +10,18 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class InteriorDesignerServiceImpl implements InteriorDesignerService{
+public class InteriorDesignerServiceImpl implements InteriorDesignerService {
     private final InteriorDesignerRepository interiorDesignerRepository;
+
     @Override
-    public InteriorDesigner saveInteriorDesigner(InteriorDesigner interiorDesigner) {
-        Optional<InteriorDesigner> theInteriorDesigner=interiorDesignerRepository.findByEmail(interiorDesigner.getEmail());
-        if (theInteriorDesigner.isPresent()){
-            throw new UserAlreadyExistsException("A user with" +interiorDesigner.getEmail() +"already exists");
+    public InteriorDesigner saveInteriorDesigner(
+        InteriorDesigner interiorDesigner) {
+        Optional<InteriorDesigner> theInteriorDesigner =
+            interiorDesignerRepository.findByEmail(
+                interiorDesigner.getEmail());
+        if (theInteriorDesigner.isPresent()) {
+            throw new UserAlreadyExistsException(
+                "A user with" + interiorDesigner.getEmail() + "already exists");
         }
         return interiorDesignerRepository.save(interiorDesigner);
     }

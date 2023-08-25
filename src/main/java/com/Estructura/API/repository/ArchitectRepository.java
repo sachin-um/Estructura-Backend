@@ -1,11 +1,10 @@
 package com.Estructura.API.repository;
 
-import java.util.Optional;
-
+import com.Estructura.API.model.Architect;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.Estructura.API.model.Architect;
+import java.util.Optional;
 
-public interface ArchitectRepository extends JpaRepository<Architect,Integer> {
+public interface ArchitectRepository extends JpaRepository<Architect, Integer> {
     Optional<Architect> findByEmail(String email);
 }

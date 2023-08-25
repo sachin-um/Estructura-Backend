@@ -1,11 +1,10 @@
 package com.Estructura.API.repository;
 
-import java.util.Optional;
-
+import com.Estructura.API.model.Carpenter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.Estructura.API.model.Carpenter;
+import java.util.Optional;
 
 public interface CarpenterRepository extends JpaRepository<Carpenter, Integer> {
-    public Optional<Carpenter> findByEmail(String email);
+  Optional<Carpenter> findByEmail(String email);
 }

@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="blogTags")
+@Table(name = "blogTags")
 @Entity
 public class BlogTag {
     @Id

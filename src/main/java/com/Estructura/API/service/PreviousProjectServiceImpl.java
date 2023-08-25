@@ -19,36 +19,45 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class PreviousProjectServiceImpl implements PreviousProjectService{
-    private  final PreviousProjectRepository previousProjectRepository;
+public class PreviousProjectServiceImpl implements PreviousProjectService {
+    private final PreviousProjectRepository previousProjectRepository;
     private final ProfessionalService professionalService;
 
 
     @Override
-    public GenericAddOrUpdateResponse<ProjectRequest> saveOrUpdateProject(ProjectRequest projectRequest) throws IOException {
-        GenericAddOrUpdateResponse<ProjectRequest> response=new GenericAddOrUpdateResponse<>();
+    public GenericAddOrUpdateResponse<ProjectRequest> saveOrUpdateProject(
+        ProjectRequest projectRequest) throws IOException {
+        GenericAddOrUpdateResponse<ProjectRequest> response =
+            new GenericAddOrUpdateResponse<>();
         if (response.checkValidity(projectRequest)) {
-            Optional<Professional> professional = professionalService.findById(projectRequest.getProfessionalId());
+            Optional<Professional> professional = professionalService.findById(
+                projectRequest.getProfessionalId());
             if (professional.isPresent()) {
 
                 PreviousProject previousProject = PreviousProject.builder()
-                        .name(projectRequest.getName())
-                        .description(projectRequest.getDescription())
-                        .cost(projectRequest.getCost())
-                        .projectFromEstructura(projectRequest.isProjectFromEstructura())
-                        .professional(professional.get())
-                        .createdBy(projectRequest.getProfessionalId())
-                        .build();
+                                                                 .name(
+                                                                     projectRequest.getName())
+                                                                 .description(
+                                                                     projectRequest.getDescription())
+                                                                 .cost(
+                                                                     projectRequest.getCost())
+                                                                 .projectFromEstructura(
+                                                                     projectRequest.isProjectFromEstructura())
+                                                                 .professional(
+                                                                     professional.get())
+                                                                 .createdBy(
+                                                                     projectRequest.getProfessionalId())
+                                                                 .build();
                 saveImagesAndDocuments(projectRequest, previousProject);
-                PreviousProject project = previousProjectRepository.save(previousProject);
+                PreviousProject project = previousProjectRepository.save(
+                    previousProject);
                 uploadImagesAndDocuments(projectRequest, project);
                 response.setSuccess(true);
                 response.setId(Long.valueOf(project.getId()));
             } else {
                 response.addError("fatal", "Invalid professional ID");
             }
-        }
-        else {
+        } else {
             response.addError("fatal", "Bad Request");
         }
         return response;
@@ -56,21 +65,29 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
 
     @Override
     public ResponseEntity<PreviousProject> getPreviousProjectById(Integer id) {
-        Optional<PreviousProject> previousProject= previousProjectRepository.findById(id);
-        return previousProject.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<PreviousProject> previousProject =
+            previousProjectRepository.findById(
+                id);
+        return previousProject.map(ResponseEntity::ok).orElseGet(
+            () -> ResponseEntity.notFound().build());
     }
 
     @Override
-    public GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(ProjectRequest projectRequest, Integer id) throws IOException {
-        GenericAddOrUpdateResponse<ProjectRequest> response = new GenericAddOrUpdateResponse<>();
-        if (response.checkValidity(projectRequest)){
-            Optional<PreviousProject> existingProject=previousProjectRepository.findById(id);
-            if (existingProject.isPresent()){
-                PreviousProject project=existingProject.get();
+    public GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(
+        ProjectRequest projectRequest, Integer id) throws IOException {
+        GenericAddOrUpdateResponse<ProjectRequest> response =
+            new GenericAddOrUpdateResponse<>();
+        if (response.checkValidity(projectRequest)) {
+            Optional<PreviousProject> existingProject =
+                previousProjectRepository.findById(
+                    id);
+            if (existingProject.isPresent()) {
+                PreviousProject project = existingProject.get();
                 project.setName(projectRequest.getName());
                 project.setDescription(projectRequest.getDescription());
                 project.setCost(projectRequest.getCost());
-                project.setProjectFromEstructura(projectRequest.isProjectFromEstructura());
+                project.setProjectFromEstructura(
+                    projectRequest.isProjectFromEstructura());
                 project.setLocation(projectRequest.getLocation());
                 project.setCreatedBy(projectRequest.getProfessionalId());
                 saveImagesAndDocuments(projectRequest, project);
@@ -78,31 +95,42 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
                 uploadImagesAndDocuments(projectRequest, project);
                 response.setSuccess(true);
                 response.setId(Long.valueOf(project.getId()));
-            }
-            else {
-                response.addError("fatal","Project doesn't exist");
+            } else {
+                response.addError("fatal", "Project doesn't exist");
             }
         }
         return response;
     }
 
-    private void uploadImagesAndDocuments(ProjectRequest projectRequest, PreviousProject project) throws IOException {
-        int count= 0;
-        String uploadDir = "./files/project-files/" + project.getProfessional().getId() + "/" + project.getId();
-        FileUploadUtil.uploadImages(uploadDir, projectRequest.getMainImage(), project.getMainImageName(), projectRequest.getExtraImages(), project.getExtraImage1Name(), project.getExtraImage2Name(), project.getExtraImage3Name());
+    private void uploadImagesAndDocuments(ProjectRequest projectRequest,
+        PreviousProject project) throws IOException {
+        int count = 0;
+        String uploadDir =
+            "./files/project-files/" + project.getProfessional().getId() + "/" +
+            project.getId();
+        FileUploadUtil.uploadImages(uploadDir, projectRequest.getMainImage(),
+                                    project.getMainImageName(),
+                                    projectRequest.getExtraImages(),
+                                    project.getExtraImage1Name(),
+                                    project.getExtraImage2Name(),
+                                    project.getExtraImage3Name()
+        );
         if (projectRequest.getDocuments() != null) {
             for (MultipartFile document : projectRequest.getDocuments()) {
                 if (!document.isEmpty()) {
                     if (count == 0) {
-                        String fileName = StringUtils.cleanPath(project.getDocument1Name());
+                        String fileName = StringUtils.cleanPath(
+                            project.getDocument1Name());
                         FileUploadUtil.saveFile(uploadDir, document, fileName);
                     }
                     if (count == 1) {
-                        String fileName = StringUtils.cleanPath(project.getDocument2Name());
+                        String fileName = StringUtils.cleanPath(
+                            project.getDocument2Name());
                         FileUploadUtil.saveFile(uploadDir, document, fileName);
                     }
                     if (count == 2) {
-                        String fileName = StringUtils.cleanPath(project.getDocument3Name());
+                        String fileName = StringUtils.cleanPath(
+                            project.getDocument3Name());
                         FileUploadUtil.saveFile(uploadDir, document, fileName);
                     }
                     count++;
@@ -111,14 +139,18 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
         }
     }
 
-    private void saveImagesAndDocuments(ProjectRequest projectRequest, PreviousProject project) {
+    private void saveImagesAndDocuments(ProjectRequest projectRequest,
+        PreviousProject project) {
         String mainImageName = null;
-        if (projectRequest.getMainImage() != null) {
-            mainImageName = StringUtils.cleanPath(projectRequest.getMainImage().getOriginalFilename());
+        if (projectRequest.getMainImage() != null &&
+            projectRequest.getMainImage().getOriginalFilename() != null) {
+            mainImageName = StringUtils.cleanPath(
+                projectRequest.getMainImage().getOriginalFilename());
         }
         if (mainImageName != null) {
             project.setMainImage(mainImageName);
-            project.setMainImageName(FileUploadUtil.generateFileName(mainImageName));
+            project.setMainImageName(
+                FileUploadUtil.generateFileName(mainImageName));
         }
         if (projectRequest.getLocation() != null) {
             project.setLocation(projectRequest.getLocation());
@@ -126,14 +158,18 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
         int count = 0;
         if (projectRequest.getExtraImages() != null) {
             for (MultipartFile file : projectRequest.getExtraImages()) {
-                if (!file.isEmpty()) {
-                    String extraImageName = StringUtils.cleanPath(file.getOriginalFilename());
+                if (!file.isEmpty() && file.getOriginalFilename() != null) {
+                    String extraImageName = StringUtils.cleanPath(
+                        file.getOriginalFilename());
                     if (count == 0) project.setExtraImage1(extraImageName);
-                    project.setExtraImage1Name(FileUploadUtil.generateFileName(extraImageName));//check the image count is less than 3
+                    project.setExtraImage1Name(FileUploadUtil.generateFileName(
+                        extraImageName));//check the image count is less than 3
                     if (count == 1) project.setExtraImage2(extraImageName);
-                    project.setExtraImage2Name(FileUploadUtil.generateFileName(extraImageName));
+                    project.setExtraImage2Name(
+                        FileUploadUtil.generateFileName(extraImageName));
                     if (count == 2) project.setExtraImage3(extraImageName);
-                    project.setExtraImage3Name(FileUploadUtil.generateFileName(extraImageName));
+                    project.setExtraImage3Name(
+                        FileUploadUtil.generateFileName(extraImageName));
                     count++;
                 }
             }
@@ -141,14 +177,19 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
         count = 0;
         if (projectRequest.getDocuments() != null) {
             for (MultipartFile document : projectRequest.getDocuments()) {
-                if (!document.isEmpty()) {
-                    String documentName = StringUtils.cleanPath(document.getOriginalFilename());
+                if (!document.isEmpty() &&
+                    document.getOriginalFilename() != null) {
+                    String documentName = StringUtils.cleanPath(
+                        document.getOriginalFilename());
                     if (count == 0) project.setDocument1(documentName);
-                    project.setDocument1Name(FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
+                    project.setDocument1Name(FileUploadUtil.generateFileName(
+                        documentName));//check the image count is less than 3
                     if (count == 1) project.setDocument2(documentName);
-                    project.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                    project.setDocument2Name(
+                        FileUploadUtil.generateFileName(documentName));
                     if (count == 2) project.setDocument3(documentName);
-                    project.setDocument3Name(FileUploadUtil.generateFileName(documentName));
+                    project.setDocument3Name(
+                        FileUploadUtil.generateFileName(documentName));
                     count++;
                 }
             }
@@ -157,33 +198,33 @@ public class PreviousProjectServiceImpl implements PreviousProjectService{
 
     //
     @Override
-    public ResponseEntity<List<PreviousProject>> getPreviousProjectByProfessional(Professional professional) {
-        List<PreviousProject> previousProjects= previousProjectRepository.findAllByProfessional(professional);
-        if (!previousProjects.isEmpty()){
-            return  ResponseEntity.ok(previousProjects);
-        }
-        else {
+    public ResponseEntity<List<PreviousProject>> getPreviousProjectByProfessional(
+        Professional professional) {
+        List<PreviousProject> previousProjects =
+            previousProjectRepository.findAllByProfessional(
+                professional);
+        if (!previousProjects.isEmpty()) {
+            return ResponseEntity.ok(previousProjects);
+        } else {
             return ResponseEntity.noContent().build();
         }
     }
 
-//
+    //
 //
     @Override
-    public GenericDeleteResponse<Integer> deletePreviousProject(PreviousProject previousProject) {
-        GenericDeleteResponse<Integer> response=new GenericDeleteResponse<>();
+    public GenericDeleteResponse<Integer> deletePreviousProject(
+        PreviousProject previousProject) {
+        GenericDeleteResponse<Integer> response = new GenericDeleteResponse<>();
         previousProjectRepository.delete(previousProject);
-        Optional<PreviousProject> project= previousProjectRepository.findById(previousProject.getId());
-        if (project.isPresent()){
+        Optional<PreviousProject> project = previousProjectRepository.findById(
+            previousProject.getId());
+        if (project.isPresent()) {
             response.setSuccess(false);
-            response.setMessage("Somthing went wrong please try again");
-            return response;
-
-        }
-        else {
+            response.setMessage("Something went wrong please try again");
+        } else {
             response.setSuccess(true);
-            return response;
         }
-
+        return response;
     }
 }

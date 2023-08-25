@@ -17,7 +17,7 @@ public class ServiceProviderController {
     private final ServiceProviderService serviceProviderService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ServiceProvider>> getAllServiceProviders(){
+    public ResponseEntity<List<ServiceProvider>> getAllServiceProviders() {
         return serviceProviderService.getAllServiceProviders();
     }
 }

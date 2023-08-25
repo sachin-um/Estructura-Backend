@@ -5,12 +5,7 @@ import com.Estructura.API.model.User;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.responses.ValidatedResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.Builder.Default;
 
 @Builder
@@ -18,18 +13,18 @@ import lombok.Builder.Default;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterResponse extends ValidatedResponse<RegisterRequest>{
+public class RegisterResponse extends ValidatedResponse<RegisterRequest> {
     @JsonProperty("success")
     @Default
     private boolean success = false;
-    @JsonProperty("error_message")
-    private String errormessage;
-    @JsonProperty("logged_user")
+    @JsonProperty("errorMessage")
+    private String errorMessage;
+    @JsonProperty("loggedUser")
     private User loggedUser;
     @JsonProperty("role")
     private Role role;
-    @JsonProperty("access_token")
+    @JsonProperty("accessToken")
     private String accessToken;
-    @JsonProperty("refresh_token")
+    @JsonProperty("refreshToken")
     private String refreshToken;
 }

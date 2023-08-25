@@ -1,7 +1,6 @@
 package com.Estructura.API.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 

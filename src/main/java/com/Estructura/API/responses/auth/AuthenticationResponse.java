@@ -5,56 +5,51 @@ import com.Estructura.API.model.ServiceProviderType;
 import com.Estructura.API.requests.auth.AuthenticationRequest;
 import com.Estructura.API.responses.ValidatedResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse extends ValidatedResponse<AuthenticationRequest>{
-    // Auth response fields
-    @JsonProperty("success")
-    @Default
-    private boolean success = false;
-    @JsonProperty("access_token")
-    private String accessToken;
-    @JsonProperty("refresh_token")
-    private String refreshToken;
-    // User State fields
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("firstname")
-    private String firstname;
-    @JsonProperty("lastname")
-    private String lastname;
-    @JsonProperty("email")
-    private String email;
-    @JsonProperty("role")
-    private Role role;
-    @JsonProperty("ProfileImage")
-    private String profileImage;
-    @JsonProperty("ProfileImageName")
-    private String profileImageName;
-    @JsonProperty("serviceProviderType")
-    private ServiceProviderType serviceProviderType;
+public class AuthenticationResponse extends ValidatedResponse<AuthenticationRequest> {
+  // Auth response fields
+  @JsonProperty("success")
+  @Default
+  private boolean success = false;
+  @JsonProperty("accessToken")
+  private String accessToken;
+  @JsonProperty("refreshToken")
+  private String refreshToken;
+  // User State fields
+  @JsonProperty("id")
+  private Integer id;
+  @JsonProperty("firstName")
+  private String firstName;
+  @JsonProperty("lastName")
+  private String lastName;
+  @JsonProperty("email")
+  private String email;
+  @JsonProperty("role")
+  private Role role;
+  @JsonProperty("profileImage")
+  private String profileImage;
+  @JsonProperty("profileImageName")
+  private String profileImageName;
+  @JsonProperty("serviceProviderType")
+  private ServiceProviderType serviceProviderType;
 }
 
 
 /*
 export interface UserState {
-  ProfileImage: null | string;
-  ProfileImageName: null | string;
+  profileImage: null | string;
+  profileImageName: null | string;
   email: string;
-  firstname: string;
+  firstName: string;
   id: number;
-  lastname: string;
+  lastName: string;
   role: Role;
 }
 
@@ -64,8 +59,8 @@ export interface SignInRequest {
 }
 
 export interface AuthenticationResponse extends ValidatedResponse, UserState {
-  access_token: null | string;
-  refresh_token: null | string;
+  accessToken: null | string;
+  refreshToken: null | string;
   success: boolean;
 }
 */

@@ -19,29 +19,25 @@ public class VerificationToken {
     private String token;
     private Date expirationTime;
     private TokenType tokenType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
     public VerificationToken(String token, User user, TokenType tokenType) {
         super();
-        this.token = token;
-        this.user = user;
-        this.expirationTime=this.getTokenExpirationTime();
-        this.tokenType=tokenType;
+        this.token          = token;
+        this.user           = user;
+        this.expirationTime = this.getTokenExpirationTime();
+        this.tokenType      = tokenType;
     }
-
     public VerificationToken(String token) {
         super();
-        this.token = token;
-        this.expirationTime=this.getTokenExpirationTime();
+        this.token          = token;
+        this.expirationTime = this.getTokenExpirationTime();
     }
-
     public Date getTokenExpirationTime() {
-        Calendar calendar=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
-        calendar.add(Calendar.MINUTE,1);
+        calendar.add(Calendar.MINUTE, 1);
         return new Date(calendar.getTime().getTime());
     }
 }

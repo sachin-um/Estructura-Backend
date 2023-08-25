@@ -13,7 +13,7 @@ import lombok.*;
 public class customerRequestResponse {
     @JsonProperty("success")
     @Builder.Default
-    private boolean success=false;
+    private boolean success = false;
 
     @JsonProperty("error_message")
     private String errormessage;
