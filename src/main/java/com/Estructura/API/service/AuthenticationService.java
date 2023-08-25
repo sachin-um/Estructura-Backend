@@ -55,7 +55,7 @@ public class AuthenticationService {
     private final ServiceAreaRepository serviceAreaRepository;
 
     public RegisterResponse register(@ModelAttribute RegisterRequest request,
-        boolean preVerified) {
+            boolean preVerified) {
         var response = new RegisterResponse();
 
         // Pre-check fields that aren't checked by response.checkValidity()
@@ -65,418 +65,406 @@ public class AuthenticationService {
 
         // Save tokens and user to database if user information is valid
         if (response.checkValidity(request)) {
-            User         user      = null;
-            User         savedUser = null;
+            User user = null;
+            User savedUser = null;
             List<String> qualifications;
             List<String> specializations;
             // List<String> serviceAreas;
             String profileImageName = null;
             if (request.getProfileImage() != null &&
-                request.getProfileImage().getOriginalFilename() != null) {
+                    request.getProfileImage().getOriginalFilename() != null) {
                 profileImageName = StringUtils.cleanPath(
-                    request.getProfileImage().getOriginalFilename());
+                        request.getProfileImage().getOriginalFilename());
             }
             if (request.getRole().equals(CUSTOMER)) {
-                Customer customer = Customer.builder()
-                                            .isVerified(preVerified)
-                                            .firstName(request.getFirstName())
-                                            .lastName(request.getLastName())
-                                            .email(request.getEmail())
-                                            .password(passwordEncoder.encode(
-                                                request.getPassword()))
-                                            .contactNo(request.getContactNo())
-                                            .addressLine1(
-                                                request.getAddressLine1())
-                                            .addressLine2(
-                                                request.getAddressLine2())
-                                            .city(request.getCity())
-                                            .district(request.getDistrict())
-                                            .role(request.getRole())
-                                            .build();
-                user      = customer;
+                Customer customer = Customer.builder().isVerified(preVerified)
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail()).password(
+                                passwordEncoder.encode(request.getPassword()))
+                        .contactNo(request.getContactNo())
+                        .addressLine1(
+                                request.getAddressLine1())
+                        .addressLine2(
+                                request.getAddressLine2())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
+                        .role(request.getRole()).build();
+                user = customer;
                 savedUser = customerService.saveCustomer(customer);
             } else if (request.getRole().equals(ADMIN)) {
-                Admin admin = Admin.builder()
-                                   .isVerified(preVerified)
-                                   .firstName(request.getFirstName())
-                                   .lastName(request.getLastName())
-                                   .email(request.getEmail())
-                                   .password(passwordEncoder.encode(
-                                       request.getPassword()))
-                                   .role(request.getRole())
-                                   .assignedArea(request.getAssignedArea())
-                                   .build();
-                user      = admin;
+                Admin admin = Admin.builder().isVerified(preVerified)
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail()).password(
+                                passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .assignedArea(request.getAssignedArea())
+                        .build();
+                user = admin;
                 savedUser = adminService.saveAdmin(admin);
             } else if (request.getRole().equals(RETAILSTORE)) {
                 RetailStore retailStore = RetailStore.builder()
-                                                     .isVerified(preVerified)
-                                                     .firstName(
-                                                         request.getFirstName())
-                                                     .lastName(
-                                                         request.getLastName())
-                                                     .email(request.getEmail())
-                                                     .password(
-                                                         passwordEncoder.encode(
-                                                             request.getPassword()))
-                                                     .role(request.getRole())
-                                                     .nic(request.getNic())
-                                                     .serviceProviderType(
-                                                         RETAILER)
-                                                     .businessName(
-                                                         request.getBusinessName())
-                                                     .businessContactNo(
-                                                         request.getBusinessContactNo())
-                                                     .businessCategory(
-                                                         request.getBusinessCategory())
-                                                     .registrationNo(
-                                                         request.getRegistrationNo())
-                                                     .addressLine1(
-                                                         request.getBusinessAddressLine1())
-                                                     .addressLine2(
-                                                         request.getBusinessAddressLine2())
-                                                     .city(
-                                                         request.getBusinessCity())
-                                                     .district(
-                                                         request.getBusinessDistrict())
-                                                     .build();
+                        .isVerified(preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(
+                                request.getLastName())
+                        .email(request.getEmail())
+                        .password(
+                                passwordEncoder.encode(
+                                        request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(
+                                RETAILER)
+                        .businessName(
+                                request.getBusinessName())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessCategory(
+                                request.getBusinessCategory())
+                        .registrationNo(
+                                request.getRegistrationNo())
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(
+                                request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .build();
                 if (profileImageName != null) {
                     retailStore.setProfileImage(profileImageName);
                     retailStore.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = retailStore;
+                user = retailStore;
                 savedUser = retailStoreService.saveRetailStore(retailStore);
             } else if (request.getRole().equals(RENTER)) {
-                Renter renter = Renter.builder()
-                                      .isVerified(preVerified)
-                                      .firstName(request.getFirstName())
-                                      .lastName(request.getLastName())
-                                      .email(request.getEmail())
-                                      .password(passwordEncoder.encode(
-                                          request.getPassword()))
-                                      .role(request.getRole())
-                                      .nic(request.getNic())
-                                      .serviceProviderType(RENTINGCOMPANY)
-                                      .businessName(request.getBusinessName())
-                                      .businessContactNo(
-                                          request.getBusinessContactNo())
-                                      .registrationNo(
-                                          request.getRegistrationNo())
-                                      .addressLine1(
-                                          request.getBusinessAddressLine1())
-                                      .addressLine2(
-                                          request.getBusinessAddressLine2())
-                                      .city(request.getBusinessCity())
-                                      .district(request.getBusinessDistrict())
-                                      .build();
+                Renter renter = Renter.builder().isVerified(preVerified)
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail()).password(
+                                passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(RENTINGCOMPANY)
+                        .businessName(request.getBusinessName())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .registrationNo(
+                                request.getRegistrationNo())
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(request.getBusinessDistrict())
+                        .build();
                 if (profileImageName != null) {
                     renter.setProfileImage(profileImageName);
                     renter.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = renter;
+                user = renter;
                 savedUser = renterService.saveRenter(renter);
             } else if (request.getRole().equals(LANDSCAPEARCHITECT)) {
-                LandscapeArchitect landscapeArchitect =
-                    LandscapeArchitect.builder()
-                                      .isVerified(
-                                          preVerified)
-                                      .firstName(
-                                          request.getFirstName())
-                                      .lastName(
-                                          request.getLastName())
-                                      .email(
-                                          request.getEmail())
-                                      .businessName(
-                                          request.getBusinessName())
-                                      .businessContactNo(
-                                          request.getBusinessContactNo())
-                                      .password(
-                                          passwordEncoder.encode(
-                                              request.getPassword()))
-                                      .role(
-                                          request.getRole())
-                                      .nic(
-                                          request.getNic())
-                                      .serviceProviderType(
-                                          PROFESSIONAL)
-                                      .addressLine1(
-                                          request.getBusinessAddressLine1())
-                                      .addressLine2(
-                                          request.getBusinessAddressLine2())
-                                      .city(
-                                          request.getBusinessCity())
-                                      .district(
-                                          request.getBusinessDistrict())
-                                      .minRate(
-                                          request.getMinRate())
-                                      .maxRate(
-                                          request.getMaxRate())
-                                      .sLIARegNumber(
-                                          request.getSliaRegNumber())
-                                      .build();
+                LandscapeArchitect landscapeArchitect = LandscapeArchitect.builder()
+                        .isVerified(
+                                preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(
+                                request.getLastName())
+                        .email(
+                                request.getEmail())
+                        .businessName(
+                                request.getBusinessName())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .password(
+                                passwordEncoder.encode(
+                                        request.getPassword()))
+                        .role(
+                                request.getRole())
+                        .nic(
+                                request.getNic())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(
+                                request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .minRate(
+                                request.getMinRate())
+                        .maxRate(
+                                request.getMaxRate())
+                        .sliaRegNumber(
+                                request.getSliaRegNumber())
+                        .build();
                 if (profileImageName != null) {
                     landscapeArchitect.setProfileImage(profileImageName);
                     landscapeArchitect.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = landscapeArchitect;
+                user = landscapeArchitect;
                 savedUser = landscapeArchitectService.saveLandscapeArchitect(
-                    landscapeArchitect);
+                        landscapeArchitect);
             } else if (request.getRole().equals(ARCHITECT)) {
                 Architect architect = Architect.builder()
-                                               .isVerified(preVerified)
-                                               .firstName(
-                                                   request.getFirstName())
-                                               .lastName(request.getLastName())
-                                               .email(request.getEmail())
-                                               .businessContactNo(
-                                                   request.getBusinessContactNo())
-                                               .businessName(
-                                                   request.getBusinessName())
-                                               .password(passwordEncoder.encode(
-                                                   request.getPassword()))
-                                               .role(request.getRole())
-                                               .nic(request.getNic())
-                                               .serviceProviderType(
-                                                   PROFESSIONAL)
-                                               .addressLine1(
-                                                   request.getBusinessAddressLine1())
-                                               .addressLine2(
-                                                   request.getBusinessAddressLine2())
-                                               .city(request.getCity())
-                                               .district(request.getDistrict())
-                                               .sliaRegNumber(
-                                                   request.getSliaRegNumber())
-                                               .minRate(request.getMinRate())
-                                               .maxRate(request.getMaxRate())
-                                               .build();
+                        .isVerified(preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .password(passwordEncoder.encode(
+                                request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
+                        .sliaRegNumber(
+                                request.getSliaRegNumber())
+                        .minRate(request.getMinRate())
+                        .maxRate(request.getMaxRate())
+                        .build();
                 if (profileImageName != null) {
                     architect.setProfileImage(profileImageName);
                     architect.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = architect;
+                user = architect;
                 savedUser = architectService.saveArchitect(architect);
             } else if (request.getRole().equals(CONSTRUCTIONCOMPANY)) {
-                ConstructionCompany constructionCompany =
-                    ConstructionCompany.builder()
-                                       .isVerified(
-                                           preVerified)
-                                       .firstName(
-                                           request.getFirstName())
-                                       .lastName(
-                                           request.getLastName())
-                                       .email(
-                                           request.getEmail())
-                                       .password(
-                                           passwordEncoder.encode(
-                                               request.getPassword()))
-                                       .businessRegNumber(
-                                           request.getRegistrationNo())
-                                       .businessName(
-                                           request.getBusinessName())
-                                       .addressLine1(
-                                           request.getBusinessAddressLine1())
-                                       .addressLine2(
-                                           request.getBusinessAddressLine2())
-                                       .businessContactNo(
-                                           request.getBusinessContactNo())
-                                       .city(
-                                           request.getBusinessCity())
-                                       .district(
-                                           request.getBusinessDistrict())
-                                       .role(
-                                           request.getRole())
-                                       .serviceProviderType(
-                                           PROFESSIONAL)
-                                       .nic(
-                                           request.getNic())
-                                       .minRate(
-                                           request.getMinRate())
-                                       .maxRate(
-                                           request.getMaxRate())
-                                       .build();
+                ConstructionCompany constructionCompany = ConstructionCompany.builder()
+                        .isVerified(
+                                preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(
+                                request.getLastName())
+                        .email(
+                                request.getEmail())
+                        .password(
+                                passwordEncoder.encode(
+                                        request.getPassword()))
+                        .businessRegNumber(
+                                request.getRegistrationNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .city(
+                                request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .role(
+                                request.getRole())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .nic(
+                                request.getNic())
+                        .minRate(
+                                request.getMinRate())
+                        .maxRate(
+                                request.getMaxRate())
+                        .build();
                 if (profileImageName != null) {
                     constructionCompany.setProfileImage(profileImageName);
                     constructionCompany.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = constructionCompany;
+                user = constructionCompany;
                 savedUser = constructionCompanyService.saveConstructionCompany(
-                    constructionCompany);
+                        constructionCompany);
             } else if (request.getRole().equals(INTERIORDESIGNER)) {
                 InteriorDesigner interiorDesigner = InteriorDesigner.builder()
-                                                                    .isVerified(
-                                                                        preVerified)
-                                                                    .firstName(
-                                                                        request.getFirstName())
-                                                                    .lastName(
-                                                                        request.getLastName())
-                                                                    .email(
-                                                                        request.getEmail())
-                                                                    .businessContactNo(
-                                                                        request.getBusinessContactNo())
-                                                                    .businessName(
-                                                                        request.getBusinessName())
-                                                                    .password(
-                                                                        passwordEncoder.encode(
-                                                                            request.getPassword()))
-                                                                    .role(
-                                                                        request.getRole())
-                                                                    .nic(
-                                                                        request.getNic())
-                                                                    .serviceProviderType(
-                                                                        PROFESSIONAL)
-                                                                    .addressLine1(
-                                                                        request.getBusinessAddressLine1())
-                                                                    .addressLine2(
-                                                                        request.getBusinessAddressLine2())
-                                                                    .city(
-                                                                        request.getBusinessCity())
-                                                                    .district(
-                                                                        request.getBusinessDistrict())
-                                                                    .sLIDRegNumber(
-                                                                        request.getSlidRegNumber())
-                                                                    .minRate(
-                                                                        request.getMinRate())
-                                                                    .maxRate(
-                                                                        request.getMaxRate())
-                                                                    .build();
+                        .isVerified(
+                                preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(
+                                request.getLastName())
+                        .email(
+                                request.getEmail())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .password(
+                                passwordEncoder.encode(
+                                        request.getPassword()))
+                        .role(
+                                request.getRole())
+                        .nic(
+                                request.getNic())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(
+                                request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .sLIDRegNumber(
+                                request.getSlidRegNumber())
+                        .minRate(
+                                request.getMinRate())
+                        .maxRate(
+                                request.getMaxRate())
+                        .build();
                 if (profileImageName != null) {
                     interiorDesigner.setProfileImage(profileImageName);
                     interiorDesigner.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = interiorDesigner;
+                user = interiorDesigner;
                 savedUser = interiorDesignerService.saveInteriorDesigner(
-                    interiorDesigner);
+                        interiorDesigner);
             } else if (request.getRole().equals(MASONWORKER)) {
                 MasonWorker masonWorker = MasonWorker.builder()
-                                                     .isVerified(preVerified)
-                                                     .firstName(
-                                                         request.getFirstName())
-                                                     .lastName(
-                                                         request.getLastName())
-                                                     .email(request.getEmail())
-                                                     .businessContactNo(
-                                                         request.getBusinessContactNo())
-                                                     .businessName(
-                                                         request.getBusinessName())
-                                                     .password(
-                                                         passwordEncoder.encode(
-                                                             request.getPassword()))
-                                                     .role(request.getRole())
-                                                     .nic(request.getNic())
-                                                     .serviceProviderType(
-                                                         PROFESSIONAL)
-                                                     .addressLine1(
-                                                         request.getBusinessAddressLine1())
-                                                     .addressLine2(
-                                                         request.getBusinessAddressLine2())
-                                                     .city(
-                                                         request.getBusinessCity())
-                                                     .district(
-                                                         request.getBusinessDistrict())
-                                                     .minRate(
-                                                         request.getMinRate())
-                                                     .maxRate(
-                                                         request.getMaxRate())
-                                                     .build();
+                        .isVerified(preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(
+                                request.getLastName())
+                        .email(request.getEmail())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .password(
+                                passwordEncoder.encode(
+                                        request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(
+                                request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .minRate(
+                                request.getMinRate())
+                        .maxRate(
+                                request.getMaxRate())
+                        .build();
                 if (profileImageName != null) {
                     masonWorker.setProfileImage(profileImageName);
                     masonWorker.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = masonWorker;
+                user = masonWorker;
                 savedUser = masonWorkerService.saveMasonWorker(masonWorker);
             } else if (request.getRole().equals(PAINTER)) {
-                Painter painter = Painter.builder()
-                                         .isVerified(preVerified)
-                                         .firstName(request.getFirstName())
-                                         .lastName(request.getLastName())
-                                         .email(request.getEmail())
-                                         .businessContactNo(
-                                             request.getBusinessContactNo())
-                                         .businessName(
-                                             request.getBusinessName())
-                                         .password(passwordEncoder.encode(
-                                             request.getPassword()))
-                                         .role(request.getRole())
-                                         .nic(request.getNic())
-                                         .serviceProviderType(PROFESSIONAL)
-                                         .addressLine1(
-                                             request.getBusinessAddressLine1())
-                                         .addressLine2(
-                                             request.getBusinessAddressLine2())
-                                         .city(request.getBusinessCity())
-                                         .district(
-                                             request.getBusinessDistrict())
-                                         .minRate(request.getMinRate())
-                                         .maxRate(request.getMaxRate())
-                                         .build();
+                Painter painter = Painter.builder().isVerified(preVerified)
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .password(passwordEncoder.encode(
+                                request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .minRate(request.getMinRate())
+                        .maxRate(request.getMaxRate()).build();
                 if (profileImageName != null) {
                     painter.setProfileImage(profileImageName);
                     painter.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = painter;
+                user = painter;
                 savedUser = painterService.savePainter(painter);
             } else if (request.getRole().equals(CARPENTER)) {
                 Carpenter carpenter = Carpenter.builder()
-                                               .isVerified(preVerified)
-                                               .firstName(
-                                                   request.getFirstName())
-                                               .lastName(request.getLastName())
-                                               .email(request.getEmail())
-                                               .businessContactNo(
-                                                   request.getBusinessContactNo())
-                                               .businessName(
-                                                   request.getBusinessName())
-                                               .password(passwordEncoder.encode(
-                                                   request.getPassword()))
-                                               .role(request.getRole())
-                                               .nic(request.getNic())
-                                               .serviceProviderType(
-                                                   PROFESSIONAL)
-                                               .addressLine1(
-                                                   request.getBusinessAddressLine1())
-                                               .addressLine2(
-                                                   request.getBusinessAddressLine2())
-                                               .city(request.getBusinessCity())
-                                               .district(
-                                                   request.getBusinessDistrict())
-                                               .minRate(request.getMinRate())
-                                               .maxRate(request.getMaxRate())
-                                               .build();
+                        .isVerified(preVerified)
+                        .firstName(
+                                request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .businessContactNo(
+                                request.getBusinessContactNo())
+                        .businessName(
+                                request.getBusinessName())
+                        .password(passwordEncoder.encode(
+                                request.getPassword()))
+                        .role(request.getRole())
+                        .nic(request.getNic())
+                        .serviceProviderType(
+                                PROFESSIONAL)
+                        .addressLine1(
+                                request.getBusinessAddressLine1())
+                        .addressLine2(
+                                request.getBusinessAddressLine2())
+                        .city(request.getBusinessCity())
+                        .district(
+                                request.getBusinessDistrict())
+                        .minRate(request.getMinRate())
+                        .maxRate(request.getMaxRate())
+                        .build();
                 if (profileImageName != null) {
                     carpenter.setProfileImage(profileImageName);
                     carpenter.setProfileImageName(
-                        FileUploadUtil.generateFileName(profileImageName));
+                            FileUploadUtil.generateFileName(profileImageName));
                 }
-                user      = carpenter;
+                user = carpenter;
                 savedUser = carpenterService.saveCarpenter(carpenter);
             }
 
             if (savedUser != null) {
                 if (request.getSpecialization() != null &&
-                    !request.getSpecialization().isBlank()) {
+                        !request.getSpecialization().isBlank()) {
                     specializations = Arrays.stream(
-                                                request.getSpecialization().split(","))
-                                            .map(String::trim)
-                                            .collect(Collectors.toList());
+                            request.getSpecialization().split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
                     User finalSavedUSer = savedUser;
                     specializations.forEach(specialization -> {
                         saveSpecialization(finalSavedUSer, specialization);
                     });
                 }
                 if (request.getQualification() != null &&
-                    !request.getQualification().isBlank()) {
+                        !request.getQualification().isBlank()) {
                     qualifications = Arrays.stream(
-                                               request.getQualification().split(","))
-                                           .map(String::trim)
-                                           .collect(Collectors.toList());
+                            request.getQualification().split(",")).map(String::trim)
+                            .collect(Collectors.toList());
                     User finalSavedUser = savedUser;
                     qualifications.forEach(qualification -> {
                         saveQualification(finalSavedUser, qualification);
@@ -488,17 +476,15 @@ public class AuthenticationService {
                         saveServiceArea(finalSavedUser, serviceArea);
                     });
                 }
-                var jwtToken     = jwtService.generateToken(user);
+                var jwtToken = jwtService.generateToken(user);
                 var refreshToken = jwtService.generateRefreshToken(user);
                 saveUserToken(savedUser, jwtToken);
                 if (savedUser.getProfileImageName() != null) {
-                    String uploadDir =
-                        "./files/profile-images/" + savedUser.getId();
+                    String uploadDir = "./files/profile-images/" + savedUser.getId();
                     try {
                         FileUploadUtil.saveFile(uploadDir,
-                                                request.getProfileImage(),
-                                                savedUser.getProfileImageName()
-                        );
+                                request.getProfileImage(),
+                                savedUser.getProfileImageName());
                     } catch (IOException e) {
                         System.out.println("Error saving file");
                     }
@@ -511,7 +497,7 @@ public class AuthenticationService {
             } else {
                 response.setSuccess(false);
                 response.setErrorMessage(
-                    "Something went wrong please try again");
+                        "Something went wrong please try again");
             }
         }
 
@@ -520,38 +506,37 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var response = new AuthenticationResponse();
-        var user = userService.findByEmail(request.getEmail())
-                              .orElse(null);
+        var user = userService.findByEmail(request.getEmail()).orElse(null);
         if (user == null) {
             response.addError("email", "Email does not exist");
         } else if (!user.isVerified()) {
             response.addError("account", "Email is not verified");
         } else if (!passwordEncoder.matches(request.getPassword(),
-                                            user.getPassword()
-        )) {
+                user.getPassword())) {
             response.addError("password", "Password is incorrect");
         } else {
             try {
                 authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                    ));
-                var jwtToken     = jwtService.generateToken(user);
-                var refreshToken = jwtService.generateRefreshToken(user);
+                        new UsernamePasswordAuthenticationToken(request.getEmail(),
+                                request.getPassword()));
                 revokeAllUserTokens(user);
+                var jwtToken = jwtService.generateToken(user);
+                var refreshToken = jwtService.generateRefreshToken(user);
+                // ! Sometimes this is necessary for some reason
+                // revokeAllUserTokens(user); // ! <-
                 saveUserToken(user, jwtToken);
                 response.setSuccess(true);
                 response.setAccessToken(jwtToken);
                 response.setRefreshToken(refreshToken);
                 response.setId(user.getId());
                 response.setRole(user.getRole());
-                if (user.getRole() == ARCHITECT || user.getRole() == CARPENTER
-                    || user.getRole() == INTERIORDESIGNER ||
-                    user.getRole() == LANDSCAPEARCHITECT
-                    || user.getRole() == MASONWORKER ||
-                    user.getRole() == PAINTER
-                    || user.getRole() == CONSTRUCTIONCOMPANY) {
+                if (user.getRole() == ARCHITECT ||
+                        user.getRole() == CARPENTER ||
+                        user.getRole() == INTERIORDESIGNER ||
+                        user.getRole() == LANDSCAPEARCHITECT ||
+                        user.getRole() == MASONWORKER ||
+                        user.getRole() == PAINTER ||
+                        user.getRole() == CONSTRUCTIONCOMPANY) {
                     response.setServiceProviderType(PROFESSIONAL);
                 } else if (user.getRole() == RETAILSTORE) {
                     response.setServiceProviderType(RETAILER);
@@ -575,7 +560,7 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(
-            user.getId());
+                user.getId());
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {
@@ -586,20 +571,16 @@ public class AuthenticationService {
     }
 
     private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                         .user(user)
-                         .token(jwtToken)
-                         .tokenType(TokenType.BEARER)
-                         .revoked(false)
-                         .expired(false)
-                         .build();
+        var token = Token.builder().user(user).token(jwtToken)
+                .tokenType(TokenType.BEARER).revoked(false)
+                .expired(false).build();
         tokenRepository.save(token);
     }
 
     private void saveQualification(User user, String qualification) {
         var theQualification = Qualification.builder()
-                                            .qualification(qualification)
-                                            .build();
+                .qualification(qualification)
+                .build();
         if (user.getRole().equals(ARCHITECT)) {
             theQualification.setArchitect((Architect) user);
         }
@@ -607,9 +588,8 @@ public class AuthenticationService {
     }
 
     private void saveServiceArea(User user, String serviceArea) {
-        var theServiceArea = ServiceArea.builder()
-                                        .serviceArea(serviceArea)
-                                        .build();
+        var theServiceArea = ServiceArea.builder().serviceArea(serviceArea)
+                .build();
         if (user.getRole().equals(ARCHITECT)) {
             theServiceArea.setProfessional((Professional) user);
         }
@@ -618,64 +598,55 @@ public class AuthenticationService {
 
     private void saveSpecialization(User user, String specialization) {
         var theSpecialization = Specialization.builder()
-                                              .specialization(specialization)
-                                              .build();
+                .specialization(specialization)
+                .build();
         if (user.getRole().equals(ARCHITECT)) {
             theSpecialization.setArchitect((Architect) user);
         }
         specializationRepository.save(theSpecialization);
     }
 
-    public RefreshTokenResponse refreshToken(
-        HttpServletRequest request
-        ) {
+    public RefreshTokenResponse refreshToken(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return RefreshTokenResponse.builder()
-                                       .success(false)
-                                       .message("Refresh token is missing")
-                                       .build();
+            return RefreshTokenResponse.builder().success(false)
+                    .message("Refresh token is missing")
+                    .build();
         }
         refreshToken = authHeader.substring(7);
         try {
             userEmail = jwtService.extractUsername(refreshToken);
             if (userEmail != null) {
-                var user = this.userService.findByEmail(userEmail)
-                                           .orElse(null);
+                var user = this.userService.findByEmail(userEmail).orElse(null);
                 if (user == null) {
-                    return RefreshTokenResponse.builder()
-                                               .success(false)
-                                               .message("User not found")
-                                               .build();
+                    return RefreshTokenResponse.builder().success(false)
+                            .message("User not found")
+                            .build();
                 } else if (jwtService.isTokenValid(refreshToken, user)) {
                     var accessToken = jwtService.generateToken(user);
                     revokeAllUserTokens(user);
                     saveUserToken(user, accessToken);
-                    return RefreshTokenResponse.builder()
-                                               .success(true)
-                                               .accessToken(accessToken)
-                                               .refreshToken(refreshToken)
-                                               .build();
+                    return RefreshTokenResponse.builder().success(true)
+                            .accessToken(accessToken)
+                            .refreshToken(refreshToken)
+                            .build();
                 } else {
-                    return RefreshTokenResponse.builder()
-                                               .success(false)
-                                               .message(
-                                                   "Refresh token is invalid")
-                                               .build();
+                    return RefreshTokenResponse.builder().success(false)
+                            .message(
+                                    "Refresh token is invalid")
+                            .build();
                 }
             } else {
-                return RefreshTokenResponse.builder()
-                                           .success(false)
-                                           .message("Refresh token is invalid")
-                                           .build();
+                return RefreshTokenResponse.builder().success(false)
+                        .message("Refresh token is invalid")
+                        .build();
             }
         } catch (ExpiredJwtException e) {
-            return RefreshTokenResponse.builder()
-                                       .success(false)
-                                       .message("Refresh token is expired")
-                                       .build();
+            return RefreshTokenResponse.builder().success(false)
+                    .message("Refresh token is expired")
+                    .build();
         }
     }
 }
