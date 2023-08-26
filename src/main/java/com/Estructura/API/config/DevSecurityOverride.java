@@ -64,6 +64,6 @@ public class DevSecurityOverride implements WebMvcConfigurer {
         Path   fileUploadDir  = Paths.get("./files");
         String fileUploadPath = fileUploadDir.toFile().getAbsolutePath();
         registry.addResourceHandler("/files/**")
-                .addResourceLocations("file:/" + fileUploadPath + "/");
+                .addResourceLocations("file:" + fileUploadPath + "/");
     }
 }
