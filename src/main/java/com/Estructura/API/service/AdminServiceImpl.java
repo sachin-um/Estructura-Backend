@@ -10,13 +10,16 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
+
     @Override
     public Admin saveAdmin(Admin admin) {
-        Optional<Admin> theAdmin=adminRepository.findByEmail(admin.getEmail());
-        if (theAdmin.isPresent()){
-            throw new UserAlreadyExistsException("A user with" +admin.getEmail() +"already exists");
+        Optional<Admin> theAdmin = adminRepository.findByEmail(
+            admin.getEmail());
+        if (theAdmin.isPresent()) {
+            throw new UserAlreadyExistsException(
+                "A user with" + admin.getEmail() + "already exists");
         }
         return adminRepository.save(admin);
     }

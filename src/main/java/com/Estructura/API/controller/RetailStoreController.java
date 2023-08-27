@@ -17,7 +17,7 @@ public class RetailStoreController {
     private final RetailStoreService retailStoreService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<RetailStore>> getAllRetailStores(){
+    public ResponseEntity<List<RetailStore>> getAllRetailStores() {
         return retailStoreService.getAllRetailStore();
     }
 }

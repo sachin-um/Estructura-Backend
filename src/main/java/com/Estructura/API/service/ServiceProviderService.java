@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ServiceProviderService {
-    public Optional<ServiceProvider> findById(Integer id);
+    Optional<ServiceProvider> findById(Integer id);
 
-    public ResponseEntity<List<ServiceProvider>> getAllServiceProviders();
+    ResponseEntity<List<ServiceProvider>> getAllServiceProviders();
 }

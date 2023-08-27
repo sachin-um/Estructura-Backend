@@ -1,10 +1,5 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.OrderEntity;
-import com.Estructura.API.model.OrderRequestBody;
-
-import java.util.List;
-
 public interface CartService {
 
 //    public String addToCart(OrderRequestBody orderRequestBody);

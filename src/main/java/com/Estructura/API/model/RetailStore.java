@@ -8,16 +8,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="retailstore")
+@Table(name = "retailstore")
 @Entity
-@PrimaryKeyJoinColumn(name="id")
-public class RetailStore extends ServiceProvider{
+@PrimaryKeyJoinColumn(name = "id")
+public class RetailStore extends ServiceProvider {
     @Column(nullable = false)
     @NotBlank(message = "Business name required")
     private String businessName;

@@ -1,15 +1,13 @@
 package com.Estructura.API.requests.rentingItems;
 
-import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import com.Estructura.API.model.RentingCategory;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -22,7 +20,6 @@ public class RentingItemRequest {
     private String scale;
     private Integer renterId;
     private RentingCategory category;
-
     private MultipartFile mainImage;
     private List<MultipartFile> extraImages;
 }

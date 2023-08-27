@@ -8,7 +8,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenericDeleteResponse<RequestClass> extends ValidatedResponse<RequestClass> {
+public class GenericDeleteResponse<RequestClass> extends
+    ValidatedResponse<RequestClass> {
     @JsonProperty("success")
     private boolean success;
     @JsonProperty("message")

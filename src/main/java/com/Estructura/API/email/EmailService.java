@@ -16,9 +16,10 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     @Async
-    public void send(String receiver, String mail, String subject ,String sender) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        var messageHelper = new MimeMessageHelper(message);
+    public void send(String receiver, String mail, String subject,
+        String sender) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message       = mailSender.createMimeMessage();
+        var         messageHelper = new MimeMessageHelper(message);
         messageHelper.setFrom("horizonstruevent@gmail.com", sender);
         messageHelper.setTo(receiver);
         messageHelper.setSubject(subject);

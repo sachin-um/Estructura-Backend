@@ -21,44 +21,34 @@ public class RentingItem {
     private Long id;
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false,length=1500)
+    @Column(nullable = false, length = 1500)
     private String description;
-
-
     @Column(columnDefinition = "numeric(20,2)", nullable = false)
     private Double price;
     @Column(nullable = false)
     private String scale;
-
     @Column(nullable = false)
     private RentingCategory category;
-
-    @Column(nullable = true)
-    private String MainImage;
-    @Column(nullable = true)
-    private String MainImageName;
-
-    @Column(nullable = true)
-    private String ExtraImage1;
-    @Column(nullable = true)
-    private String ExtraImage1Name;
-
-    @Column(nullable = true)
-    private String ExtraImage2;
-    @Column(nullable = true)
-    private String ExtraImage2Name;
-
-    @Column(nullable = true)
-    private String ExtraImage3;
-    @Column(nullable = true)
-    private String ExtraImage3Name;
-    @Column( nullable = false, updatable = false)
+    @Column()
+    private String mainImage;
+    @Column()
+    private String mainImageName;
+    @Column()
+    private String extraImage1;
+    @Column()
+    private String extraImage1Name;
+    @Column()
+    private String extraImage2;
+    @Column()
+    private String extraImage2Name;
+    @Column()
+    private String extraImage3;
+    @Column()
+    private String extraImage3Name;
+    @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date dateAdded;
-
     private Integer createdBy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id")
     @JsonIgnore

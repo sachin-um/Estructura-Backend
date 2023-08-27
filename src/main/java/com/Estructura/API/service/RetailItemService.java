@@ -1,7 +1,6 @@
 package com.Estructura.API.service;
 
 import com.Estructura.API.model.RetailItem;
-
 import com.Estructura.API.model.RetailItemType;
 import com.Estructura.API.model.RetailStore;
 import com.Estructura.API.requests.retailItems.RetailItemRequest;
@@ -17,27 +16,22 @@ import java.util.List;
 public interface RetailItemService {
 
 
-//    List<RetailItem> fetchAll();
-//
-//    Optional<RetailItem> findRetailItemById(Long id);
-//
-//    List<RetailItem> fetchByType(RetailItemType type);
-//
-//    List<RetailItem> fetchByID(Long id);
-//
-//    void addRetailItem(RetailItem retailItem);
+    GenericAddOrUpdateResponse<RetailItemRequest> saveItem(
+        @ModelAttribute RetailItemRequest retailItemRequest) throws IOException;
 
-    public GenericAddOrUpdateResponse<RetailItemRequest> saveItem(@ModelAttribute RetailItemRequest retailItemRequest) throws IOException;
+    ResponseEntity<List<RetailItem>> getAllItems();
 
-    public ResponseEntity<List<RetailItem>> getAllItems();
+    ResponseEntity<RetailItem> getItemById(Long id);
 
-    public ResponseEntity<RetailItem> getItemById(Long id);
+    ResponseEntity<List<RetailItem>> getItemsByType(RetailItemType type);
 
-    public ResponseEntity<List<RetailItem>> getItemsByType(RetailItemType type);
+    ResponseEntity<List<RetailItem>> getItemsByRetailStore(
+        RetailStore retailStore);
 
-    public ResponseEntity<List<RetailItem>> getItemsByRetailStore(RetailStore retailStore);
-    public GenericAddOrUpdateResponse<RetailItemRequest> updateItem(@ModelAttribute RetailItemRequest retailItemRequest,Long id) throws IOException;
+    GenericAddOrUpdateResponse<RetailItemRequest> updateItem(
+        @ModelAttribute RetailItemRequest retailItemRequest,
+        Long id) throws IOException;
 
-    public GenericDeleteResponse<Long> deleteItem(RetailItem retailItem);
+    GenericDeleteResponse<Long> deleteItem(RetailItem retailItem);
 
 }

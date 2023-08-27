@@ -12,11 +12,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogResponse extends ValidatedResponse<BlogRequest> {
-    @JsonProperty("success")
-    @Builder.Default
-    private boolean success = false;
-    @JsonProperty("error_message")
-    private String errormessage;
-    @JsonProperty("blog")
-    private Blog blog;
+  @JsonProperty("success")
+  @Builder.Default
+  private boolean success = false;
+  @JsonProperty("error_message")
+  private String errormessage;
+  @JsonProperty("blog")
+  private Blog blog;
 }

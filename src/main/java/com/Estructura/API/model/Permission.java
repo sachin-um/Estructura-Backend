@@ -2,10 +2,8 @@ package com.Estructura.API.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.List;
-
+@Getter
 @RequiredArgsConstructor
 public enum Permission {
 
@@ -17,10 +15,8 @@ public enum Permission {
     CUSTOMER_READ("customer:read"),
     CUSTOMER_UPDATE("customer:update"),
     CUSTOMER_CREATE("customer:create"),
-    CUSTOMER_DELETE("customer:delete")
-    ;
+    CUSTOMER_DELETE("customer:delete");
 
-    @Getter
     private final String permission;
 
 

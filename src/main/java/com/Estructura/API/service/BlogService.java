@@ -1,6 +1,8 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.*;
+import com.Estructura.API.model.Blog;
+import com.Estructura.API.model.Tag;
+import com.Estructura.API.model.User;
 import com.Estructura.API.requests.blogs.BlogRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
@@ -12,13 +14,20 @@ import java.util.List;
 import java.util.Set;
 
 public interface BlogService {
-    public GenericAddOrUpdateResponse<BlogRequest> saveOrUpdateBlog(@ModelAttribute BlogRequest blogRequest) throws IOException;
-    public GenericAddOrUpdateResponse<BlogRequest> updateBlog(@ModelAttribute BlogRequest blogRequest,long blogId) throws IOException;
-    public ResponseEntity<Blog> getBlogById(Long id);
-    public ResponseEntity<List<Blog>> getBlogsbyUser(User user);
+    GenericAddOrUpdateResponse<BlogRequest> saveOrUpdateBlog(
+        @ModelAttribute BlogRequest blogRequest) throws IOException;
 
-    public ResponseEntity<List<Blog>> getBlogsbyTags(Set<Tag> tags);
+    GenericAddOrUpdateResponse<BlogRequest> updateBlog(
+        @ModelAttribute BlogRequest blogRequest,
+        long blogId) throws IOException;
 
-    public ResponseEntity<List<Blog>> getAllBlogs();
-    public GenericDeleteResponse<Long> deleteBlog(Blog blog);
+    ResponseEntity<Blog> getBlogById(Long id);
+
+    ResponseEntity<List<Blog>> getBlogsByUser(User user);
+
+    ResponseEntity<List<Blog>> getBlogsByTags(Set<Tag> tags);
+
+    ResponseEntity<List<Blog>> getAllBlogs();
+
+    GenericDeleteResponse<Long> deleteBlog(Blog blog);
 }

@@ -12,8 +12,9 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ProfessionalServiceImpl implements ProfessionalService{
+public class ProfessionalServiceImpl implements ProfessionalService {
     private final ProfessionalRepository professionalRepository;
+
     @Override
     public Optional<Professional> findById(Integer id) {
         return professionalRepository.findById(id);
@@ -21,22 +22,22 @@ public class ProfessionalServiceImpl implements ProfessionalService{
 
     @Override
     public ResponseEntity<List<Professional>> getAllProfessionals() {
-        List<Professional> professionals=professionalRepository.findAll();
-        if (!professionals.isEmpty()){
+        List<Professional> professionals = professionalRepository.findAll();
+        if (!professionals.isEmpty()) {
             return ResponseEntity.ok(professionals);
-        }
-        else {
+        } else {
             return ResponseEntity.noContent().build();
         }
     }
 
     @Override
     public ResponseEntity<List<Professional>> findByRole(Role role) {
-        List<Professional> professionals=professionalRepository.findProfessionalByRole(role);
-        if (!professionals.isEmpty()){
+        List<Professional> professionals =
+            professionalRepository.findProfessionalByRole(
+                role);
+        if (!professionals.isEmpty()) {
             return ResponseEntity.ok(professionals);
-        }
-        else {
+        } else {
             return ResponseEntity.noContent().build();
         }
     }

@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RenterService {
-    public Renter saveRenter(Renter renter);
-    public Optional<Renter> findById(Integer id);
+    Renter saveRenter(Renter renter);
 
-    public ResponseEntity<List<Renter>> findAll();
+    Optional<Renter> findById(Integer id);
+
+    ResponseEntity<List<Renter>> findAll();
 }
