@@ -59,6 +59,6 @@ public class RegisterRequest {
     private String nic;
     private String serviceProviderType;
     private String specialization; // Service provider page 5
-        private String qualification;
+    private String qualification;
     private List<String> serviceAreas; // Service provider page 4
 }

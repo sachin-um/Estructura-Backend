@@ -68,7 +68,6 @@ public class RentingItemController {
     public GenericAddOrUpdateResponse<RentingItemRequest> updateItem(
             @PathVariable("itemId") Long itemId,
             @ModelAttribute RentingItemRequest rentingItemRequest) throws IOException {
-        GenericAddOrUpdateResponse<RentingItemRequest> response=new GenericAddOrUpdateResponse<>();
        return rentingItemService.updateItem(rentingItemRequest,itemId);
 
     }
