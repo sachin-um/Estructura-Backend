@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
-     @GetMapping
-     public String get(){
-         return "GET:: customer controller";
-     }
+    @GetMapping
+    public String get() {
+        return "GET:: customer controller";
+    }
 }

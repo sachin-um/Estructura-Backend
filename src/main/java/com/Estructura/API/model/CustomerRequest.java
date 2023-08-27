@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name="customer_request")
+@Table(name = "customer_request")
 public class CustomerRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,40 +31,40 @@ public class CustomerRequest {
     @Column(nullable = false)
     private Double maxPrice;
 
-    @Column(nullable = true)
+    @Column()
     private String image1;
-    @Column(nullable = true)
+    @Column()
     private String image1Name;
 
-    @Column(nullable = true)
+    @Column()
     private String image2;
-    @Column(nullable = true)
+    @Column()
     private String image2Name;
 
-    @Column(nullable = true)
+    @Column()
     private String image3;
-    @Column(nullable = true)
+    @Column()
     private String image3Name;
 
-    @Column(nullable = true)
+    @Column()
     private String Document1;
-    @Column(nullable = true)
+    @Column()
     private String Document1Name;
 
-    @Column(nullable = true)
+    @Column()
     private String Document2;
-    @Column(nullable = true)
+    @Column()
     private String Document2Name;
 
-    @Column(nullable = true)
+    @Column()
     private String Document3;
 
-    @Column(nullable = true)
+    @Column()
     private String Document3Name;
 
     private Integer createdBy;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     @CreationTimestamp
     private Date dateAdded;
 

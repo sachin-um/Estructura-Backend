@@ -10,13 +10,16 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ArchitectServiceImpl implements ArchitectService{
+public class ArchitectServiceImpl implements ArchitectService {
     private final ArchitectRepository architectRepository;
+
     @Override
     public Architect saveArchitect(Architect architect) {
-        Optional<Architect> theArchitect=architectRepository.findByEmail(architect.getEmail());
-        if (theArchitect.isPresent()){
-            throw new UserAlreadyExistsException("A user with" +architect.getEmail() +"already exists");
+        Optional<Architect> theArchitect = architectRepository.findByEmail(
+            architect.getEmail());
+        if (theArchitect.isPresent()) {
+            throw new UserAlreadyExistsException(
+                "A user with" + architect.getEmail() + "already exists");
         }
         return architectRepository.save(architect);
     }

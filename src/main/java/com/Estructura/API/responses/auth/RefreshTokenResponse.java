@@ -1,7 +1,6 @@
 package com.Estructura.API.responses.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -10,10 +9,10 @@ import lombok.Builder;
 public class RefreshTokenResponse {
     @JsonProperty("success")
     private boolean success;
-    @JsonProperty("error_message")
+    @JsonProperty("errorMessage")
     private String message;
-    @JsonProperty("access_token")
-    private String access_token;
-    @JsonProperty("refresh_token")
-    private String refresh_token;
+    @JsonProperty("accessToken")
+    private String accessToken;
+    @JsonProperty("refreshToken")
+    private String refreshToken;
 }

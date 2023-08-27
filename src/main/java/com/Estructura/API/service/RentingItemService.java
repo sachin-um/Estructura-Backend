@@ -1,6 +1,8 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.*;
+import com.Estructura.API.model.Renter;
+import com.Estructura.API.model.RentingCategory;
+import com.Estructura.API.model.RentingItem;
 import com.Estructura.API.requests.rentingItems.RentingItemRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
@@ -11,14 +13,22 @@ import java.io.IOException;
 import java.util.List;
 
 public interface RentingItemService {
-    public GenericAddOrUpdateResponse<RentingItemRequest> saveOrUpdateItem(@ModelAttribute RentingItemRequest rentingItemRequest) throws IOException;
+    GenericAddOrUpdateResponse<RentingItemRequest> saveOrUpdateItem(
+        @ModelAttribute
+        RentingItemRequest rentingItemRequest) throws IOException;
 
-    public ResponseEntity<List<RentingItem>> getAllItem();
-    public ResponseEntity<RentingItem> getItemById(Long id);
-    public ResponseEntity<List<RentingItem>> getItemsbyRenter(Renter renter);
+    ResponseEntity<List<RentingItem>> getAllItem();
 
-    public GenericAddOrUpdateResponse<RentingItemRequest> updateItem(@ModelAttribute RentingItemRequest rentingItemRequest,Long id) throws IOException;
+    ResponseEntity<RentingItem> getItemById(Long id);
 
-    public ResponseEntity<List<RentingItem>> getItemsbyCategory(RentingCategory rentingCategory);
-    public GenericDeleteResponse<Long> deleteItem(RentingItem rentingItem);
+    ResponseEntity<List<RentingItem>> getItemsbyRenter(Renter renter);
+
+    GenericAddOrUpdateResponse<RentingItemRequest> updateItem(
+        @ModelAttribute RentingItemRequest rentingItemRequest,
+        Long id) throws IOException;
+
+    ResponseEntity<List<RentingItem>> getItemsbyCategory(
+        RentingCategory rentingCategory);
+
+    GenericDeleteResponse<Long> deleteItem(RentingItem rentingItem);
 }

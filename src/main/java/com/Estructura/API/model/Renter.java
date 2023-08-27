@@ -8,16 +8,17 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="renter")
+@Table(name = "renter")
 @Entity
-@PrimaryKeyJoinColumn(name="id")
-public class Renter extends ServiceProvider{
+@PrimaryKeyJoinColumn(name = "id")
+public class Renter extends ServiceProvider {
     @Column(nullable = false)
     @NotBlank(message = "Business name required")
     private String businessName;

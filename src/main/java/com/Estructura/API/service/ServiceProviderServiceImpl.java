@@ -11,8 +11,9 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ServiceProviderServiceImpl implements ServiceProviderService{
+public class ServiceProviderServiceImpl implements ServiceProviderService {
     private final ServiceProviderRepository serviceProviderRepository;
+
     @Override
     public Optional<ServiceProvider> findById(Integer id) {
         return serviceProviderRepository.findById(id);
@@ -20,11 +21,11 @@ public class ServiceProviderServiceImpl implements ServiceProviderService{
 
     @Override
     public ResponseEntity<List<ServiceProvider>> getAllServiceProviders() {
-        List<ServiceProvider> serviceProviders= serviceProviderRepository.findAll();
-        if (!serviceProviders.isEmpty()){
+        List<ServiceProvider> serviceProviders =
+            serviceProviderRepository.findAll();
+        if (!serviceProviders.isEmpty()) {
             return ResponseEntity.ok(serviceProviders);
-        }
-        else {
+        } else {
             return ResponseEntity.noContent().build();
         }
     }

@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="requestTargetItemType")
+@Table(name = "requestTargetItemType")
 @Entity
 public class RequestTargetItemType {
     @Id
@@ -18,8 +18,7 @@ public class RequestTargetItemType {
     private Integer id;
     @Enumerated(EnumType.STRING)
     private RetailItemType retailItemType;
-
     @ManyToOne
-    @JoinColumn(name="request_id")
+    @JoinColumn(name = "request_id")
     private CustomerRequest customerRequest;
 }

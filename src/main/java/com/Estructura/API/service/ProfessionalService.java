@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProfessionalService {
-    public Optional<Professional> findById(Integer id);
+    Optional<Professional> findById(Integer id);
 
-    public ResponseEntity<List<Professional>> getAllProfessionals();
+    ResponseEntity<List<Professional>> getAllProfessionals();
 
-    public ResponseEntity<List<Professional>> findByRole(Role role);
+    ResponseEntity<List<Professional>> findByRole(Role role);
 }

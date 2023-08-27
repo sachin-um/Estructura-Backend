@@ -12,18 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class Token {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String token;
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
-
     private boolean expired;
-    private  boolean revoked;
-
+    private boolean revoked;
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 }

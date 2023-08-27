@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="seriveArea")
+@Table(name = "serviceArea")
 @Entity
 public class ServiceArea {
     @Id

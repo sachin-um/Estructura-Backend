@@ -12,9 +12,18 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PreviousProjectService {
-    public GenericAddOrUpdateResponse<ProjectRequest> saveOrUpdateProject(@ModelAttribute ProjectRequest projectRequest) throws IOException;
-    public ResponseEntity<PreviousProject> getPreviousProjectById(Integer id);
-    public GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(@ModelAttribute ProjectRequest projectRequest, Integer id) throws IOException;
-    public ResponseEntity<List<PreviousProject>> getPreviousProjectByProfessional(Professional professional);
-    public GenericDeleteResponse<Integer> deletePreviousProject(PreviousProject previousProject);
+    GenericAddOrUpdateResponse<ProjectRequest> saveOrUpdateProject(
+        @ModelAttribute ProjectRequest projectRequest) throws IOException;
+
+    ResponseEntity<PreviousProject> getPreviousProjectById(Integer id);
+
+    GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(
+        @ModelAttribute ProjectRequest projectRequest,
+        Integer id) throws IOException;
+
+    ResponseEntity<List<PreviousProject>> getPreviousProjectByProfessional(
+        Professional professional);
+
+    GenericDeleteResponse<Integer> deletePreviousProject(
+        PreviousProject previousProject);
 }

@@ -24,52 +24,49 @@ public class BlogController {
 
     @PostMapping("/add")
     public GenericAddOrUpdateResponse<BlogRequest> addBlog(
-            @ModelAttribute BlogRequest blogRequest) throws IOException {
+        @ModelAttribute BlogRequest blogRequest) throws IOException {
         return blogService.saveOrUpdateBlog(blogRequest);
     }
 
 
     @GetMapping("/blog/{blogId}") // resp entity <Project>
-    public ResponseEntity<Blog> blog(@PathVariable("blogId") Long blogId){
+    public ResponseEntity<Blog> blog(@PathVariable("blogId") Long blogId) {
         return blogService.getBlogById(blogId);
     }
 
     @GetMapping("/all/{userid}") // resp ent <List<Project
-    public ResponseEntity<List<Blog>> getUserBlogs(@PathVariable("userid") int userid){
-        Optional<User> user=userService.findById(userid);
-        if (user.isPresent()){
-            return blogService.getBlogsbyUser(user.get());
-        }
-        else {
+    public ResponseEntity<List<Blog>> getUserBlogs(
+        @PathVariable("userid") int userid) {
+        Optional<User> user = userService.findById(userid);
+        if (user.isPresent()) {
+            return blogService.getBlogsByUser(user.get());
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @GetMapping("/all") // resp ent <List<Project
-    public ResponseEntity<List<Blog>> getBlogs(){
-       return blogService.getAllBlogs();
+    public ResponseEntity<List<Blog>> getBlogs() {
+        return blogService.getAllBlogs();
     }
 
     @PostMapping("/update/{blogId}") // equal to add
     public GenericAddOrUpdateResponse<BlogRequest> updateBlog(
-            @PathVariable("blogId") Long blogId,
-            @ModelAttribute BlogRequest blogRequest) throws IOException {
-        return blogService.updateBlog(blogRequest,blogId);
+        @PathVariable("blogId") Long blogId,
+        @ModelAttribute BlogRequest blogRequest) throws IOException {
+        return blogService.updateBlog(blogRequest, blogId);
     }
 
     @DeleteMapping("/delete/{blogId}") // generic bool
-    public GenericDeleteResponse<Long> deleteBlog(@PathVariable("blogId") Long blogId) {
-        GenericDeleteResponse<Long> response=new GenericDeleteResponse<>();
-        ResponseEntity<Blog> blog=blogService.getBlogById(blogId);
-
+    public GenericDeleteResponse<Long> deleteBlog(
+        @PathVariable("blogId") Long blogId) {
+        GenericDeleteResponse<Long> response = new GenericDeleteResponse<>();
+        ResponseEntity<Blog>        blog     = blogService.getBlogById(blogId);
         if (blog.getStatusCode().is2xxSuccessful()) {
             return blogService.deleteBlog(blog.getBody());
-
         } else {
             response.setSuccess(false);
             return response;
         }
     }
-
-
-
 }

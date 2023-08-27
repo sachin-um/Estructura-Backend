@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    public User saveUser(User user);
-    public ResponseEntity<List<User>> getAllUsers();
-    public Optional<User> findByEmail(String email);
+    User saveUser(User user);
 
-    public ResponseEntity<List<User>> findByRole(Role role);
-    public Optional<User> findById(Integer id);
+    ResponseEntity<List<User>> getAllUsers();
+
+    Optional<User> findByEmail(String email);
+
+    ResponseEntity<List<User>> findByRole(Role role);
+
+    Optional<User> findById(Integer id);
 
     void resetUserPassword(User user, String newPassword);
 }

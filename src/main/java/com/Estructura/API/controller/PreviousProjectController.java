@@ -24,45 +24,49 @@ public class PreviousProjectController {
 
     @PostMapping("/add")
     public GenericAddOrUpdateResponse<ProjectRequest> addPreviousProject(
-            @ModelAttribute ProjectRequest projectRequest) throws IOException {
+        @ModelAttribute ProjectRequest projectRequest) throws IOException {
         return previousProjectService.saveOrUpdateProject(projectRequest);
-
-
-
     }
-    @GetMapping("/project/{projectId}") // resp entity <Project>
-    public ResponseEntity<PreviousProject> previousProject(@PathVariable("projectId") int projectId){
+
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<PreviousProject> previousProject(
+        @PathVariable("projectId") int projectId) {
         return previousProjectService.getPreviousProjectById(projectId);
-
-
     }
-//
-    @GetMapping("/all/{userid}") // resp ent <List<Project
-    public ResponseEntity<List<PreviousProject>> getPreviousProjects(@PathVariable("userid") int userid){
-        Optional<Professional> professional=professionalService.findById(userid);
-        if (professional.isPresent()){
-            return previousProjectService.getPreviousProjectByProfessional(professional.get());
-        }
-        else {
+
+    @GetMapping("/all/{userid}")
+    public ResponseEntity<List<PreviousProject>> getPreviousProjects(
+        @PathVariable("userid") int userid) {
+        Optional<Professional> professional = professionalService.findById(
+            userid);
+        if (professional.isPresent()) {
+            return previousProjectService.getPreviousProjectByProfessional(
+                professional.get());
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
-//
-    @PostMapping("/update/{projectId}") // equal to add
+
+    //
+    @PostMapping("/update/{projectId}")
     public GenericAddOrUpdateResponse<ProjectRequest> updatePreviousProject(
-            @PathVariable("projectId") int projectId,
-            @ModelAttribute ProjectRequest projectRequest) throws IOException {
-        return previousProjectService.updatePreviousProject(projectRequest,projectId);
-
+        @PathVariable("projectId") int projectId,
+        @ModelAttribute ProjectRequest projectRequest) throws IOException {
+        return previousProjectService.updatePreviousProject(projectRequest,
+                                                            projectId
+        );
     }
-//
-    @DeleteMapping("/delete/{projectId}") // generic bool
-    public GenericDeleteResponse<Integer> deleteProject(@PathVariable("projectId") int projectId) {
-        GenericDeleteResponse<Integer> response=new GenericDeleteResponse<>();
-        ResponseEntity<PreviousProject> project=previousProjectService.getPreviousProjectById(projectId);
 
+    @DeleteMapping("/delete/{projectId}")
+    public GenericDeleteResponse<Integer> deleteProject(
+        @PathVariable("projectId") int projectId) {
+        GenericDeleteResponse<Integer> response = new GenericDeleteResponse<>();
+        ResponseEntity<PreviousProject> project =
+            previousProjectService.getPreviousProjectById(
+            projectId);
         if (project.getStatusCode().is2xxSuccessful()) {
-            return previousProjectService.deletePreviousProject(project.getBody());
+            return previousProjectService.deletePreviousProject(
+                project.getBody());
 
         } else {
             response.setSuccess(false);

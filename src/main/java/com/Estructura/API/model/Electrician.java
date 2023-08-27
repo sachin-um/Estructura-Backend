@@ -9,16 +9,17 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="electrician")
+@Table(name = "electrician")
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class Electrician extends ServiceProvider{
+public class Electrician extends ServiceProvider {
     @OneToMany(mappedBy = "electrician")
     private List<Specialization> specializations;
 
