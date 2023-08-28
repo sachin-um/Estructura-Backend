@@ -1,13 +1,12 @@
 package com.Estructura.API.controller;
 
 import com.Estructura.API.model.User;
+import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,4 +28,6 @@ public class UserController {
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.badRequest().build());
     }
+//    @PostMapping("update/{user_id}")
+//    public GenericAddOrUpdateResponse<RegisterRequest> update
 }

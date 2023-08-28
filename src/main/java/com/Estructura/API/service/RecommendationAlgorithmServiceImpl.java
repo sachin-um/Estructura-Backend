@@ -1,39 +1,70 @@
 package com.Estructura.API.service;
 
+import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
+import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorithmService{
 
+    private final ProfessionalService professionalService;
+    private final RetailItemService retailItemService;
     //--------------------------------- weighting logic start -------------------------------------------------------//
 
 
     // Initialize the map with professionals and retail items
-    private final Map<String, Integer> ProfessionalWeights = new HashMap<>();
-    private final Map<String, Integer> RetailItemWeights = new HashMap<>();
+//    private final Map<String, Integer> ProfessionalWeights = new HashMap<>();
+//    private final Map<String, Integer> RetailItemWeights = new HashMap<>();
+
+    final String[] professionals = {"architect", "interior designer", "construction company",
+            "landscape architect", "painter", "home builder", "carpenter"};
+//        for (String professional : professionals) {
+//        ProfessionalWeights.put(professional, 0);
+//    }
+    final Map<String, Integer> ProfessionalWeights = Arrays.stream(professionals)
+        .collect(HashMap::new, (map, profession) -> map.put(profession, 0), HashMap::putAll);
+
+    // Initialize retail item weights
+    final String[] retailItems = {"furniture", "hardware","hardware-paint", "bathware", "gardenware", "lighting"};
+//        for (String retailItem : retailItems) {
+//        RetailItemWeights.put(retailItem, 0);
+//    }
+    final Map<String, Integer> RetailItemWeights = Arrays.stream(retailItems)
+        .collect(HashMap::new, (map, item) -> map.put(item, 0), HashMap::putAll);
+
+
 
     public static void modifyWeight(Map<String, Integer> map, String key, int modifier) {
         int existingValue = map.getOrDefault(key, 0);
         map.put(key, existingValue + modifier);
     }
 
-    public RecommendationAlgorithmServiceImpl() {
-        // Initialize professional weights
-        String[] professionals = {"architect", "interior designer", "construction company",
-                "landscape architect", "painter", "home builder", "carpenter"};
-        for (String professional : professionals) {
-            ProfessionalWeights.put(professional, 0);
-        }
-
-        // Initialize retail item weights
-        String[] retailItems = {"furniture", "hardware","hardware-paint", "bathware", "gardenware", "lighting"};
-        for (String retailItem : retailItems) {
-            RetailItemWeights.put(retailItem, 0);
-        }
+    @Override
+    public ResponseEntity<RecommendationResponse> recommend(RecommendationRequest recommendationRequest) {
+        return null;
     }
+//    public RecommendationAlgorithmServiceImpl() {
+//        // Initialize professional weights
+//        String[] professionals = {"architect", "interior designer", "construction company",
+//                "landscape architect", "painter", "home builder", "carpenter"};
+//        for (String professional : professionals) {
+//            ProfessionalWeights.put(professional, 0);
+//        }
+//
+//        // Initialize retail item weights
+//        String[] retailItems = {"furniture", "hardware","hardware-paint", "bathware", "gardenware", "lighting"};
+//        for (String retailItem : retailItems) {
+//            RetailItemWeights.put(retailItem, 0);
+//        }
+//    }
 
+    //begining
     public void firstStageValues(String FirstChoice){
 
         switch (FirstChoice) {
@@ -352,6 +383,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     //--------------------------------- district mapping logic start ---------------------------------------------------//
 
+
     private final Map<String, List<String>> districtAdjacencyMap = new HashMap<>();
 
     public void addEdge(String district1, String district2) {
@@ -487,77 +519,79 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         return RetailItemWeights;
     }
 
-    public static void main(String[] args) {
-        // Initialize the recommendation algorithm
-        RecommendationAlgorithmServiceImpl initializer = new RecommendationAlgorithmServiceImpl();
 
-        Map<String, Integer> professionalWeights = initializer.getProfessionalWeights();
-        Map<String, Integer> retailItemWeights = initializer.getRetailItemWeights();
 
-        System.out.println("Professional Weights: " + professionalWeights);
-        System.out.println("Retail Item Weights: " + retailItemWeights);
-
-        // Set the first stage values
-        initializer.firstStageValues("construction");
-
-        System.out.println("Professional Weights: " + professionalWeights);
-        System.out.println("Retail Item Weights: " + retailItemWeights);
-
-        initializer.secondStageValues("construction", Arrays.asList("commercial buildings", "sky scrapers"));
-
-        // Print the initialized maps
-        System.out.println("Professional Weights: " + professionalWeights);
-        System.out.println("Retail Item Weights: " + retailItemWeights);
-
-        // Filter and sort the professionalWeights map
-        List<Map.Entry<String, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
-        filteredProfessionalWeights.removeIf(entry -> entry.getValue() <= 0);
-        filteredProfessionalWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-        // Filter and sort the retailItemWeights map
-        List<Map.Entry<String, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
-        filteredRetailItemWeights.removeIf(entry -> entry.getValue() <= 0);
-        filteredRetailItemWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-        System.out.println("Filtered and Sorted Professional Weights: " + filteredProfessionalWeights);
-        System.out.println("Filtered and Sorted Retail Item Weights: " + filteredRetailItemWeights);
-
-        List<String> filteredProfessionalTags = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : filteredProfessionalWeights) {
-            filteredProfessionalTags.add(entry.getKey());
-        }
-
-        List<String> filteredRetailItemTags = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : filteredRetailItemWeights) {
-            filteredRetailItemTags.add(entry.getKey());
-        }
-
-        System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
-        System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
-
-        //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
-        //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
-
-        List<String> tempvar1 = new ArrayList<>();
-        List<String> tempvar2 = new ArrayList<>();
-
-        initializer.initializeGraph();
-
-        //todo: get the user selected district and assign it to userSelectedDistrict variable
-        var userSelectedDistrict = "ampara";
-
-        List<String> adjacentDistrictsBasedOnUserSelectedDistrict = initializer.getAdjacentDistricts(userSelectedDistrict);
-        System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
-
-        List<String> resultedProfessionals = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "Professional", tempvar1);
-        List<String> resultedRetailstores = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore", tempvar2);
-
-        // Sort professionals based on rating (highest to lowest)
-        // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
-
-        // Sort professionals based on rating (highest to lowest)
-        // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
-
-    }
+//    public static void main(String[] args) {
+//        // Initialize the recommendation algorithm
+//        RecommendationAlgorithmServiceImpl initializer = new RecommendationAlgorithmServiceImpl();
+//
+//        Map<String, Integer> professionalWeights = initializer.getProfessionalWeights();
+//        Map<String, Integer> retailItemWeights = initializer.getRetailItemWeights();
+//
+//        System.out.println("Professional Weights: " + professionalWeights);
+//        System.out.println("Retail Item Weights: " + retailItemWeights);
+//
+//        // Set the first stage values
+//        initializer.firstStageValues("construction");
+//
+//        System.out.println("Professional Weights: " + professionalWeights);
+//        System.out.println("Retail Item Weights: " + retailItemWeights);
+//
+//        initializer.secondStageValues("construction", Arrays.asList("commercial buildings", "sky scrapers"));
+//
+//        // Print the initialized maps
+//        System.out.println("Professional Weights: " + professionalWeights);
+//        System.out.println("Retail Item Weights: " + retailItemWeights);
+//
+//        // Filter and sort the professionalWeights map
+//        List<Map.Entry<String, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
+//        filteredProfessionalWeights.removeIf(entry -> entry.getValue() <= 0);
+//        filteredProfessionalWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+//
+//        // Filter and sort the retailItemWeights map
+//        List<Map.Entry<String, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
+//        filteredRetailItemWeights.removeIf(entry -> entry.getValue() <= 0);
+//        filteredRetailItemWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+//
+//        System.out.println("Filtered and Sorted Professional Weights: " + filteredProfessionalWeights);
+//        System.out.println("Filtered and Sorted Retail Item Weights: " + filteredRetailItemWeights);
+//
+//        List<String> filteredProfessionalTags = new ArrayList<>();
+//        for (Map.Entry<String, Integer> entry : filteredProfessionalWeights) {
+//            filteredProfessionalTags.add(entry.getKey());
+//        }
+//
+//        List<String> filteredRetailItemTags = new ArrayList<>();
+//        for (Map.Entry<String, Integer> entry : filteredRetailItemWeights) {
+//            filteredRetailItemTags.add(entry.getKey());
+//        }
+//
+//        System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
+//        System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
+//
+//        //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
+//        //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
+//
+//        List<String> tempvar1 = new ArrayList<>();
+//        List<String> tempvar2 = new ArrayList<>();
+//
+//        initializer.initializeGraph();
+//
+//        //todo: get the user selected district and assign it to userSelectedDistrict variable
+//        var userSelectedDistrict = "ampara";
+//
+//        List<String> adjacentDistrictsBasedOnUserSelectedDistrict = initializer.getAdjacentDistricts(userSelectedDistrict);
+//        System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
+//
+//        List<String> resultedProfessionals = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "Professional", tempvar1);
+//        List<String> resultedRetailstores = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore", tempvar2);
+//
+//        // Sort professionals based on rating (highest to lowest)
+//        // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
+//
+//        // Sort professionals based on rating (highest to lowest)
+//        // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
+//
+//    }
 
 }
