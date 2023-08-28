@@ -1,7 +1,9 @@
 package com.Estructura.API.service;
 
+
 import com.Estructura.API.model.Professional;
 import com.Estructura.API.model.RetailItem;
+
 import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
 import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
 import lombok.AllArgsConstructor;
@@ -121,6 +123,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
         // Sort professionals based on rating (highest to lowest)
         // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
+
         return null;
     }
 //    public RecommendationAlgorithmServiceImpl() {

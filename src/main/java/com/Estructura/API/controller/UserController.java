@@ -3,6 +3,7 @@ package com.Estructura.API.controller;
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.requests.users.UserUpdateRequest;
+
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.service.UserService;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,5 @@ public class UserController {
     public GenericAddOrUpdateResponse<UserUpdateRequest> updateUser(@PathVariable("user_id") int id, @ModelAttribute UserUpdateRequest userUpdateRequest){
         return userService.update(userUpdateRequest,id);
     }
+
 }
