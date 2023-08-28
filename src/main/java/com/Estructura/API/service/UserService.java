@@ -20,7 +20,7 @@ public interface UserService {
 
     Optional<User> findById(Integer id);
 
-//    GenericAddOrUpdateResponse<UserUpdateRequest>
+    GenericAddOrUpdateResponse<UserUpdateRequest> update(UserUpdateRequest userUpdateRequest, Integer id);
 
     void resetUserPassword(User user, String newPassword);
 }

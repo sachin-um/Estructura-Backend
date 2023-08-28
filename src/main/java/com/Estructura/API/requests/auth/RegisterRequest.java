@@ -47,11 +47,6 @@ public class RegisterRequest {
     private String registrationNo;
 
     // ServiceProvider
-
-    private String businessAddressLine1;
-    private String businessAddressLine2;
-    private String businessCity;
-    private String businessDistrict;
     private String nic;
     private String serviceProviderType;
     private String specialization; // Service provider page 5

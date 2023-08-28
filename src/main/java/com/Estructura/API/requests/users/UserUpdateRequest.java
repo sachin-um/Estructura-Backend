@@ -27,7 +27,6 @@ public class UserUpdateRequest {
     private String businessName;
     private String businessContactNo;
     private String businessCategory;
-
     private String businessAddressLine1;
     private String businessAddressLine2;
     private String businessCity;

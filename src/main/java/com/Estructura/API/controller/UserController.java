@@ -29,8 +29,8 @@ public class UserController {
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.badRequest().build());
     }
-//    @PostMapping("update/{user_id}")
-//    public GenericAddOrUpdateResponse<UserUpdateRequest> updateUser(@PathVariable("user_id") int id, @ModelAttribute UserUpdateRequest userUpdateRequest){
-//
-//    }
+    @PostMapping("update/{user_id}")
+    public GenericAddOrUpdateResponse<UserUpdateRequest> updateUser(@PathVariable("user_id") int id, @ModelAttribute UserUpdateRequest userUpdateRequest){
+        return userService.update(userUpdateRequest,id);
+    }
 }

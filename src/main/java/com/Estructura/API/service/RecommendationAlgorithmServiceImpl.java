@@ -1,5 +1,7 @@
 package com.Estructura.API.service;
 
+import com.Estructura.API.model.Professional;
+import com.Estructura.API.model.RetailItem;
 import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
 import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
 import lombok.AllArgsConstructor;
@@ -47,6 +49,78 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     @Override
     public ResponseEntity<RecommendationResponse> recommend(RecommendationRequest recommendationRequest) {
+        //all Professionals
+        List<Professional> allProfessionals=
+            professionalService.getAllProfessionals().getBody();
+        //all Retail Items
+        List<RetailItem> allRetailItems=
+            retailItemService.getAllItems().getBody();
+        Map<String, Integer> professionalWeights = getProfessionalWeights();
+        Map<String, Integer> retailItemWeights = getRetailItemWeights();
+
+        System.out.println("Professional Weights: " + professionalWeights);
+        System.out.println("Retail Item Weights: " + retailItemWeights);
+
+        // Set the first stage values
+        firstStageValues("construction");
+
+        System.out.println("Professional Weights: " + professionalWeights);
+        System.out.println("Retail Item Weights: " + retailItemWeights);
+
+        secondStageValues("construction", Arrays.asList("commercial buildings", "sky scrapers"));
+
+        // Print the initialized maps
+        System.out.println("Professional Weights: " + professionalWeights);
+        System.out.println("Retail Item Weights: " + retailItemWeights);
+
+        // Filter and sort the professionalWeights map
+        List<Map.Entry<String, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
+        filteredProfessionalWeights.removeIf(entry -> entry.getValue() <= 0);
+        filteredProfessionalWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        // Filter and sort the retailItemWeights map
+        List<Map.Entry<String, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
+        filteredRetailItemWeights.removeIf(entry -> entry.getValue() <= 0);
+        filteredRetailItemWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        System.out.println("Filtered and Sorted Professional Weights: " + filteredProfessionalWeights);
+        System.out.println("Filtered and Sorted Retail Item Weights: " + filteredRetailItemWeights);
+
+        List<String> filteredProfessionalTags = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : filteredProfessionalWeights) {
+            filteredProfessionalTags.add(entry.getKey());
+        }
+
+        List<String> filteredRetailItemTags = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : filteredRetailItemWeights) {
+            filteredRetailItemTags.add(entry.getKey());
+        }
+
+        System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
+        System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
+
+        //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
+        //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
+
+        List<String> tempvar1 = new ArrayList<>();
+        List<String> tempvar2 = new ArrayList<>();
+
+        initializeGraph();
+
+        //todo: get the user selected district and assign it to userSelectedDistrict variable
+        var userSelectedDistrict = "ampara";
+
+        List<String> adjacentDistrictsBasedOnUserSelectedDistrict = getAdjacentDistricts(userSelectedDistrict);
+        System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
+
+        List<String> resultedProfessionals = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "Professional", tempvar1);
+        List<String> resultedRetailstores = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore", tempvar2);
+
+        // Sort professionals based on rating (highest to lowest)
+        // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
+
+        // Sort professionals based on rating (highest to lowest)
+        // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
         return null;
     }
 //    public RecommendationAlgorithmServiceImpl() {
