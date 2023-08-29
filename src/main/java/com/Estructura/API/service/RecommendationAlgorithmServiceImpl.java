@@ -1,17 +1,18 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.Professional;
-import com.Estructura.API.model.RetailItem;
-import com.Estructura.API.model.RetailStore;
-import com.Estructura.API.model.Role;
+import com.Estructura.API.model.*;
 import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
 import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.Estructura.API.model.RetailItemType.*;
+import static com.Estructura.API.model.Role.*;
 
 @Service
 @AllArgsConstructor
@@ -21,31 +22,26 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     private final RetailItemService retailItemService;
     //--------------------------------- weighting logic start -------------------------------------------------------//
 
+    // Initialize professional weights
+    final Role[] professionals = {ARCHITECT, INTERIORDESIGNER,
+        CONSTRUCTIONCOMPANY,
+            LANDSCAPEARCHITECT, PAINTER, MASONWORKER, CARPENTER};
 
-    // Initialize the map with professionals and retail items
-//    private final Map<String, Integer> ProfessionalWeights = new HashMap<>();
-//    private final Map<String, Integer> RetailItemWeights = new HashMap<>();
-
-    final String[] professionals = {"architect", "interior designer",
-        "constructioncompany",
-            "landscape architect", "painter", "masonworker", "carpenter"};
-//        for (String professional : professionals) {
-//        ProfessionalWeights.put(professional, 0);
-//    }
-    final Map<String, Integer> ProfessionalWeights = Arrays.stream(professionals)
+    final Map<Role, Integer> ProfessionalWeights = Arrays.stream(professionals)
         .collect(HashMap::new, (map, profession) -> map.put(profession, 0), HashMap::putAll);
 
     // Initialize retail item weights
-    final String[] retailItems = {"furniture", "hardware","hardware-paint", "bathware", "gardenware", "lighting"};
-//        for (String retailItem : retailItems) {
-//        RetailItemWeights.put(retailItem, 0);
-//    }
-    final Map<String, Integer> RetailItemWeights = Arrays.stream(retailItems)
+    final RetailItemType[] retailItems = {FURNITURE, HARDWARE,PAINT, BATHWARE, GARDENWARE, LIGHTING};
+
+    final Map<RetailItemType, Integer> RetailItemWeights = Arrays.stream(retailItems)
         .collect(HashMap::new, (map, item) -> map.put(item, 0), HashMap::putAll);
 
 
-
-    public static void modifyWeight(Map<String, Integer> map, String key, int modifier) {
+    public static void modifyWeightP(Map<Role, Integer> map, Role key, int modifier) {
+        int existingValue = map.getOrDefault(key, 0);
+        map.put(key, existingValue + modifier);
+    }
+    public static void modifyWeightR(Map<RetailItemType, Integer> map, RetailItemType key, int modifier) {
         int existingValue = map.getOrDefault(key, 0);
         map.put(key, existingValue + modifier);
     }
@@ -54,195 +50,184 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     public ResponseEntity<RecommendationResponse> recommend(RecommendationRequest recommendationRequest) {
         RecommendationResponse recommendationResponse=
             new RecommendationResponse();
+
+        //todo: check with professionals and items what happens if any is null? there are no items!
+
         //all Professionals
         List<Professional> allProfessionals=
             professionalService.getAllProfessionals().getBody();
+
         //all Retail Items
         List<RetailItem> allRetailItems=
             retailItemService.getAllItems().getBody();
-        final String firstChoice=recommendationRequest.getFirstChoice();
-        final List<String> secondChoice=
-            recommendationRequest.getSecondChoice();
-        final List<String> thirdChoice=recommendationRequest.getThirdChoice();
 
-//        System.out.println(allProfessionals);
-//        System.out.println(allRetailItems);
+        //final String firstChoice=recommendationRequest.getFirstChoice();
+        final String firstChoice= "design plans";
+//        final List<String> secondChoice=
+//            recommendationRequest.getSecondChoice();
+        final List<String> secondChoice= Arrays.asList("indoor design");
+//        final List<String> thirdChoice=recommendationRequest.getThirdChoice();
+        final List<String> thirdChoice= Arrays.asList();
+//        final String district=recommendationRequest.getDistrict();
+        final String district= "Puttalam";
 
-        Map<String, Integer> professionalWeights = getProfessionalWeights();
-        Map<String, Integer> retailItemWeights = getRetailItemWeights();
+
+        Map<Role, Integer> professionalWeights = getProfessionalWeights();
+        Map<RetailItemType, Integer> retailItemWeights = getRetailItemWeights();
 
         System.out.println("Professional Weights: " + professionalWeights);
         System.out.println("Retail Item Weights: " + retailItemWeights);
 
         // Set the first stage values
-        firstStageValues("construction");
+        firstStageValues(firstChoice);
 
         System.out.println("Professional Weights: " + professionalWeights);
         System.out.println("Retail Item Weights: " + retailItemWeights);
 
-        secondStageValues("construction", Arrays.asList("commercial buildings", "sky scrapers"));
+        final List<String> nextChoicesArray = Stream.concat(secondChoice.stream(), thirdChoice.stream())
+            .collect(Collectors.toList());
+        secondStageValues(firstChoice, nextChoicesArray);
 
-        // Print the initialized maps
         System.out.println("Professional Weights: " + professionalWeights);
         System.out.println("Retail Item Weights: " + retailItemWeights);
 
         // Filter and sort the professionalWeights map
-        List<Map.Entry<String, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
+        List<Map.Entry<Role, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
         filteredProfessionalWeights.removeIf(entry -> entry.getValue() <= 0);
         filteredProfessionalWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
         // Filter and sort the retailItemWeights map
-        List<Map.Entry<String, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
+        List<Map.Entry<RetailItemType, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
         filteredRetailItemWeights.removeIf(entry -> entry.getValue() <= 0);
         filteredRetailItemWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
         System.out.println("Filtered and Sorted Professional Weights: " + filteredProfessionalWeights);
         System.out.println("Filtered and Sorted Retail Item Weights: " + filteredRetailItemWeights);
 
-        List<String> filteredProfessionalTags = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : filteredProfessionalWeights) {
+        List<Role> filteredProfessionalTags = new ArrayList<>();
+        for (Map.Entry<Role, Integer> entry : filteredProfessionalWeights) {
             filteredProfessionalTags.add(entry.getKey());
         }
 
-        List<String> filteredRetailItemTags = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : filteredRetailItemWeights) {
+        List<RetailItemType> filteredRetailItemTags = new ArrayList<>();
+        for (Map.Entry<RetailItemType, Integer> entry : filteredRetailItemWeights) {
             filteredRetailItemTags.add(entry.getKey());
         }
 
         System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
         System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
 
-        List<Professional> tempvar1 = new ArrayList<>();
-        List<RetailItem>  tempvar2 = new ArrayList<>();
+        List<Professional> professionalsWithCorrectRole = new ArrayList<>();
+        List<RetailItem>  RetailItemsWithCorrectType = new ArrayList<>();
 
         for (Professional professional : allProfessionals) {
-                if (filteredProfessionalTags.contains(professional.getRole().toString().toLowerCase()))
-                {
-                    tempvar1.add(professional);
-                }
+            if (filteredProfessionalTags.contains(professional.getRole())) {
+                professionalsWithCorrectRole.add(professional);
+            }
         }
 
-//        for (RetailItem retailitem : allRetailItems){
-//            if(filteredRetailItemTags.contains(retailitem.getRetailItemType().toString().toLowerCase())){
-//                tempvar2.add(retailitem);
+
+//        for (RetailItem retailitem : allRetailItems) {
+//            if (filteredRetailItemTags.contains(retailitem.getRetailItemType())) {
+//                RetailItemsWithCorrectType.add(retailitem);
 //            }
 //        }
 
-//        System.out.println(tempvar1);
-//        System.out.println(tempvar2);
-
-
-        //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
-        //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
 
         initializeGraph();
 
-        //todo: get the user selected district and assign it to userSelectedDistrict variable
-        var userSelectedDistrict = "polonnaruwa";
+        var userSelectedDistrict = district.toLowerCase();
 
         List<String> adjacentDistrictsBasedOnUserSelectedDistrict = getAdjacentDistricts(userSelectedDistrict);
         System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
 
-        List<Professional> resultedProfessionals = getProfessionals(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar1);
-//        List<RetailItem> resultedRetailstores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar2);
+        List<Professional> resultedProfessionals = getProfessionals(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, professionalsWithCorrectRole);
+//        List<RetailItem> resultedRetailStores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, RetailItemsWithCorrectType);
 
-//        System.out.println(resultedProfessionals);
-//        System.out.println(resultedRetailstores);
+        //todo: check with sort options and adjust
+
         // Sort professionals based on rating (highest to lowest)
-        // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
+        // resultedRetailStores.sort(Comparator.comparingDouble(product -> product.price));
 
         // Sort professionals based on rating (highest to lowest)
         // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
+
         recommendationResponse.setProfessionals(resultedProfessionals);
+//        recommendationResponse.setRetailItems(resultedRetailStores);
         return ResponseEntity.ok(recommendationResponse);
     }
-//    public RecommendationAlgorithmServiceImpl() {
-//        // Initialize professional weights
-//        String[] professionals = {"architect", "interior designer", "constructioncompany",
-//                "landscape architect", "painter", "masonworker", "carpenter"};
-//        for (String professional : professionals) {
-//            ProfessionalWeights.put(professional, 0);
-//        }
-//
-//        // Initialize retail item weights
-//        String[] retailItems = {"furniture", "hardware","hardware-paint", "bathware", "gardenware", "lighting"};
-//        for (String retailItem : retailItems) {
-//            RetailItemWeights.put(retailItem, 0);
-//        }
-//    }
 
-    //begining
     public void firstStageValues(String FirstChoice){
 
         switch (FirstChoice) {
             case "construction" -> {
-                ProfessionalWeights.put("architect", -100);
-                ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("landscape architect", -100);
-                ProfessionalWeights.put("painter", -100);
-                ProfessionalWeights.put("carpenter", -100);
-                RetailItemWeights.put("gardenware", -100);
-                RetailItemWeights.put("hardware-paint", -100);
+                ProfessionalWeights.put(ARCHITECT, -100);
+                ProfessionalWeights.put(INTERIORDESIGNER, -100);
+                ProfessionalWeights.put(LANDSCAPEARCHITECT, -100);
+                ProfessionalWeights.put(PAINTER, -100);
+                ProfessionalWeights.put(CARPENTER, -100);
+                RetailItemWeights.put(GARDENWARE, -100);
+                RetailItemWeights.put(PAINT, -100);
             }
             case "design plans" -> {
-                ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("constructioncompany", 100);
-                ProfessionalWeights.put("masonworker", -100);
-                ProfessionalWeights.put("painter", -100);
-                ProfessionalWeights.put("carpenter", -100);
-                RetailItemWeights.put("furniture", -100);
-                RetailItemWeights.put("hardware", -100);
-                RetailItemWeights.put("bathware", -100);
-                RetailItemWeights.put("gardenware", -100);
-                RetailItemWeights.put("lighting", -100);
-                RetailItemWeights.put("hardware-paint", -100);
+                ProfessionalWeights.put(INTERIORDESIGNER, -100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, 100);
+                ProfessionalWeights.put(MASONWORKER, -100);
+                ProfessionalWeights.put(PAINTER, -100);
+                ProfessionalWeights.put(CARPENTER, -100);
+                RetailItemWeights.put(FURNITURE, -100);
+                RetailItemWeights.put(HARDWARE, -100);
+                RetailItemWeights.put(BATHWARE, -100);
+                RetailItemWeights.put(GARDENWARE, -100);
+                RetailItemWeights.put(LIGHTING, -100);
+                RetailItemWeights.put(PAINT, -100);
             }
             case "landscaping" -> {
-                ProfessionalWeights.put("architect", -100);
-                ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("constructioncompany", -100);
-                RetailItemWeights.put("furniture", -100);
-                RetailItemWeights.put("bathware", -100);
-                RetailItemWeights.put("hardware-paint", -100);
+                ProfessionalWeights.put(ARCHITECT, -100);
+                ProfessionalWeights.put(INTERIORDESIGNER, -100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, -100);
+                RetailItemWeights.put(FURNITURE, -100);
+                RetailItemWeights.put(BATHWARE, -100);
+                RetailItemWeights.put(PAINT, -100);
             }
             case "painting" -> {
-                modifyWeight(ProfessionalWeights, "architect", -100);
-                modifyWeight(ProfessionalWeights, "interior designer", -100);
-                modifyWeight(ProfessionalWeights, "constructioncompany", -100);
-                modifyWeight(ProfessionalWeights, "landscape architect", -100);
-                modifyWeight(ProfessionalWeights, "masonworker", -100);
-                modifyWeight(ProfessionalWeights, "carpenter", -100);
-                modifyWeight(ProfessionalWeights, "painter", 30);
-                modifyWeight(RetailItemWeights, "furniture", -100);
-                modifyWeight(RetailItemWeights, "hardware-paint", 30);
-                modifyWeight(RetailItemWeights, "hardware", -100);
-                modifyWeight(RetailItemWeights, "bathware", -100);
-                modifyWeight(RetailItemWeights, "gardenware", -100);
-                modifyWeight(RetailItemWeights, "lighting", -100);
+                modifyWeightP(ProfessionalWeights, ARCHITECT, -100);
+                modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, -100);
+                modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, -100);
+                modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, -100);
+                modifyWeightP(ProfessionalWeights, MASONWORKER, -100);
+                modifyWeightP(ProfessionalWeights, CARPENTER, -100);
+                modifyWeightP(ProfessionalWeights, PAINTER, 30);
+                modifyWeightR(RetailItemWeights, FURNITURE, -100);
+                modifyWeightR(RetailItemWeights, PAINT, 30);
+                modifyWeightR(RetailItemWeights, HARDWARE, -100);
+                modifyWeightR(RetailItemWeights, BATHWARE, -100);
+                modifyWeightR(RetailItemWeights, GARDENWARE, -100);
+                modifyWeightR(RetailItemWeights, LIGHTING, -100);
             }
             case "remodeling" -> {
-                ProfessionalWeights.put("constructioncompany", -100);
-                RetailItemWeights.put("hardware-paint", -100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, -100);
+                RetailItemWeights.put(PAINT, -100);
             }
             case "interior design" -> {
-                ProfessionalWeights.put("architect", -100);
-                ProfessionalWeights.put("constructioncompany", -100);
-                ProfessionalWeights.put("landscape architect", -100);
-                ProfessionalWeights.put("masonworker", -100);
-                RetailItemWeights.put("hardware", -100);
-                RetailItemWeights.put("gardenware", -100);
-                RetailItemWeights.put("hardware-paint", -100);
+                ProfessionalWeights.put(ARCHITECT, -100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, -100);
+                ProfessionalWeights.put(LANDSCAPEARCHITECT, -100);
+                ProfessionalWeights.put(MASONWORKER, -100);
+                RetailItemWeights.put(HARDWARE, -100);
+                RetailItemWeights.put(GARDENWARE, -100);
+                RetailItemWeights.put(PAINT, -100);
             }
             case "woodwork" -> {
-                ProfessionalWeights.put("architect", -100);
-                ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("constructioncompany", -100);
-                ProfessionalWeights.put("landscape architect", -100);
-                ProfessionalWeights.put("masonworker", -100);
-                RetailItemWeights.put("bathware", -100);
-                RetailItemWeights.put("gardenware", -100);
-                RetailItemWeights.put("lighting", -100);
-                RetailItemWeights.put("hardware", -100);
+                ProfessionalWeights.put(ARCHITECT, -100);
+                ProfessionalWeights.put(INTERIORDESIGNER, -100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, -100);
+                ProfessionalWeights.put(LANDSCAPEARCHITECT, -100);
+                ProfessionalWeights.put(MASONWORKER, -100);
+                RetailItemWeights.put(BATHWARE, -100);
+                RetailItemWeights.put(GARDENWARE, -100);
+                RetailItemWeights.put(LIGHTING, -100);
+                RetailItemWeights.put(HARDWARE, -100);
             }
             default -> {
             }
@@ -274,35 +259,35 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     public void thirdByResidenceBuildings(List<String> thirdChoice){
         if(thirdChoice.contains("all in one")){
-            modifyWeight(ProfessionalWeights, "constructioncompany", 30);
-            modifyWeight(ProfessionalWeights, "masonworker", 20);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 20);
 
-            modifyWeight(RetailItemWeights, "furniture", 20);
-            modifyWeight(RetailItemWeights, "hardware", 20);
-            modifyWeight(RetailItemWeights, "bathware", 20);
-            modifyWeight(RetailItemWeights, "lighting", 20);
+            modifyWeightR(RetailItemWeights, FURNITURE, 20);
+            modifyWeightR(RetailItemWeights, HARDWARE, 20);
+            modifyWeightR(RetailItemWeights, BATHWARE, 20);
+            modifyWeightR(RetailItemWeights, LIGHTING, 20);
         }
         if(thirdChoice.contains("kitchen and dining") || thirdChoice.contains("bedroom") || thirdChoice.contains("living room") || thirdChoice.contains("office")){
-            modifyWeight(ProfessionalWeights, "masonworker", 30);
-            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 30);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, 20);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
-            modifyWeight(RetailItemWeights, "hardware", 20);
-            modifyWeight(RetailItemWeights, "lighting", 20);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
+            modifyWeightR(RetailItemWeights, HARDWARE, 20);
+            modifyWeightR(RetailItemWeights, LIGHTING, 20);
         }
         if(thirdChoice.contains("garage")){
-            modifyWeight(ProfessionalWeights, "masonworker", 30);
-            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 30);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, 20);
 
-            modifyWeight(RetailItemWeights, "hardware", 30);
-            modifyWeight(RetailItemWeights, "lighting", 10);
+            modifyWeightR(RetailItemWeights, HARDWARE, 30);
+            modifyWeightR(RetailItemWeights, LIGHTING, 10);
         }
         if(thirdChoice.contains("bathroom")){
-            modifyWeight(ProfessionalWeights, "masonworker", 30);
-            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 30);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, 20);
 
-            modifyWeight(RetailItemWeights, "bathware", 30);
-            modifyWeight(RetailItemWeights, "hardware", 10);
+            modifyWeightR(RetailItemWeights, BATHWARE, 30);
+            modifyWeightR(RetailItemWeights, HARDWARE, 10);
         }
     }
 
@@ -325,163 +310,163 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     }
 
     private void refactorOnCommercialIndustrialAndRecreational() {
-        modifyWeight(ProfessionalWeights, "constructioncompany", 30);
-        modifyWeight(ProfessionalWeights, "masonworker", 20);
+        modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, 30);
+        modifyWeightP(ProfessionalWeights, MASONWORKER, 20);
 
-        modifyWeight(RetailItemWeights, "hardware", 30);
-        modifyWeight(RetailItemWeights, "furniture", 20);
-        modifyWeight(RetailItemWeights, "bathware", 20);
-        modifyWeight(RetailItemWeights, "lighting", 20);
+        modifyWeightR(RetailItemWeights, HARDWARE, 30);
+        modifyWeightR(RetailItemWeights, FURNITURE, 20);
+        modifyWeightR(RetailItemWeights, BATHWARE, 20);
+        modifyWeightR(RetailItemWeights, LIGHTING, 20);
     }
 
     public void secondByDesignPlans(List<String> secondChoice){
         if(secondChoice.contains("indoor design")){
-            modifyWeight(ProfessionalWeights, "architect", 30);
-            modifyWeight(ProfessionalWeights, "landscape architect", -100);
+            modifyWeightP(ProfessionalWeights, ARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, -100);
             restSecondByDesignPlans();
         } else if (secondChoice.contains("outdoor design")){
-            modifyWeight(ProfessionalWeights, "architect", -100);
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
+            modifyWeightP(ProfessionalWeights, ARCHITECT, -100);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
             restSecondByDesignPlans();
         }
     }
 
     private void restSecondByDesignPlans() {
-        modifyWeight(ProfessionalWeights, "masonworker", -100);
-        modifyWeight(ProfessionalWeights, "carpenter", -100);
-        modifyWeight(ProfessionalWeights, "painter", -100);
-        modifyWeight(ProfessionalWeights, "interior designer", -100);
-        modifyWeight(ProfessionalWeights, "constructioncompany", -100);
+        modifyWeightP(ProfessionalWeights, MASONWORKER, -100);
+        modifyWeightP(ProfessionalWeights, CARPENTER, -100);
+        modifyWeightP(ProfessionalWeights, PAINTER, -100);
+        modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, -100);
+        modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, -100);
 
-        modifyWeight(RetailItemWeights, "furniture", -100);
-        modifyWeight(RetailItemWeights, "hardware", -100);
-        modifyWeight(RetailItemWeights, "bathware", -100);
-        modifyWeight(RetailItemWeights, "gardenware", -100);
-        modifyWeight(RetailItemWeights, "lighting", -100);
+        modifyWeightR(RetailItemWeights, FURNITURE, -100);
+        modifyWeightR(RetailItemWeights, HARDWARE, -100);
+        modifyWeightR(RetailItemWeights, BATHWARE, -100);
+        modifyWeightR(RetailItemWeights, GARDENWARE, -100);
+        modifyWeightR(RetailItemWeights, LIGHTING, -100);
     }
 
     public void secondByLandscaping(List<String> secondChoice){
 
         if(secondChoice.contains("gardening")){
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "masonworker", 10);
-            modifyWeight(ProfessionalWeights, "painter", 10);
-            modifyWeight(ProfessionalWeights, "carpenter", 10);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 10);
+            modifyWeightP(ProfessionalWeights, PAINTER, 10);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 10);
 
-            modifyWeight(RetailItemWeights, "gardenware", 30);
+            modifyWeightR(RetailItemWeights, GARDENWARE, 30);
         }
         if(secondChoice.contains("hardscaping")){
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "masonworker", 10);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 10);
 
-            modifyWeight(RetailItemWeights, "hardware", 30);
+            modifyWeightR(RetailItemWeights, HARDWARE, 30);
         }
         if(secondChoice.contains("water features")){
-            modifyWeight(ProfessionalWeights, "masonworker", 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 30);
         }
         if(secondChoice.contains("outdoor lighting")){
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "masonworker", 10);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 10);
 
-            modifyWeight(RetailItemWeights, "lighting", 30);
+            modifyWeightR(RetailItemWeights, LIGHTING, 30);
         }
         if(secondChoice.contains("landscape design")){
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
 
-            modifyWeight(RetailItemWeights, "gardenware", 20);
+            modifyWeightR(RetailItemWeights, GARDENWARE, 20);
         }
         if(secondChoice.contains("maintenance")){
-            modifyWeight(ProfessionalWeights, "masonworker", 20);
-            modifyWeight(ProfessionalWeights, "painter", 20);
-            modifyWeight(ProfessionalWeights, "carpenter", 20);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 20);
+            modifyWeightP(ProfessionalWeights, PAINTER, 20);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 20);
 
-            modifyWeight(RetailItemWeights, "hardware", 30);
+            modifyWeightR(RetailItemWeights, HARDWARE, 30);
         }
     }
     public void secondByRemodeling(List<String> secondChoice){
         //if the list contains indoor remodeling, case indoor remodel, else if the list contains outdoor remodeling, case outdoor remodel only a single choice cannot contain both indoor and outdoor remodelling in the list at the same time
         if(secondChoice.contains("indoor remodeling")){
-            modifyWeight(ProfessionalWeights, "architect", 30);
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
-            modifyWeight(ProfessionalWeights, "constructioncompany", -100);
-            modifyWeight(ProfessionalWeights, "landscape architect", -100);
-            modifyWeight(ProfessionalWeights, "masonworker", 20);
-            modifyWeight(ProfessionalWeights, "carpenter", 10);
-            modifyWeight(ProfessionalWeights, "painter", 10);
+            modifyWeightP(ProfessionalWeights, ARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, -100);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, -100);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 20);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 10);
+            modifyWeightP(ProfessionalWeights, PAINTER, 10);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
-            modifyWeight(RetailItemWeights, "hardware", 20);
-            modifyWeight(RetailItemWeights, "bathware", 10);
-            modifyWeight(RetailItemWeights, "gardenware", -100);
-            modifyWeight(RetailItemWeights, "lighting", 10);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
+            modifyWeightR(RetailItemWeights, HARDWARE, 20);
+            modifyWeightR(RetailItemWeights, BATHWARE, 10);
+            modifyWeightR(RetailItemWeights, GARDENWARE, -100);
+            modifyWeightR(RetailItemWeights, LIGHTING, 10);
         }
         else if(secondChoice.contains("outdoor remodeling")){
 
-            modifyWeight(ProfessionalWeights, "architect", -100);
-            modifyWeight(ProfessionalWeights, "interior designer", -100);
-            modifyWeight(ProfessionalWeights, "constructioncompany", -100);
-            modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "masonworker", 30);
-            modifyWeight(ProfessionalWeights, "carpenter", 10);
-            modifyWeight(ProfessionalWeights, "painter", 10);
+            modifyWeightP(ProfessionalWeights, ARCHITECT, -100);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, -100);
+            modifyWeightP(ProfessionalWeights, CONSTRUCTIONCOMPANY, -100);
+            modifyWeightP(ProfessionalWeights, LANDSCAPEARCHITECT, 30);
+            modifyWeightP(ProfessionalWeights, MASONWORKER, 30);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 10);
+            modifyWeightP(ProfessionalWeights, PAINTER, 10);
 
-            modifyWeight(RetailItemWeights, "furniture", -100);
-            modifyWeight(RetailItemWeights, "hardware",30);
-            modifyWeight(RetailItemWeights, "bathware", -100);
-            modifyWeight(RetailItemWeights, "gardenware", 20);
-            modifyWeight(RetailItemWeights, "lighting", -100);
+            modifyWeightR(RetailItemWeights, FURNITURE, -100);
+            modifyWeightR(RetailItemWeights, HARDWARE,30);
+            modifyWeightR(RetailItemWeights, BATHWARE, -100);
+            modifyWeightR(RetailItemWeights, GARDENWARE, 20);
+            modifyWeightR(RetailItemWeights, LIGHTING, -100);
         }
     }
     public void secondByInteriorDesign(List<String> secondChoice){
 
         if(secondChoice.contains("space planning")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
-            modifyWeight(RetailItemWeights, "bathware", 20);
-            modifyWeight(RetailItemWeights, "lighting", 20);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
+            modifyWeightR(RetailItemWeights, BATHWARE, 20);
+            modifyWeightR(RetailItemWeights, LIGHTING, 20);
         }
         if(secondChoice.contains("furniture and furnishings")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
-            modifyWeight(ProfessionalWeights, "carpenter", 20);
-            modifyWeight(ProfessionalWeights, "painter", 20);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 20);
+            modifyWeightP(ProfessionalWeights, PAINTER, 20);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
         }
         if(secondChoice.contains("color scheme and paint selection")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
-            modifyWeight(ProfessionalWeights, "painter", 20);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
+            modifyWeightP(ProfessionalWeights, PAINTER, 20);
         }
         if(secondChoice.contains("lighting design")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
 
-            modifyWeight(RetailItemWeights, "lighting", 30);
+            modifyWeightR(RetailItemWeights, LIGHTING, 30);
         }
         if(secondChoice.contains("flooring and wall treatments")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
-            modifyWeight(ProfessionalWeights, "painter", 20);
-            modifyWeight(ProfessionalWeights, "carpenter", 20);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
+            modifyWeightP(ProfessionalWeights, PAINTER, 20);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 20);
         }
         if(secondChoice.contains("accessories and decorative elements")){
-            modifyWeight(ProfessionalWeights, "interior designer", 30);
+            modifyWeightP(ProfessionalWeights, INTERIORDESIGNER, 30);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
-            modifyWeight(RetailItemWeights, "bathware", 20);
-            modifyWeight(RetailItemWeights, "lighting", 20);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
+            modifyWeightR(RetailItemWeights, BATHWARE, 20);
+            modifyWeightR(RetailItemWeights, LIGHTING, 20);
         }
 
     }
     public void secondByWoodwork(List<String> secondChoice){
 
         if(secondChoice.contains("carpentry") || secondChoice.contains("cabinetry") || secondChoice.contains("woodturning") || secondChoice.contains("wood carving") || secondChoice.contains("wood flooring") || secondChoice.contains("restoration and repair")){
-            modifyWeight(ProfessionalWeights, "carpenter", 30);
+            modifyWeightP(ProfessionalWeights, CARPENTER, 30);
 
-            modifyWeight(RetailItemWeights, "furniture", 30);
+            modifyWeightR(RetailItemWeights, FURNITURE, 30);
         }
         if(secondChoice.contains("wood finishing")){
-            modifyWeight(ProfessionalWeights, "painter", 30);
+            modifyWeightP(ProfessionalWeights, PAINTER, 30);
 
-            modifyWeight(RetailItemWeights, "hardware-paint", 30);
+            modifyWeightR(RetailItemWeights, PAINT, 30);
         }
 
     }
@@ -566,8 +551,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     public static List<Professional> getProfessionals(String userDistrict,
         List<String> selectedDistricts, List<Professional> filteredProfessionals) {
 
-        List<Professional> results_professional = new ArrayList<>();
-            //go through the filteredProfessionalsOrRetailStores list and find the professionals who are in the userDistrict
+            List<Professional> results_professional = new ArrayList<>();
+            //go through the filteredProfessionals list and find the professionals who are in the userDistrict
             //if there are no professionals in the userDistrict, find the professionals in the adjacent districts
             //if there are no professionals in the adjacent districts, return no results found
             //if there are professionals in the userDistrict, return the list of professionals
@@ -575,21 +560,17 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
             List<Professional> professionalsInUserDistrict = new ArrayList<>();
             List<Professional> professionalsInAdjacentDistricts = new ArrayList<>();
-            System.out.println("this is user district:::: "+ userDistrict);
+
             for (Professional professional : filteredProfessionals) {
-                System.out.println(professional.getDistrict()
-                                               .toLowerCase());
                 // Check if the professional is in the userDistrict
                 if (professional.getDistrict()
                                 .toLowerCase()
                                 .equals(userDistrict)) {
-                    System.out.println("if eka athule ");
                     professionalsInUserDistrict.add(professional);
                 } else {
                     // Check if the professional is in any of the adjacent districts
                     boolean foundInAdjacent = false;
                     for (String adjacentDistrict : selectedDistricts) {
-                        System.out.println("else eka athule" + adjacentDistrict);
                         if (professional.getDistrict()
                                         .toLowerCase()
                                         .equals(adjacentDistrict)) {
@@ -604,13 +585,10 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             }
 
             if (!professionalsInUserDistrict.isEmpty()) {
-                System.out.println("one eke badu hav");
                 results_professional.addAll(professionalsInUserDistrict);
             } else if (!professionalsInAdjacentDistricts.isEmpty()) {
-                System.out.println("one eke na, laga badu hav");
                 results_professional.addAll(professionalsInAdjacentDistricts);
             } else {
-                System.out.println("badu aththema na");
                 results_professional.add(null);
             }
 
@@ -619,13 +597,13 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     public static List<RetailItem> getRetailStores(String userDistrict, List<String> selectedDistricts, List<RetailItem> filteredRetailStores) {
 
-        List<RetailItem> results_retail = new ArrayList<>();
+            List<RetailItem> results_retail = new ArrayList<>();
 
-            //go through the filteredProfessionalsOrRetailStores list and find the professionals who are in the userDistrict
-            //if there are no professionals in the userDistrict, find the professionals in the adjacent districts
-            //if there are no professionals in the adjacent districts, return no results found
-            //if there are professionals in the userDistrict, return the list of professionals
-            //if there are professionals in the adjacent districts, return the list of professionals
+            //go through the filteredRetailStores list and find the retail stores and items which are in the userDistrict
+            //if there are no retail stores and items in the userDistrict, find the retail stores and items in the adjacent districts
+            //if there are no retail stores and items in the adjacent districts, return no results found
+            //if there are retail stores and items  in the userDistrict, return the list of items
+            //if there are retail stores and items in the adjacent districts, return the list of items
 
             List<RetailItem> retailItemInUserDistrict = new ArrayList<>();
             List<RetailItem> retailItemInAdjacentDistricts = new ArrayList<>();
@@ -664,87 +642,12 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     //--------------------------------- district mapping logic end ---------------------------------------------------//
 
-    public Map<String, Integer> getProfessionalWeights() {
+    public Map<Role, Integer> getProfessionalWeights() {
         return ProfessionalWeights;
     }
 
-    public Map<String, Integer> getRetailItemWeights() {
+    public Map<RetailItemType, Integer> getRetailItemWeights() {
         return RetailItemWeights;
     }
-
-
-
-//    public static void main(String[] args) {
-//        // Initialize the recommendation algorithm
-//        RecommendationAlgorithmServiceImpl initializer = new RecommendationAlgorithmServiceImpl();
-//
-//        Map<String, Integer> professionalWeights = initializer.getProfessionalWeights();
-//        Map<String, Integer> retailItemWeights = initializer.getRetailItemWeights();
-//
-//        System.out.println("Professional Weights: " + professionalWeights);
-//        System.out.println("Retail Item Weights: " + retailItemWeights);
-//
-//        // Set the first stage values
-//        initializer.firstStageValues("construction");
-//
-//        System.out.println("Professional Weights: " + professionalWeights);
-//        System.out.println("Retail Item Weights: " + retailItemWeights);
-//
-//        initializer.secondStageValues("construction", Arrays.asList("commercial buildings", "sky scrapers"));
-//
-//        // Print the initialized maps
-//        System.out.println("Professional Weights: " + professionalWeights);
-//        System.out.println("Retail Item Weights: " + retailItemWeights);
-//
-//        // Filter and sort the professionalWeights map
-//        List<Map.Entry<String, Integer>> filteredProfessionalWeights = new ArrayList<>(professionalWeights.entrySet());
-//        filteredProfessionalWeights.removeIf(entry -> entry.getValue() <= 0);
-//        filteredProfessionalWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-//
-//        // Filter and sort the retailItemWeights map
-//        List<Map.Entry<String, Integer>> filteredRetailItemWeights = new ArrayList<>(retailItemWeights.entrySet());
-//        filteredRetailItemWeights.removeIf(entry -> entry.getValue() <= 0);
-//        filteredRetailItemWeights.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-//
-//        System.out.println("Filtered and Sorted Professional Weights: " + filteredProfessionalWeights);
-//        System.out.println("Filtered and Sorted Retail Item Weights: " + filteredRetailItemWeights);
-//
-//        List<String> filteredProfessionalTags = new ArrayList<>();
-//        for (Map.Entry<String, Integer> entry : filteredProfessionalWeights) {
-//            filteredProfessionalTags.add(entry.getKey());
-//        }
-//
-//        List<String> filteredRetailItemTags = new ArrayList<>();
-//        for (Map.Entry<String, Integer> entry : filteredRetailItemWeights) {
-//            filteredRetailItemTags.add(entry.getKey());
-//        }
-//
-//        System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
-//        System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
-//
-//        //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
-//        //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
-//
-//        List<String> tempvar1 = new ArrayList<>();
-//        List<String> tempvar2 = new ArrayList<>();
-//
-//        initializer.initializeGraph();
-//
-//        //todo: get the user selected district and assign it to userSelectedDistrict variable
-//        var userSelectedDistrict = "ampara";
-//
-//        List<String> adjacentDistrictsBasedOnUserSelectedDistrict = initializer.getAdjacentDistricts(userSelectedDistrict);
-//        System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
-//
-//        List<String> resultedProfessionals = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "Professional", tempvar1);
-//        List<String> resultedRetailstores = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore", tempvar2);
-//
-//        // Sort professionals based on rating (highest to lowest)
-//        // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
-//
-//        // Sort professionals based on rating (highest to lowest)
-//        // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
-//
-//    }
 
 }

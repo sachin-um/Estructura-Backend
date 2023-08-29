@@ -15,4 +15,5 @@ public class RecommendationRequest {
     private String firstChoice;
     private List<String> secondChoice;
     private List<String> thirdChoice;
+    private String district;
 }
