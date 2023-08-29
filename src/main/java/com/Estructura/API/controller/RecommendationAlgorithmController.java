@@ -16,10 +16,10 @@ import java.util.List;
 public class RecommendationAlgorithmController {
     private final RecommendationAlgorithmService recommendationAlgorithmService;
 
-//    @GetMapping()
-//    public ResponseEntity<RecommendationResponse> recommend(@ModelAttribute RecommendationRequest recommendationRequest){
-//
-//    }
+    @GetMapping("/recommnad")
+    public ResponseEntity<RecommendationResponse> recommend(@ModelAttribute RecommendationRequest recommendationRequest){
+        return recommendationAlgorithmService.recommend(recommendationRequest);
+    }
 
 }
 

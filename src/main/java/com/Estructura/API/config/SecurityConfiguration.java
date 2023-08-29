@@ -56,6 +56,8 @@ public class SecurityConfiguration {
             .permitAll()
             .requestMatchers(("/api/v1/users/**"))
             .permitAll()
+            .requestMatchers(("/api/v1/recommendation/**"))
+            .permitAll()
             .requestMatchers(("/api/v1/renting-items/**"))
             .permitAll()
             .anyRequest()
