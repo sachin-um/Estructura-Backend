@@ -27,8 +27,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 //    private final Map<String, Integer> RetailItemWeights = new HashMap<>();
 
     final String[] professionals = {"architect", "interior designer",
-        "construction company",
-            "landscape architect", "painter", "home builder", "carpenter"};
+        "constructioncompany",
+            "landscape architect", "painter", "masonworker", "carpenter"};
 //        for (String professional : professionals) {
 //        ProfessionalWeights.put(professional, 0);
 //    }
@@ -52,6 +52,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     @Override
     public ResponseEntity<RecommendationResponse> recommend(RecommendationRequest recommendationRequest) {
+        RecommendationResponse recommendationResponse=
+            new RecommendationResponse();
         //all Professionals
         List<Professional> allProfessionals=
             professionalService.getAllProfessionals().getBody();
@@ -63,8 +65,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             recommendationRequest.getSecondChoice();
         final List<String> thirdChoice=recommendationRequest.getThirdChoice();
 
-        System.out.println(allProfessionals);
-        System.out.println(allRetailItems);
+//        System.out.println(allProfessionals);
+//        System.out.println(allRetailItems);
 
         Map<String, Integer> professionalWeights = getProfessionalWeights();
         Map<String, Integer> retailItemWeights = getRetailItemWeights();
@@ -114,19 +116,20 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<RetailItem>  tempvar2 = new ArrayList<>();
 
         for (Professional professional : allProfessionals) {
-            if(filteredProfessionalTags.contains(professional.getRole().toString().toLowerCase())){
-                tempvar1.add(professional);
-            }
+                if (filteredProfessionalTags.contains(professional.getRole().toString().toLowerCase()))
+                {
+                    tempvar1.add(professional);
+                }
         }
 
-        for (RetailItem retailitem : allRetailItems){
-            if(filteredRetailItemTags.contains(retailitem.getRetailItemType().toString().toLowerCase())){
-                tempvar2.add(retailitem);
-            }
-        }
+//        for (RetailItem retailitem : allRetailItems){
+//            if(filteredRetailItemTags.contains(retailitem.getRetailItemType().toString().toLowerCase())){
+//                tempvar2.add(retailitem);
+//            }
+//        }
 
-        System.out.println(tempvar1);
-        System.out.println(tempvar2);
+//        System.out.println(tempvar1);
+//        System.out.println(tempvar2);
 
 
         //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
@@ -135,7 +138,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         initializeGraph();
 
         //todo: get the user selected district and assign it to userSelectedDistrict variable
-        var userSelectedDistrict = "ampara";
+        var userSelectedDistrict = "polonnaruwa";
 
         List<String> adjacentDistrictsBasedOnUserSelectedDistrict = getAdjacentDistricts(userSelectedDistrict);
         System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
@@ -143,19 +146,20 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<Professional> resultedProfessionals = getProfessionals(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar1);
 //        List<RetailItem> resultedRetailstores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar2);
 
-        System.out.println(resultedProfessionals);
+//        System.out.println(resultedProfessionals);
 //        System.out.println(resultedRetailstores);
         // Sort professionals based on rating (highest to lowest)
         // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
 
         // Sort professionals based on rating (highest to lowest)
         // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
-        return null;
+        recommendationResponse.setProfessionals(resultedProfessionals);
+        return ResponseEntity.ok(recommendationResponse);
     }
 //    public RecommendationAlgorithmServiceImpl() {
 //        // Initialize professional weights
-//        String[] professionals = {"architect", "interior designer", "construction company",
-//                "landscape architect", "painter", "home builder", "carpenter"};
+//        String[] professionals = {"architect", "interior designer", "constructioncompany",
+//                "landscape architect", "painter", "masonworker", "carpenter"};
 //        for (String professional : professionals) {
 //            ProfessionalWeights.put(professional, 0);
 //        }
@@ -182,8 +186,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             }
             case "design plans" -> {
                 ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("construction company", 100);
-                ProfessionalWeights.put("home builder", -100);
+                ProfessionalWeights.put("constructioncompany", 100);
+                ProfessionalWeights.put("masonworker", -100);
                 ProfessionalWeights.put("painter", -100);
                 ProfessionalWeights.put("carpenter", -100);
                 RetailItemWeights.put("furniture", -100);
@@ -196,7 +200,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             case "landscaping" -> {
                 ProfessionalWeights.put("architect", -100);
                 ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("construction company", -100);
+                ProfessionalWeights.put("constructioncompany", -100);
                 RetailItemWeights.put("furniture", -100);
                 RetailItemWeights.put("bathware", -100);
                 RetailItemWeights.put("hardware-paint", -100);
@@ -204,9 +208,9 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             case "painting" -> {
                 modifyWeight(ProfessionalWeights, "architect", -100);
                 modifyWeight(ProfessionalWeights, "interior designer", -100);
-                modifyWeight(ProfessionalWeights, "construction company", -100);
+                modifyWeight(ProfessionalWeights, "constructioncompany", -100);
                 modifyWeight(ProfessionalWeights, "landscape architect", -100);
-                modifyWeight(ProfessionalWeights, "home builder", -100);
+                modifyWeight(ProfessionalWeights, "masonworker", -100);
                 modifyWeight(ProfessionalWeights, "carpenter", -100);
                 modifyWeight(ProfessionalWeights, "painter", 30);
                 modifyWeight(RetailItemWeights, "furniture", -100);
@@ -217,14 +221,14 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
                 modifyWeight(RetailItemWeights, "lighting", -100);
             }
             case "remodeling" -> {
-                ProfessionalWeights.put("construction company", -100);
+                ProfessionalWeights.put("constructioncompany", -100);
                 RetailItemWeights.put("hardware-paint", -100);
             }
             case "interior design" -> {
                 ProfessionalWeights.put("architect", -100);
-                ProfessionalWeights.put("construction company", -100);
+                ProfessionalWeights.put("constructioncompany", -100);
                 ProfessionalWeights.put("landscape architect", -100);
-                ProfessionalWeights.put("home builder", -100);
+                ProfessionalWeights.put("masonworker", -100);
                 RetailItemWeights.put("hardware", -100);
                 RetailItemWeights.put("gardenware", -100);
                 RetailItemWeights.put("hardware-paint", -100);
@@ -232,9 +236,9 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             case "woodwork" -> {
                 ProfessionalWeights.put("architect", -100);
                 ProfessionalWeights.put("interior designer", -100);
-                ProfessionalWeights.put("construction company", -100);
+                ProfessionalWeights.put("constructioncompany", -100);
                 ProfessionalWeights.put("landscape architect", -100);
-                ProfessionalWeights.put("home builder", -100);
+                ProfessionalWeights.put("masonworker", -100);
                 RetailItemWeights.put("bathware", -100);
                 RetailItemWeights.put("gardenware", -100);
                 RetailItemWeights.put("lighting", -100);
@@ -270,8 +274,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     public void thirdByResidenceBuildings(List<String> thirdChoice){
         if(thirdChoice.contains("all in one")){
-            modifyWeight(ProfessionalWeights, "construction company", 30);
-            modifyWeight(ProfessionalWeights, "home builder", 20);
+            modifyWeight(ProfessionalWeights, "constructioncompany", 30);
+            modifyWeight(ProfessionalWeights, "masonworker", 20);
 
             modifyWeight(RetailItemWeights, "furniture", 20);
             modifyWeight(RetailItemWeights, "hardware", 20);
@@ -279,23 +283,23 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             modifyWeight(RetailItemWeights, "lighting", 20);
         }
         if(thirdChoice.contains("kitchen and dining") || thirdChoice.contains("bedroom") || thirdChoice.contains("living room") || thirdChoice.contains("office")){
-            modifyWeight(ProfessionalWeights, "home builder", 30);
-            modifyWeight(ProfessionalWeights, "construction company", 20);
+            modifyWeight(ProfessionalWeights, "masonworker", 30);
+            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
 
             modifyWeight(RetailItemWeights, "furniture", 30);
             modifyWeight(RetailItemWeights, "hardware", 20);
             modifyWeight(RetailItemWeights, "lighting", 20);
         }
         if(thirdChoice.contains("garage")){
-            modifyWeight(ProfessionalWeights, "home builder", 30);
-            modifyWeight(ProfessionalWeights, "construction company", 20);
+            modifyWeight(ProfessionalWeights, "masonworker", 30);
+            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
 
             modifyWeight(RetailItemWeights, "hardware", 30);
             modifyWeight(RetailItemWeights, "lighting", 10);
         }
         if(thirdChoice.contains("bathroom")){
-            modifyWeight(ProfessionalWeights, "home builder", 30);
-            modifyWeight(ProfessionalWeights, "construction company", 20);
+            modifyWeight(ProfessionalWeights, "masonworker", 30);
+            modifyWeight(ProfessionalWeights, "constructioncompany", 20);
 
             modifyWeight(RetailItemWeights, "bathware", 30);
             modifyWeight(RetailItemWeights, "hardware", 10);
@@ -321,8 +325,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     }
 
     private void refactorOnCommercialIndustrialAndRecreational() {
-        modifyWeight(ProfessionalWeights, "construction company", 30);
-        modifyWeight(ProfessionalWeights, "home builder", 20);
+        modifyWeight(ProfessionalWeights, "constructioncompany", 30);
+        modifyWeight(ProfessionalWeights, "masonworker", 20);
 
         modifyWeight(RetailItemWeights, "hardware", 30);
         modifyWeight(RetailItemWeights, "furniture", 20);
@@ -343,11 +347,11 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
     }
 
     private void restSecondByDesignPlans() {
-        modifyWeight(ProfessionalWeights, "home builder", -100);
+        modifyWeight(ProfessionalWeights, "masonworker", -100);
         modifyWeight(ProfessionalWeights, "carpenter", -100);
         modifyWeight(ProfessionalWeights, "painter", -100);
         modifyWeight(ProfessionalWeights, "interior designer", -100);
-        modifyWeight(ProfessionalWeights, "construction company", -100);
+        modifyWeight(ProfessionalWeights, "constructioncompany", -100);
 
         modifyWeight(RetailItemWeights, "furniture", -100);
         modifyWeight(RetailItemWeights, "hardware", -100);
@@ -360,7 +364,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
         if(secondChoice.contains("gardening")){
             modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "home builder", 10);
+            modifyWeight(ProfessionalWeights, "masonworker", 10);
             modifyWeight(ProfessionalWeights, "painter", 10);
             modifyWeight(ProfessionalWeights, "carpenter", 10);
 
@@ -368,16 +372,16 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         }
         if(secondChoice.contains("hardscaping")){
             modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "home builder", 10);
+            modifyWeight(ProfessionalWeights, "masonworker", 10);
 
             modifyWeight(RetailItemWeights, "hardware", 30);
         }
         if(secondChoice.contains("water features")){
-            modifyWeight(ProfessionalWeights, "home builder", 30);
+            modifyWeight(ProfessionalWeights, "masonworker", 30);
         }
         if(secondChoice.contains("outdoor lighting")){
             modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "home builder", 10);
+            modifyWeight(ProfessionalWeights, "masonworker", 10);
 
             modifyWeight(RetailItemWeights, "lighting", 30);
         }
@@ -387,7 +391,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             modifyWeight(RetailItemWeights, "gardenware", 20);
         }
         if(secondChoice.contains("maintenance")){
-            modifyWeight(ProfessionalWeights, "home builder", 20);
+            modifyWeight(ProfessionalWeights, "masonworker", 20);
             modifyWeight(ProfessionalWeights, "painter", 20);
             modifyWeight(ProfessionalWeights, "carpenter", 20);
 
@@ -399,9 +403,9 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         if(secondChoice.contains("indoor remodeling")){
             modifyWeight(ProfessionalWeights, "architect", 30);
             modifyWeight(ProfessionalWeights, "interior designer", 30);
-            modifyWeight(ProfessionalWeights, "construction company", -100);
+            modifyWeight(ProfessionalWeights, "constructioncompany", -100);
             modifyWeight(ProfessionalWeights, "landscape architect", -100);
-            modifyWeight(ProfessionalWeights, "home builder", 20);
+            modifyWeight(ProfessionalWeights, "masonworker", 20);
             modifyWeight(ProfessionalWeights, "carpenter", 10);
             modifyWeight(ProfessionalWeights, "painter", 10);
 
@@ -415,9 +419,9 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
             modifyWeight(ProfessionalWeights, "architect", -100);
             modifyWeight(ProfessionalWeights, "interior designer", -100);
-            modifyWeight(ProfessionalWeights, "construction company", -100);
+            modifyWeight(ProfessionalWeights, "constructioncompany", -100);
             modifyWeight(ProfessionalWeights, "landscape architect", 30);
-            modifyWeight(ProfessionalWeights, "home builder", 30);
+            modifyWeight(ProfessionalWeights, "masonworker", 30);
             modifyWeight(ProfessionalWeights, "carpenter", 10);
             modifyWeight(ProfessionalWeights, "painter", 10);
 
@@ -571,16 +575,24 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
             List<Professional> professionalsInUserDistrict = new ArrayList<>();
             List<Professional> professionalsInAdjacentDistricts = new ArrayList<>();
-
+            System.out.println("this is user district:::: "+ userDistrict);
             for (Professional professional : filteredProfessionals) {
+                System.out.println(professional.getDistrict()
+                                               .toLowerCase());
                 // Check if the professional is in the userDistrict
-                if (professional.getDistrict().toString().toLowerCase() == userDistrict) {
+                if (professional.getDistrict()
+                                .toLowerCase()
+                                .equals(userDistrict)) {
+                    System.out.println("if eka athule ");
                     professionalsInUserDistrict.add(professional);
                 } else {
                     // Check if the professional is in any of the adjacent districts
                     boolean foundInAdjacent = false;
                     for (String adjacentDistrict : selectedDistricts) {
-                        if (professional.getDistrict().toString().toLowerCase() == adjacentDistrict) {
+                        System.out.println("else eka athule" + adjacentDistrict);
+                        if (professional.getDistrict()
+                                        .toLowerCase()
+                                        .equals(adjacentDistrict)) {
                             foundInAdjacent = true;
                             break;
                         }
@@ -592,10 +604,13 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             }
 
             if (!professionalsInUserDistrict.isEmpty()) {
+                System.out.println("one eke badu hav");
                 results_professional.addAll(professionalsInUserDistrict);
             } else if (!professionalsInAdjacentDistricts.isEmpty()) {
+                System.out.println("one eke na, laga badu hav");
                 results_professional.addAll(professionalsInAdjacentDistricts);
             } else {
+                System.out.println("badu aththema na");
                 results_professional.add(null);
             }
 
