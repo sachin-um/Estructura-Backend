@@ -618,7 +618,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         return null;
     }
 
-    
+
 
     //--------------------------------- district mapping logic end ---------------------------------------------------//
 
