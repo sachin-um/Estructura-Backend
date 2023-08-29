@@ -1,9 +1,6 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.Customer;
-import com.Estructura.API.model.CustomerRequest;
-import com.Estructura.API.model.RequestTargetItemType;
-import com.Estructura.API.model.RequestTargetProfessionalCategory;
+import com.Estructura.API.model.*;
 import com.Estructura.API.repository.CustomerRepository;
 import com.Estructura.API.repository.CustomerRequestRepository;
 import com.Estructura.API.repository.RequestTargetItemTypeRepository;
@@ -12,11 +9,13 @@ import com.Estructura.API.requests.customerRequests.CustomerRequestRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,6 +73,12 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
             response.addError("fatal", "Bad Request");
         }
         return response;
+    }
+
+    @Override
+    public ResponseEntity<List<CustomerRequest>> fetchCustomerRequestByRole(
+        Role role) {
+        return null;
     }
 
     private void saveImagesAndDocuments(CustomerRequestRequest customerRequestRequest,CustomerRequest customerRequest){
