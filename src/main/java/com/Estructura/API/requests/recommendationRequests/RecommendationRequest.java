@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RecommendationRequest {
     private String firstChoice;
-    List<String> secondChoice;
-    List<String> thirdChoice;
+    private List<String> secondChoice;
+    private List<String> thirdChoice;
 }

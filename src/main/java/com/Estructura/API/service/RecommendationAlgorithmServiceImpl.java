@@ -2,6 +2,8 @@ package com.Estructura.API.service;
 
 import com.Estructura.API.model.Professional;
 import com.Estructura.API.model.RetailItem;
+import com.Estructura.API.model.RetailStore;
+import com.Estructura.API.model.Role;
 import com.Estructura.API.requests.recommendationRequests.RecommendationRequest;
 import com.Estructura.API.responses.recommendationResponse.RecommendationResponse;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 //    private final Map<String, Integer> ProfessionalWeights = new HashMap<>();
 //    private final Map<String, Integer> RetailItemWeights = new HashMap<>();
 
-    final String[] professionals = {"architect", "interior designer", "construction company",
+    final String[] professionals = {"architect", "interior designer",
+        "construction company",
             "landscape architect", "painter", "home builder", "carpenter"};
 //        for (String professional : professionals) {
 //        ProfessionalWeights.put(professional, 0);
@@ -55,6 +58,14 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         //all Retail Items
         List<RetailItem> allRetailItems=
             retailItemService.getAllItems().getBody();
+        final String firstChoice=recommendationRequest.getFirstChoice();
+        final List<String> secoundChoice=
+            recommendationRequest.getSecondChoice();
+        final List<String> thirdChoice=recommendationRequest.getThirdChoice();
+
+        System.out.println(allProfessionals);
+        System.out.println(allRetailItems);
+
         Map<String, Integer> professionalWeights = getProfessionalWeights();
         Map<String, Integer> retailItemWeights = getRetailItemWeights();
 
@@ -99,11 +110,27 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         System.out.println("Filtered and Sorted Professional Tags: " + filteredProfessionalTags);
         System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
 
+        List<Professional> tempvar1 = new ArrayList<>();
+        List<RetailItem>  tempvar2 = new ArrayList<>();
+
+        for (Professional professional : allProfessionals) {
+            if(filteredProfessionalTags.contains(professional.getRole().toString().toLowerCase())){
+                tempvar1.add(professional);
+            }
+        }
+
+        for (RetailItem retailitem : allRetailItems){
+            if(filteredRetailItemTags.contains(retailitem.getRetailItemType().toString().toLowerCase())){
+                tempvar2.add(retailitem);
+            }
+        }
+
+        System.out.println(tempvar1);
+        System.out.println(tempvar2);
+
+
         //todo: get the professionals and retail stores based on the filteredprofrssionaltags and filteredretailitemtags
         //todo: assign them into two different variables and use those variables in the below method to get resultedProfessionals and resultedRetailstores
-
-        List<String> tempvar1 = new ArrayList<>();
-        List<String> tempvar2 = new ArrayList<>();
 
         initializeGraph();
 
@@ -113,8 +140,14 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<String> adjacentDistrictsBasedOnUserSelectedDistrict = getAdjacentDistricts(userSelectedDistrict);
         System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
 
-        List<String> resultedProfessionals = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "Professional", tempvar1);
-        List<String> resultedRetailstores = getProfessionalsOrRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore", tempvar2);
+        List<String> resultedProfessionals =
+            getProfessionalsOrRetailStores(userSelectedDistrict,
+                adjacentDistrictsBasedOnUserSelectedDistrict, "Professional",
+                tempvar1, null);
+        List<String> resultedRetailstores =
+            getProfessionalsOrRetailStores(userSelectedDistrict,
+                adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore",
+                null, tempvar2);
 
         // Sort professionals based on rating (highest to lowest)
         // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
@@ -530,8 +563,10 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         addEdge("vavuniya", "trincomalee");
     }
 
-    public static List<String> getProfessionalsOrRetailStores(String userDistrict, List<String> selectedDistricts, String userType, List<String> filteredProfessionalsOrRetailStores) {
-        List<String> results = new ArrayList<>();
+    public static List<String> getProfessionalsOrRetailStores(String userDistrict,
+        List<String> selectedDistricts, String userType, List<Professional> filteredProfessionals, List<RetailItem> filteredRetailStores) {
+        List<Professional> results_professional = new ArrayList<>();
+        List<RetailItem> results_retail = new ArrayList<>();
 
         if (userType.equals("professional")) {
             //go through the filteredProfessionalsOrRetailStores list and find the professionals who are in the userDistrict
@@ -540,10 +575,10 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             //if there are professionals in the userDistrict, return the list of professionals
             //if there are professionals in the adjacent districts, return the list of professionals
 
-            List<String> professionalsInUserDistrict = new ArrayList<>();
-            List<String> professionalsInAdjacentDistricts = new ArrayList<>();
+            List<Professional> professionalsInUserDistrict = new ArrayList<>();
+            List<Professional> professionalsInAdjacentDistricts = new ArrayList<>();
 
-            for (String professional : filteredProfessionalsOrRetailStores) {
+            for (Professional professional : filteredProfessionals) {
                 // Check if the professional is in the userDistrict
                 if (true /* Check if the professional is in userDistrict */) {
                     professionalsInUserDistrict.add(professional);
@@ -563,12 +598,13 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             }
 
             if (!professionalsInUserDistrict.isEmpty()) {
-                results.addAll(professionalsInUserDistrict);
+                results_professional.addAll(professionalsInUserDistrict);
             } else if (!professionalsInAdjacentDistricts.isEmpty()) {
-                results.addAll(professionalsInAdjacentDistricts);
+                results_professional.addAll(professionalsInAdjacentDistricts);
             } else {
-                results.add("No professionals found in the selected districts.");
+                results_professional.add(null);
             }
+            System.out.println(results_professional);
 
         } else if (userType.equals("retailstore")) {
             // Similar logic for retail stores
@@ -577,11 +613,12 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             //if there are no retail stores in the adjacent districts, return no results found
             //if there are retail stores in the userDistrict, return the list of retail stores
             //if there are retail stores in the adjacent districts, return the list of retail stores
+            System.out.println(results_retail);
         }
-
-        return results;
+        return null;
     }
 
+    
 
     //--------------------------------- district mapping logic end ---------------------------------------------------//
 
