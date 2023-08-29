@@ -15,4 +15,6 @@ public interface CustomerRequestService {
     CustomerRequestRequest customerRequestRequest) throws IOException;
 
     ResponseEntity<List<CustomerRequest>> fetchCustomerRequestByRole(Role role);
+
+    ResponseEntity<CustomerRequest> fetchCustomerRequestById(Long id);
 }

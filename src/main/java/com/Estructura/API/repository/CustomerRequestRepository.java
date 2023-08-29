@@ -5,7 +5,9 @@ import com.Estructura.API.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerRequestRepository extends JpaRepository<CustomerRequest,Integer> {
-//    List<CustomerRequest> findCustomerRequestByRole(Role role);
+    List<CustomerRequest> findByTargetCategoriesRole(Role role);
+    Optional<CustomerRequest> findCustomerRequestById(Long id);
 }

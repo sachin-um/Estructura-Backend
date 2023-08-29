@@ -78,7 +78,22 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
     @Override
     public ResponseEntity<List<CustomerRequest>> fetchCustomerRequestByRole(
         Role role) {
-        return null;
+        List<CustomerRequest> customerRequests=
+            customerRequestRepository.findByTargetCategoriesRole(role);
+        if (!customerRequests.isEmpty()){
+            return ResponseEntity.ok(customerRequests);
+        }else {
+            return ResponseEntity.noContent().build();
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<CustomerRequest> fetchCustomerRequestById(Long id) {
+        Optional<CustomerRequest> customerRequest=
+            customerRequestRepository.findCustomerRequestById(id);
+        return customerRequest.map(ResponseEntity::ok).orElseGet(
+            () -> ResponseEntity.notFound().build());
     }
 
     private void saveImagesAndDocuments(CustomerRequestRequest customerRequestRequest,CustomerRequest customerRequest){

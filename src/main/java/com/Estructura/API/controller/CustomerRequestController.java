@@ -22,11 +22,16 @@ public class CustomerRequestController {
     public GenericAddOrUpdateResponse<CustomerRequestRequest> addCustomerRequest(@ModelAttribute CustomerRequestRequest customerRequestRequest) throws IOException {
         return customerRequestService.saveCustomerRequest(customerRequestRequest);
     }
-//
-//    @GetMapping("/all/{role]")
-//    public ResponseEntity<List<CustomerRequest>> getCustomerRequestByRole(@PathVariable("role")
-//    Role role){
-//
-//    }
+
+    @GetMapping("/all/{role]")
+    public ResponseEntity<List<CustomerRequest>> getCustomerRequestByRole(@PathVariable("role")
+    Role role){
+        return customerRequestService.fetchCustomerRequestByRole(role);
+    }
+
+    @GetMapping("/customer-request/{id}")
+    public ResponseEntity<CustomerRequest> getCustomerRequestById(@PathVariable("id") Long id){
+        return customerRequestService.fetchCustomerRequestById(id);
+    }
 
 }
