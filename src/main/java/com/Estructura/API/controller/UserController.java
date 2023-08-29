@@ -2,6 +2,8 @@ package com.Estructura.API.controller;
 
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.auth.RegisterRequest;
+import com.Estructura.API.requests.users.UserUpdateRequest;
+
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.service.UserService;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,9 @@ public class UserController {
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.badRequest().build());
     }
-//    @PostMapping("update/{user_id}")
-//    public GenericAddOrUpdateResponse<RegisterRequest> update
+    @PostMapping("update/{user_id}")
+    public GenericAddOrUpdateResponse<UserUpdateRequest> updateUser(@PathVariable("user_id") int id, @ModelAttribute UserUpdateRequest userUpdateRequest){
+        return userService.update(userUpdateRequest,id);
+    }
+
 }

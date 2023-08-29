@@ -57,10 +57,10 @@ public class EstructuraAPIApplication {
                                          .businessContactNo("0342247244")
                                          .businessCategory("Furniture")
                                          .registrationNo("FUR01")
-                                         .businessAddressLine1("No:84")
-                                         .businessAddressLine2("Pansala road")
-                                         .businessCity("Kottawa")
-                                         .businessDistrict("Colombo")
+                                         .addressLine1("No:84")
+                                         .addressLine2("Pansala road")
+                                         .city("Kottawa")
+                                         .district("Colombo")
                                          .build();
 
         var renter = RegisterRequest.builder()
@@ -73,10 +73,10 @@ public class EstructuraAPIApplication {
                                     .businessName("Pubudu Renters")
                                     .businessContactNo("0112247244")
                                     .registrationNo("REN01")
-                                    .businessAddressLine1("No:48")
-                                    .businessAddressLine2("Mathugama road")
-                                    .businessCity("Mathugama")
-                                    .businessDistrict("Kaluthara")
+                                    .addressLine1("No:48")
+                                    .addressLine2("Mathugama road")
+                                    .city("Mathugama")
+                                    .district("Kaluthara")
                                     .build();
 
         var architect = RegisterRequest.builder()
@@ -89,8 +89,8 @@ public class EstructuraAPIApplication {
                                        .businessContactNo("0342247244")
                                        .businessName("Udawatte Designs")
                                        .serviceProviderType("Architect")
-                                       .businessAddressLine1("No:84")
-                                       .businessAddressLine2("Church road")
+                                       .addressLine1("No:84")
+                                       .addressLine2("Church road")
                                        .city("Negombo")
                                        .district("Puttalam")
                                        .sliaRegNumber("SLC22393")
@@ -118,11 +118,11 @@ public class EstructuraAPIApplication {
                                                      "Gumudi Construction")
                                                  .businessContactNo(
                                                      "0116547896")
-                                                 .businessAddressLine1("No:84")
-                                                 .businessAddressLine2(
+                                                 .addressLine1("No:84")
+                                                 .addressLine2(
                                                      "Haldummulla road")
-                                                 .businessCity("Ratmalana")
-                                                 .businessDistrict("Colombo")
+                                                 .city("Ratmalana")
+                                                 .district("Colombo")
                                                  .nic("9510220170V")
                                                  .website(
                                                      "www.gumudiconstruction" +
@@ -150,11 +150,11 @@ public class EstructuraAPIApplication {
                                               .businessName(
                                                   "Harini Interior Designs")
                                               .businessContactNo("0326541236")
-                                              .businessAddressLine1("No:666")
-                                              .businessAddressLine2(
+                                              .addressLine1("No:666")
+                                              .addressLine2(
                                                   "Railway road")
-                                              .businessCity("Nugegoda")
-                                              .businessDistrict("Colombo")
+                                              .city("Nugegoda")
+                                              .district("Colombo")
                                               .slidRegNumber("SLD22393")
                                               .website("www.HariniInterior.com")
                                               .qualification(
@@ -182,11 +182,11 @@ public class EstructuraAPIApplication {
                                                 .businessContactNo("0346666666")
                                                 .serviceProviderType(
                                                     "Landscape Architect")
-                                                .businessAddressLine1("No:99")
-                                                .businessAddressLine2(
+                                                .addressLine1("No:99")
+                                                .addressLine2(
                                                     "Kandy road")
-                                                .businessCity("Kandy")
-                                                .businessDistrict("Kandy")
+                                                .city("Kandy")
+                                                .district("Kandy")
                                                 .sliaRegNumber("SLC22394")
                                                 .website("www.KasunScaping.com")
                                                 .qualification(
@@ -209,11 +209,11 @@ public class EstructuraAPIApplication {
                                          .businessName("Ravindu & sons")
                                          .businessContactNo("0117539515")
                                          .registrationNo("HOM01")
-                                         .businessAddressLine1("No:16")
-                                         .businessAddressLine2(
+                                         .addressLine1("No:16")
+                                         .addressLine2(
                                              "Ruwanwalisaya road")
-                                         .businessCity("Anuradhapura")
-                                         .businessDistrict("Anuradhapura")
+                                         .city("Anuradhapura")
+                                         .district("Anuradhapura")
                                          .nic("9510288170V")
                                          .website("www.sadanaandsons.com")
                                          .serviceAreas(
@@ -234,10 +234,10 @@ public class EstructuraAPIApplication {
                                      .businessName("Abudu Painters")
                                      .businessContactNo("0119999999")
                                      .registrationNo("ALBL")
-                                     .businessAddressLine1("No:666666")
-                                     .businessAddressLine2("MAthuama road")
-                                     .businessCity("Agalawatta")
-                                     .businessDistrict("Kaluthra")
+                                     .addressLine1("No:666666")
+                                     .addressLine2("MAthuama road")
+                                     .city("Agalawatta")
+                                     .district("Kaluthra")
                                      .nic("200027000666")
                                      .website("www.abudupaints.com")
                                      .registrationNo("ALBL")
@@ -259,10 +259,10 @@ public class EstructuraAPIApplication {
                                        .businessName("Gunasinghe Carpenters")
                                        .businessContactNo("0326666666")
                                        .registrationNo("CAR01")
-                                       .businessAddressLine1("No:8")
-                                       .businessAddressLine2("Moonamal road")
-                                       .businessCity("Pannipitiya")
-                                       .businessDistrict("Colombo")
+                                       .addressLine1("No:8")
+                                       .addressLine2("Moonamal road")
+                                       .city("Pannipitiya")
+                                       .district("Colombo")
                                        .nic("200027000999")
                                        .website("www.GunasingheCarpenter.com")
                                        .serviceAreas(

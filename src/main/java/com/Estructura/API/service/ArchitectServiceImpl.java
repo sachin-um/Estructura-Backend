@@ -23,4 +23,9 @@ public class ArchitectServiceImpl implements ArchitectService {
         }
         return architectRepository.save(architect);
     }
+
+    @Override
+    public Optional<Architect> findArchitectById(Integer id) {
+        return architectRepository.findById(id);
+    }
 }

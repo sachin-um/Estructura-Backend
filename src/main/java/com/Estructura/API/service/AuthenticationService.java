@@ -12,6 +12,7 @@ import com.Estructura.API.responses.auth.AuthenticationResponse;
 import com.Estructura.API.responses.auth.RefreshTokenResponse;
 import com.Estructura.API.responses.auth.RegisterResponse;
 import com.Estructura.API.utils.FileUploadUtil;
+import com.Estructura.API.utils.UserDetailsUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,7 @@ public class AuthenticationService {
     private final QualificationRepository qualificationRepository;
     private final SpecializationRepository specializationRepository;
     private final ServiceAreaRepository serviceAreaRepository;
+    private final UserDetailsUtil userDetailsUtil;
 
     public RegisterResponse register(@ModelAttribute RegisterRequest request,
             boolean preVerified) {
@@ -127,13 +129,13 @@ public class AuthenticationService {
                         .registrationNo(
                                 request.getRegistrationNo())
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .city(
-                                request.getBusinessCity())
+                                request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .build();
                 if (profileImageName != null) {
                     retailStore.setProfileImage(profileImageName);
@@ -157,11 +159,11 @@ public class AuthenticationService {
                         .registrationNo(
                                 request.getRegistrationNo())
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
-                        .city(request.getBusinessCity())
-                        .district(request.getBusinessDistrict())
+                                request.getAddressLine2())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
                         .build();
                 if (profileImageName != null) {
                     renter.setProfileImage(profileImageName);
@@ -194,13 +196,13 @@ public class AuthenticationService {
                         .serviceProviderType(
                                 PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .city(
-                                request.getBusinessCity())
+                                request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .minRate(
                                 request.getMinRate())
                         .maxRate(
@@ -234,9 +236,9 @@ public class AuthenticationService {
                         .serviceProviderType(
                                 PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .city(request.getCity())
                         .district(request.getDistrict())
                         .sliaRegNumber(
@@ -269,15 +271,15 @@ public class AuthenticationService {
                         .businessName(
                                 request.getBusinessName())
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .businessContactNo(
                                 request.getBusinessContactNo())
                         .city(
-                                request.getBusinessCity())
+                                request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .role(
                                 request.getRole())
                         .serviceProviderType(
@@ -321,13 +323,13 @@ public class AuthenticationService {
                         .serviceProviderType(
                                 PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .city(
-                                request.getBusinessCity())
+                                request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .sLIDRegNumber(
                                 request.getSlidRegNumber())
                         .minRate(
@@ -363,13 +365,13 @@ public class AuthenticationService {
                         .serviceProviderType(
                                 PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
+                                request.getAddressLine2())
                         .city(
-                                request.getBusinessCity())
+                                request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .minRate(
                                 request.getMinRate())
                         .maxRate(
@@ -397,12 +399,12 @@ public class AuthenticationService {
                         .nic(request.getNic())
                         .serviceProviderType(PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
-                        .city(request.getBusinessCity())
+                                request.getAddressLine2())
+                        .city(request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate()).build();
                 if (profileImageName != null) {
@@ -430,12 +432,12 @@ public class AuthenticationService {
                         .serviceProviderType(
                                 PROFESSIONAL)
                         .addressLine1(
-                                request.getBusinessAddressLine1())
+                                request.getAddressLine1())
                         .addressLine2(
-                                request.getBusinessAddressLine2())
-                        .city(request.getBusinessCity())
+                                request.getAddressLine2())
+                        .city(request.getCity())
                         .district(
-                                request.getBusinessDistrict())
+                                request.getDistrict())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
                         .build();
@@ -457,7 +459,8 @@ public class AuthenticationService {
                             .collect(Collectors.toList());
                     User finalSavedUSer = savedUser;
                     specializations.forEach(specialization -> {
-                        saveSpecialization(finalSavedUSer, specialization);
+                        userDetailsUtil.saveSpecialization(finalSavedUSer,
+                            specialization);
                     });
                 }
                 if (request.getQualification() != null &&
@@ -467,13 +470,15 @@ public class AuthenticationService {
                             .collect(Collectors.toList());
                     User finalSavedUser = savedUser;
                     qualifications.forEach(qualification -> {
-                        saveQualification(finalSavedUser, qualification);
+                        userDetailsUtil.saveQualification(finalSavedUser,
+                            qualification);
                     });
                 }
                 if (request.getServiceAreas() != null) {
                     User finalSavedUser = savedUser;
                     request.getServiceAreas().forEach(serviceArea -> {
-                        saveServiceArea(finalSavedUser, serviceArea);
+                        userDetailsUtil.saveServiceArea(finalSavedUser,
+                            serviceArea);
                     });
                 }
                 var jwtToken = jwtService.generateToken(user);
@@ -577,34 +582,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void saveQualification(User user, String qualification) {
-        var theQualification = Qualification.builder()
-                .qualification(qualification)
-                .build();
-        if (user.getRole().equals(ARCHITECT)) {
-            theQualification.setArchitect((Architect) user);
-        }
-        qualificationRepository.save(theQualification);
-    }
 
-    private void saveServiceArea(User user, String serviceArea) {
-        var theServiceArea = ServiceArea.builder().serviceArea(serviceArea)
-                .build();
-        if (user.getRole().equals(ARCHITECT)) {
-            theServiceArea.setProfessional((Professional) user);
-        }
-        serviceAreaRepository.save(theServiceArea);
-    }
-
-    private void saveSpecialization(User user, String specialization) {
-        var theSpecialization = Specialization.builder()
-                .specialization(specialization)
-                .build();
-        if (user.getRole().equals(ARCHITECT)) {
-            theSpecialization.setArchitect((Architect) user);
-        }
-        specializationRepository.save(theSpecialization);
-    }
 
     public RefreshTokenResponse refreshToken(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
