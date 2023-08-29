@@ -7,6 +7,7 @@ import com.Estructura.API.repository.RequestTargetItemTypeRepository;
 import com.Estructura.API.repository.RequestTargetProfessionalCategoryRepository;
 import com.Estructura.API.requests.customerRequests.CustomerRequestRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
+import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +95,45 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
             customerRequestRepository.findCustomerRequestById(id);
         return customerRequest.map(ResponseEntity::ok).orElseGet(
             () -> ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<List<CustomerRequest>> fetchAllCustomerRequest() {
+        List<CustomerRequest> customerRequests=
+            customerRequestRepository.findAll();
+        if (!customerRequests.isEmpty()){
+            return ResponseEntity.ok(customerRequests);
+        }else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<CustomerRequest>> fetchAllCustomerRequestByCustomer(
+        Customer customer) {
+        List<CustomerRequest> customerRequests=
+            customerRequestRepository.findCustomerRequestByCustomer(customer);
+        if (!customerRequests.isEmpty()){
+            return ResponseEntity.ok(customerRequests);
+        }else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @Override
+    public GenericDeleteResponse<Long> deleteCustomerRequest(
+        CustomerRequest customerRequest) {
+        GenericDeleteResponse<Long> response = new GenericDeleteResponse<>();
+        customerRequestRepository.delete(customerRequest);
+        Optional<CustomerRequest> request=
+            customerRequestRepository.findCustomerRequestById(customerRequest.getId());
+        if (request.isPresent()) {
+            response.setSuccess(false);
+            response.setMessage("Something went wrong please try again");
+        } else {
+            response.setSuccess(true);
+        }
+        return response;
     }
 
     private void saveImagesAndDocuments(CustomerRequestRequest customerRequestRequest,CustomerRequest customerRequest){
