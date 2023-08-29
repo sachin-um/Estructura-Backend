@@ -59,7 +59,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<RetailItem> allRetailItems=
             retailItemService.getAllItems().getBody();
         final String firstChoice=recommendationRequest.getFirstChoice();
-        final List<String> secoundChoice=
+        final List<String> secondChoice=
             recommendationRequest.getSecondChoice();
         final List<String> thirdChoice=recommendationRequest.getThirdChoice();
 
@@ -140,15 +140,11 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<String> adjacentDistrictsBasedOnUserSelectedDistrict = getAdjacentDistricts(userSelectedDistrict);
         System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
 
-        List<String> resultedProfessionals =
-            getProfessionalsOrRetailStores(userSelectedDistrict,
-                adjacentDistrictsBasedOnUserSelectedDistrict, "Professional",
-                tempvar1, null);
-        List<String> resultedRetailstores =
-            getProfessionalsOrRetailStores(userSelectedDistrict,
-                adjacentDistrictsBasedOnUserSelectedDistrict, "retailstore",
-                null, tempvar2);
+        List<Professional> resultedProfessionals = getProfessionals(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar1);
+//        List<RetailItem> resultedRetailstores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, tempvar2);
 
+        System.out.println(resultedProfessionals);
+//        System.out.println(resultedRetailstores);
         // Sort professionals based on rating (highest to lowest)
         // resultedRetailstores.sort(Comparator.comparingDouble(product -> product.price));
 
@@ -563,12 +559,10 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         addEdge("vavuniya", "trincomalee");
     }
 
-    public static List<String> getProfessionalsOrRetailStores(String userDistrict,
-        List<String> selectedDistricts, String userType, List<Professional> filteredProfessionals, List<RetailItem> filteredRetailStores) {
-        List<Professional> results_professional = new ArrayList<>();
-        List<RetailItem> results_retail = new ArrayList<>();
+    public static List<Professional> getProfessionals(String userDistrict,
+        List<String> selectedDistricts, List<Professional> filteredProfessionals) {
 
-        if (userType.equals("professional")) {
+        List<Professional> results_professional = new ArrayList<>();
             //go through the filteredProfessionalsOrRetailStores list and find the professionals who are in the userDistrict
             //if there are no professionals in the userDistrict, find the professionals in the adjacent districts
             //if there are no professionals in the adjacent districts, return no results found
@@ -580,13 +574,13 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
             for (Professional professional : filteredProfessionals) {
                 // Check if the professional is in the userDistrict
-                if (true /* Check if the professional is in userDistrict */) {
+                if (professional.getDistrict().toString().toLowerCase() == userDistrict) {
                     professionalsInUserDistrict.add(professional);
                 } else {
                     // Check if the professional is in any of the adjacent districts
                     boolean foundInAdjacent = false;
                     for (String adjacentDistrict : selectedDistricts) {
-                        if ( true /* Check if the professional is in adjacentDistrict */) {
+                        if (professional.getDistrict().toString().toLowerCase() == adjacentDistrict) {
                             foundInAdjacent = true;
                             break;
                         }
@@ -604,18 +598,51 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             } else {
                 results_professional.add(null);
             }
-            System.out.println(results_professional);
 
-        } else if (userType.equals("retailstore")) {
-            // Similar logic for retail stores
-            //go through the filteredProfessionalsOrRetailStores list and find the retail stores who are in the userDistrict
-            //if there are no retail stores in the userDistrict, find the retail stores in the adjacent districts
-            //if there are no retail stores in the adjacent districts, return no results found
-            //if there are retail stores in the userDistrict, return the list of retail stores
-            //if there are retail stores in the adjacent districts, return the list of retail stores
-            System.out.println(results_retail);
-        }
-        return null;
+        return results_professional;
+    }
+
+    public static List<RetailItem> getRetailStores(String userDistrict, List<String> selectedDistricts, List<RetailItem> filteredRetailStores) {
+
+        List<RetailItem> results_retail = new ArrayList<>();
+
+            //go through the filteredProfessionalsOrRetailStores list and find the professionals who are in the userDistrict
+            //if there are no professionals in the userDistrict, find the professionals in the adjacent districts
+            //if there are no professionals in the adjacent districts, return no results found
+            //if there are professionals in the userDistrict, return the list of professionals
+            //if there are professionals in the adjacent districts, return the list of professionals
+
+            List<RetailItem> retailItemInUserDistrict = new ArrayList<>();
+            List<RetailItem> retailItemInAdjacentDistricts = new ArrayList<>();
+
+            for (RetailItem retailItem : filteredRetailStores) {
+                // Check if the professional is in the userDistrict
+                if (true /* Check if the professional is in userDistrict */) {
+                    retailItemInUserDistrict.add(retailItem);
+                } else {
+                    // Check if the professional is in any of the adjacent districts
+                    boolean foundInAdjacent = false;
+                    for (String adjacentDistrict : selectedDistricts) {
+                        if ( true /* Check if the professional is in adjacentDistrict */) {
+                            foundInAdjacent = true;
+                            break;
+                        }
+                    }
+                    if (foundInAdjacent) {
+                        retailItemInAdjacentDistricts.add(retailItem);
+                    }
+                }
+            }
+
+            if (!retailItemInUserDistrict.isEmpty()) {
+                results_retail.addAll(retailItemInUserDistrict);
+            } else if (!retailItemInAdjacentDistricts.isEmpty()) {
+                results_retail.addAll(retailItemInAdjacentDistricts);
+            } else {
+                results_retail.add(null);
+            }
+
+            return results_retail;
     }
 
 
