@@ -23,7 +23,7 @@ public class CustomerRequestController {
         return customerRequestService.saveCustomerRequest(customerRequestRequest);
     }
 
-    @GetMapping("/all/{role]")
+    @GetMapping("/all/{role}")
     public ResponseEntity<List<CustomerRequest>> getCustomerRequestByRole(@PathVariable("role")
     Role role){
         return customerRequestService.fetchCustomerRequestByRole(role);
