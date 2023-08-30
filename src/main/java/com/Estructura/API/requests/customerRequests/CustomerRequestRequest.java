@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class customerRequest {
+public class CustomerRequestRequest {
     private String description;
     private String shortDesc;
     private List<Role> targetCategories;
