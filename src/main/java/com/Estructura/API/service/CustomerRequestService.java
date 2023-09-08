@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerRequestService {
     GenericAddOrUpdateResponse<CustomerRequestRequest> saveCustomerRequest(@ModelAttribute
@@ -21,6 +22,8 @@ public interface CustomerRequestService {
     ResponseEntity<CustomerRequest> fetchCustomerRequestById(Long id);
 
     ResponseEntity<List<CustomerRequest>> fetchAllCustomerRequest();
+
+    Optional<CustomerRequest> getCustomerRequestById(Long id);
 
     ResponseEntity<List<CustomerRequest>> fetchAllCustomerRequestByCustomer(
         Customer customer);
