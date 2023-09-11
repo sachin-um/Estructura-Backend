@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+import static com.Estructura.API.model.AccountType.NORMAL;
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -42,6 +44,12 @@ public class User implements UserDetails {
     private String profileImageName;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType=NORMAL;
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;

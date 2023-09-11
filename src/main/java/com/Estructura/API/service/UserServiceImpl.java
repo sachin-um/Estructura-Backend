@@ -5,6 +5,7 @@ import com.Estructura.API.model.*;
 import com.Estructura.API.repository.UserRepository;
 import com.Estructura.API.requests.users.UserUpdateRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
+import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import com.Estructura.API.utils.UserDetailsUtil;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.Estructura.API.model.AccountType.PREMIUM;
 import static com.Estructura.API.model.Role.*;
 
 @Service
@@ -255,6 +257,57 @@ public class UserServiceImpl implements UserService {
         }
         return response;
     }
+
+    @Override
+    public ResponseEntity<User> verifyUser(Integer id) {
+        Optional<User> optionalUser=userRepository.findById(id);
+
+        if (optionalUser.isPresent()){
+            User existedUser=optionalUser.get();
+            existedUser.setVerified(true);
+            User savedUser=userRepository.save(existedUser);
+            return ResponseEntity.ok(savedUser);
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<User> activeOrSuspendAcccount(Integer id,
+        AccountStatus action) {
+        Optional<User> optionalUser=userRepository.findById(id);
+        if (optionalUser.isPresent()){
+            User existedUser=optionalUser.get();
+            existedUser.setStatus(action);
+            User savedUser=userRepository.save(existedUser);
+            return  ResponseEntity.ok(savedUser);
+        }else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Override
+    public GenericResponse<Integer> upgradeToPremium(Integer id) {
+        GenericResponse<Integer> response=new GenericResponse<>();
+        Optional<User> optionalUser=userRepository.findById(id);
+        if (optionalUser.isPresent()){
+            User existedUser=optionalUser.get();
+            existedUser.setAccountType(PREMIUM);
+            User savedUser=userRepository.save(existedUser);
+            if (savedUser.getAccountType()==PREMIUM){
+                response.setSuccess(true);
+            }else {
+                response.setSuccess(false);
+                response.setMessage("Something went wrong");
+            }
+            return response;
+        }
+        response.setSuccess(false);
+        response.setMessage("User doesn't exist");
+        return response;
+    }
+
 
     @Override
     public void resetUserPassword(User user, String newPassword) {
