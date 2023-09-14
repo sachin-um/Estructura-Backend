@@ -66,7 +66,7 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
                     });
                 }
                 response.setSuccess(true);
-                response.setId(customerRequest.getId());
+                response.setId(savedCustomerRequest.getId());
             }else {
                 response.addError("fatal", "Access denied");
             }
@@ -106,6 +106,11 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
         }else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @Override
+    public Optional<CustomerRequest> getCustomerRequestById(Long id) {
+        return customerRequestRepository.findCustomerRequestById(id);
     }
 
     @Override

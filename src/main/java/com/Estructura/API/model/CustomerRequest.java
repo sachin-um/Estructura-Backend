@@ -71,6 +71,9 @@ public class CustomerRequest {
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetItemType> targetRetailCategories;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "customerRequest")
+    private List<Response> responses;
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetProfessionalCategory> targetCategories;
     @ManyToOne(fetch = FetchType.LAZY)

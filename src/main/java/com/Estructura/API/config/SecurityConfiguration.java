@@ -60,6 +60,10 @@ public class SecurityConfiguration {
             .permitAll()
             .requestMatchers(("/api/v1/renting-items/**"))
             .permitAll()
+            .requestMatchers(("/api/v1/customer-requests/**"))
+            .permitAll()
+            .requestMatchers(("/api/v1/response/**"))
+            .permitAll()
             .anyRequest()
             .authenticated();
     }
