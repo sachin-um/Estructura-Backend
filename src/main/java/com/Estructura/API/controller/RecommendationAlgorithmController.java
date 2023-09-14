@@ -17,7 +17,7 @@ public class RecommendationAlgorithmController {
     private final RecommendationAlgorithmService recommendationAlgorithmService;
 
     @GetMapping("/recommend")
-    public ResponseEntity<RecommendationResponse> recommend(@ModelAttribute RecommendationRequest recommendationRequest){
+    public ResponseEntity<RecommendationResponse> recommend(@RequestBody RecommendationRequest recommendationRequest){
         return recommendationAlgorithmService.recommend(recommendationRequest);
     }
 
