@@ -1,5 +1,6 @@
 package com.Estructura.API.controller;
 
+import com.Estructura.API.model.Role;
 import com.Estructura.API.model.User;
 import com.Estructura.API.requests.auth.RegisterRequest;
 import com.Estructura.API.requests.users.UserUpdateRequest;
@@ -29,6 +30,11 @@ public class UserController {
         Optional<User> user = userService.findById(id);
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping("/get-by-role/{role}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable("role") Role role){
+        return userService.findByRole(role);
     }
     @PostMapping("update/{user_id}")
     public GenericAddOrUpdateResponse<UserUpdateRequest> updateUser(@PathVariable("user_id") int id, @ModelAttribute UserUpdateRequest userUpdateRequest){
