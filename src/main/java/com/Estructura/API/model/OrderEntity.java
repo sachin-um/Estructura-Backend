@@ -21,11 +21,4 @@ public class OrderEntity {
     private Long id;
     private Integer quantity;
     //check the relationship
-    @ManyToOne
-    private RetailItem retailItem;
-
-    public OrderEntity(Integer quantity, RetailItem retailItem) {
-        this.quantity   = quantity;
-        this.retailItem = retailItem;
-    }
 }
