@@ -3,9 +3,11 @@ package com.Estructura.API.controller;
 import com.Estructura.API.model.CustomerRequest;
 import com.Estructura.API.model.Response;
 import com.Estructura.API.model.ServiceProvider;
+import com.Estructura.API.requests.serviceProviderResponses.ActionRequest;
 import com.Estructura.API.requests.serviceProviderResponses.ResponseRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
+import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.service.CustomerRequestService;
 import com.Estructura.API.service.ResponseService;
 import com.Estructura.API.service.ServiceProviderService;
@@ -30,7 +32,7 @@ public class ResponseController {
         return responseService.addResponse(responseRequest);
     }
 
-    @GetMapping("all/service-provider/{providerId}")
+    @GetMapping("/all/service-provider/{providerId}")
     public ResponseEntity<List<Response>> getAllResponsesByProvider(@PathVariable("providerId") Integer id){
         Optional<ServiceProvider> serviceProvider=
             serviceProviderService.findById(id);
@@ -42,7 +44,7 @@ public class ResponseController {
 
     }
 
-    @GetMapping("all/request/{requestId}")
+    @GetMapping("/all/request/{requestId}")
     public ResponseEntity<List<Response>> getAllResponseByRequest(@PathVariable("requestId") Long requestId){
         Optional<CustomerRequest> customerRequest=
             customerRequestService.getCustomerRequestById(requestId);
@@ -53,12 +55,19 @@ public class ResponseController {
         }
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Response> getResponseById(@PathVariable("id") Long id){
         return responseService.getResponseById(id);
     }
 
-    @DeleteMapping("delete/{id}")
+    @PostMapping("/action")
+    public GenericResponse<Long> acceptOrDeclineResponse(ActionRequest actionRequest){
+        return responseService.acceptOrDeclineResponse(actionRequest);
+    }
+
+
+
+    @DeleteMapping("/delete/{id}")
     public GenericDeleteResponse<Long> deleteResponse(@PathVariable("id") Long id){
         GenericDeleteResponse<Long> response=new GenericDeleteResponse<>();
         ResponseEntity<Response> existedResponse=
