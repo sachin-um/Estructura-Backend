@@ -1,13 +1,13 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.CustomerRequest;
-import com.Estructura.API.model.Response;
-import com.Estructura.API.model.ServiceProvider;
+import com.Estructura.API.model.*;
 import com.Estructura.API.repository.ResponseRepository;
 import com.Estructura.API.requests.customerRequests.CustomerRequestRequest;
+import com.Estructura.API.requests.serviceProviderResponses.ActionRequest;
 import com.Estructura.API.requests.serviceProviderResponses.ResponseRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.GenericDeleteResponse;
+import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.Estructura.API.model.ResponseStatus.ACCEPTED;
+import static com.Estructura.API.model.ResponseStatus.PENDING;
+
 @Service
 @AllArgsConstructor
 public class ResponseServiceImpl implements ResponseService{
     private final ResponseRepository responseRepository;
     private final ServiceProviderService serviceProviderService;
     private final CustomerRequestService customerRequestService;
+    private final CustomerService customerService;
 
 
     @Override
@@ -96,6 +100,44 @@ public class ResponseServiceImpl implements ResponseService{
         }else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @Override
+    public Optional<Response> fetchResponseById(Long id) {
+        return responseRepository.findById(id);
+    }
+
+    @Override
+    public GenericResponse<Long> acceptOrDeclineResponse(ActionRequest actionRequest) {
+        GenericResponse<Long> response=new GenericResponse<>();
+        Optional<Customer> requestCustomer=
+            customerService.findById(actionRequest.getCustomer_id());
+        Optional<Response> requestedResponse=fetchResponseById(
+            actionRequest.getResponse_id());
+
+        if (requestedResponse.isPresent() && requestCustomer.isPresent()){
+            Response serviceProviderResponse=requestedResponse.get();
+            Customer aqualCustomer=serviceProviderResponse.getCustomerRequest()
+                                                    .getCustomer();
+            if (aqualCustomer.equals(requestCustomer.get())){
+                serviceProviderResponse.setStatus(actionRequest.getAction());
+                Response savedResponse=
+                    responseRepository.save(serviceProviderResponse);
+                if (savedResponse.getStatus()==actionRequest.getAction()){
+                    response.setSuccess(true);
+                }else {
+                    response.setSuccess(false);
+                    response.setMessage("Something went wrong");
+                }
+            }else {
+                response.setSuccess(false);
+                response.setMessage("Bad Request");
+            }
+        }else {
+            response.setSuccess(false);
+            response.setMessage("Bad Request");
+        }
+        return response;
     }
 
     @Override

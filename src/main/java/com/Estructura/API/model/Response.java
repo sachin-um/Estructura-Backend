@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
+import static com.Estructura.API.model.ResponseStatus.PENDING;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -42,6 +44,9 @@ public class Response {
     private String Document3Name;
 
     private Integer createBy;
+
+    @Enumerated(EnumType.STRING)
+    private ResponseStatus status=PENDING;
 
     @Column(nullable = false)
     @CreationTimestamp
