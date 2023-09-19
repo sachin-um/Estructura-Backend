@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 import java.util.List;
 
+import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORRESPONSE;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -63,6 +65,9 @@ public class CustomerRequest {
     private String Document3Name;
 
     private Integer createdBy;
+
+    @Enumerated(EnumType.STRING)
+    private CustomerRequestStatus status=AWAITINGFORRESPONSE;
 
     @Column(nullable = false)
     @CreationTimestamp
