@@ -1,6 +1,7 @@
 package com.Estructura.API.service;
 
 import com.Estructura.API.model.*;
+import com.Estructura.API.repository.CustomerRequestRepository;
 import com.Estructura.API.repository.ResponseRepository;
 import com.Estructura.API.requests.customerRequests.CustomerRequestRequest;
 import com.Estructura.API.requests.serviceProviderResponses.ActionRequest;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORACCEPT;
+import static com.Estructura.API.model.CustomerRequestStatus.COMPLETED;
 import static com.Estructura.API.model.ResponseStatus.ACCEPTED;
 import static com.Estructura.API.model.ResponseStatus.PENDING;
 
@@ -30,6 +33,7 @@ public class ResponseServiceImpl implements ResponseService{
     private final ServiceProviderService serviceProviderService;
     private final CustomerRequestService customerRequestService;
     private final CustomerService customerService;
+    private final CustomerRequestRepository customerRequestRepository;
 
 
     @Override
@@ -53,15 +57,26 @@ public class ResponseServiceImpl implements ResponseService{
                 saveImagesOrDocuments(responseRequest,serviceProviderResponse);
                 Response savedResponse=
                     responseRepository.save(serviceProviderResponse);
-                String uploadDir =
-                    "./files/responses-files/" + savedResponse.getServiceProvider().getId() + "/" +
-                    savedResponse.getId();
-                FileUploadUtil.uploadDocuments(uploadDir,
-                    responseRequest.getDocuments(),
-                    savedResponse.getDocument1Name(),
-                    savedResponse.getDocument2Name(),savedResponse.getDocument3Name());
-                response.setSuccess(true);
-                response.setId(savedResponse.getId());
+                if (savedResponse.getId()!= 0){
+                    String uploadDir =
+                        "./files/responses-files/" + savedResponse.getServiceProvider().getId() + "/" +
+                        savedResponse.getId();
+                    FileUploadUtil.uploadDocuments(uploadDir,
+                        responseRequest.getDocuments(),
+                        savedResponse.getDocument1Name(),
+                        savedResponse.getDocument2Name(),savedResponse.getDocument3Name());
+                    CustomerRequest request=customerRequest.get();
+                    request.setStatus(AWAITINGFORACCEPT);
+                    customerRequestRepository.save(request);
+                    response.setSuccess(true);
+                    response.setId(savedResponse.getId());
+                }
+                else {
+                    response.setSuccess(false);
+                    response.setMessage("Somthing went wrong");
+                }
+
+
             }else {
                 response.addError("fatal","Access denied");
             }
@@ -119,11 +134,16 @@ public class ResponseServiceImpl implements ResponseService{
             Response serviceProviderResponse=requestedResponse.get();
             Customer aqualCustomer=serviceProviderResponse.getCustomerRequest()
                                                     .getCustomer();
+            CustomerRequest customerRequest=
+                serviceProviderResponse.getCustomerRequest();
             if (aqualCustomer.equals(requestCustomer.get())){
                 serviceProviderResponse.setStatus(actionRequest.getAction());
+                customerRequest.setStatus(COMPLETED);
                 Response savedResponse=
                     responseRepository.save(serviceProviderResponse);
-                if (savedResponse.getStatus()==actionRequest.getAction()){
+                CustomerRequest savedRequest=
+                    customerRequestRepository.save(customerRequest);
+                if (savedResponse.getStatus()==actionRequest.getAction() && savedRequest.getStatus()==COMPLETED){
                     response.setSuccess(true);
                 }else {
                     response.setSuccess(false);
@@ -165,15 +185,20 @@ public class ResponseServiceImpl implements ResponseService{
                     document.getOriginalFilename() != null) {
                     String documentName = StringUtils.cleanPath(
                         document.getOriginalFilename());
-                    if (count == 0) response.setDocument1(documentName);
-                    response.setDocument1Name(FileUploadUtil.generateFileName(
-                        documentName));//check the image count is less than 3
-                    if (count == 1) response.setDocument2(documentName);
-                    response.setDocument2Name(
-                        FileUploadUtil.generateFileName(documentName));
-                    if (count == 2) response.setDocument3(documentName);
-                    response.setDocument3Name(
-                        FileUploadUtil.generateFileName(documentName));
+                    if (count == 0) {
+                        response.setDocument1(documentName);
+                        response.setDocument1Name(
+                            FileUploadUtil.generateFileName(documentName));//check the image count is less than 3
+                    }
+                    if (count == 1) {
+                        response.setDocument2(documentName);
+                        response.setDocument2Name(FileUploadUtil.generateFileName(documentName));
+                    }
+                    if (count == 2) {
+                        response.setDocument3(documentName);
+
+                        response.setDocument3Name(FileUploadUtil.generateFileName(documentName));
+                    }
                     count++;
                 }
             }
