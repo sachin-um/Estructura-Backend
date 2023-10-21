@@ -287,27 +287,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public GenericResponse<Integer> upgradeToPremium(Integer id) {
-        GenericResponse<Integer> response=new GenericResponse<>();
-        Optional<User> optionalUser=userRepository.findById(id);
-        if (optionalUser.isPresent()){
-            User existedUser=optionalUser.get();
-            existedUser.setAccountType(PREMIUM);
-            User savedUser=userRepository.save(existedUser);
-            if (savedUser.getAccountType()==PREMIUM){
-                response.setSuccess(true);
-            }else {
-                response.setSuccess(false);
-                response.setMessage("Something went wrong");
-            }
-            return response;
-        }
-        response.setSuccess(false);
-        response.setMessage("User doesn't exist");
-        return response;
-    }
-
 
     @Override
     public void resetUserPassword(User user, String newPassword) {
