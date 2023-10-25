@@ -45,22 +45,41 @@ public class FileUploadUtil {
         if (mainImage != null) {
             FileUploadUtil.saveFile(uploadDir, mainImage, mainImageName2);
         }
-        if (extraImages != null) {
-            for (MultipartFile file : extraImages) {
+        uploadFiles(uploadDir, extraImages, extraImage1Name, extraImage2Name,
+            extraImage3Name, count
+        );
+    }
+
+    public static void uploadDocuments(String uploadDir,
+        List<MultipartFile> documents,
+        String document1Name, String document2Name,
+        String document3Name) throws IOException {
+        int count = 0;
+        uploadFiles(uploadDir, documents, document1Name, document2Name,
+            document3Name, count
+        );
+    }
+
+    private static void uploadFiles(String uploadDir,
+        List<MultipartFile> documents, String document1Name,
+        String document2Name, String document3Name,
+        int count) throws IOException {
+        if (documents != null) {
+            for (MultipartFile file : documents) {
                 if (!file.isEmpty()) {
                     if (count == 0) {
                         String fileName = StringUtils.cleanPath(
-                            extraImage1Name);
+                            document1Name);
                         FileUploadUtil.saveFile(uploadDir, file, fileName);
                     }
                     if (count == 1) {
                         String fileName = StringUtils.cleanPath(
-                            extraImage2Name);
+                            document2Name);
                         FileUploadUtil.saveFile(uploadDir, file, fileName);
                     }
                     if (count == 2) {
                         String fileName = StringUtils.cleanPath(
-                            extraImage3Name);
+                            document3Name);
                         FileUploadUtil.saveFile(uploadDir, file, fileName);
                     }
                     count++;

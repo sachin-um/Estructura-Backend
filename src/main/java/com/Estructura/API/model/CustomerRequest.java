@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 import java.util.List;
 
+import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORRESPONSE;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -64,13 +66,21 @@ public class CustomerRequest {
 
     private Integer createdBy;
 
+    @Enumerated(EnumType.STRING)
+    private CustomerRequestStatus status=AWAITINGFORRESPONSE;
+
     @Column(nullable = false)
     @CreationTimestamp
     private Date dateAdded;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetItemType> targetRetailCategories;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "customerRequest")
+    private List<Response> responses;
+    @JsonIgnore
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetProfessionalCategory> targetCategories;
     @ManyToOne(fetch = FetchType.LAZY)

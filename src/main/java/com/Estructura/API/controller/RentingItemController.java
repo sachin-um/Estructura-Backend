@@ -59,7 +59,7 @@ public class RentingItemController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/allbyCategory/{category}") // resp ent <List<Project
+    @GetMapping("/allByCategory/{category}") // resp ent <List<Project
     public ResponseEntity<List<RentingItem>> getAllRentingItemsByCategory(@PathVariable("category") RentingCategory category){
         return rentingItemService.getItemsbyCategory(category);
     }

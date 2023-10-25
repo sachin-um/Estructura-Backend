@@ -62,6 +62,10 @@ public class SecurityConfiguration {
             .permitAll()
             .requestMatchers("/chat**")
             .permitAll()
+            .requestMatchers(("/api/v1/customer-requests/**"))
+            .permitAll()
+            .requestMatchers(("/api/v1/response/**"))
+            .permitAll()
             .anyRequest()
             .authenticated();
     }

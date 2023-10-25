@@ -1,11 +1,11 @@
 package com.Estructura.API.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,4 +28,8 @@ public class Customer extends User {
     private String district;
     @Column(nullable = false)
     private String contactNo;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer")
+    private List<CustomerRequest> customerRequests;
 }

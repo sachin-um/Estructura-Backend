@@ -61,15 +61,15 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         List<RetailItem> allRetailItems=
             retailItemService.getAllItems().getBody();
 
-        //final String firstChoice=recommendationRequest.getFirstChoice();
-        final String firstChoice= "design plans";
-//        final List<String> secondChoice=
-//            recommendationRequest.getSecondChoice();
-        final List<String> secondChoice= Arrays.asList("indoor design");
-//        final List<String> thirdChoice=recommendationRequest.getThirdChoice();
-        final List<String> thirdChoice= Arrays.asList();
-//        final String district=recommendationRequest.getDistrict();
-        final String district= "Puttalam";
+        final String firstChoice=recommendationRequest.getFirstChoice();
+//        final String firstChoice= "design plans";
+        final List<String> secondChoice=
+            recommendationRequest.getSecondChoice();
+//        final List<String> secondChoice= Arrays.asList("indoor design");
+        final List<String> thirdChoice=recommendationRequest.getThirdChoice();
+//        final List<String> thirdChoice= Arrays.asList();
+        final String district=recommendationRequest.getDistrict();
+//        final String district= "Puttalam";
 
 
         Map<Role, Integer> professionalWeights = getProfessionalWeights();
