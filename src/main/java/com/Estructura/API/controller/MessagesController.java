@@ -31,4 +31,16 @@ public class MessagesController {
     ) {
         return messagesService.getMessages(token,recipientId);
     }
+
+    @GetMapping(path = "/all")
+    public List<Message> getAllMessages(
+        @RequestParam("token") String token
+    ) {
+        return messagesService.getAllMessages(token);
+    }
+
+    @PostMapping(path = "/seen")
+    public void seen(@RequestParam("token") String token,@RequestParam Long msg){
+        messagesService.seen(msg,token);
+    }
 }

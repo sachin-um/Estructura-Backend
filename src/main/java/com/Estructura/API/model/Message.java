@@ -1,6 +1,5 @@
 package com.Estructura.API.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -40,4 +39,7 @@ public class Message {
 
     @ElementCollection
     private List<String> fileOriginalNames;
+
+    @Column(nullable = false)
+    private boolean seen = false;
 }

@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
-        System.out.println(request.getRequestURI());
+        // System.out.println(request.getRequestURI());
         if (request.getRequestURI().equals("/api/v1/auth/refresh-token")) {
             filterChain.doFilter(request, response);
             return;

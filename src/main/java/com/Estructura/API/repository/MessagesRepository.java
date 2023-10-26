@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface MessagesRepository extends JpaRepository<Message,Long> {
     public List<Message> findMessagesBySenderIdAndRecipientId(int senderId,int recipientId);
+    public List<Message> findMessagesBySenderIdOrRecipientId(int senderId,int recipientId);
 }

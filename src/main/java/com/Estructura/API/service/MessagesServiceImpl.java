@@ -90,6 +90,7 @@ public class MessagesServiceImpl implements MessagesService {
     }
 
     @Override
+    // Specific recipient
     public List<Message> getMessages(String token, int recipientId) {
         try {
             String username = jwtService.extractUsername(token);
@@ -117,5 +118,55 @@ public class MessagesServiceImpl implements MessagesService {
             System.err.println(e.getMessage());
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    // All chats
+    public List<Message> getAllMessages(String token) {
+        try {
+            String username = jwtService.extractUsername(token);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+
+            if (user != null) {
+                Optional<User> theUser = userService.findByEmail(user.getUsername());
+                if (theUser.isPresent()) {
+                     return messagesRepository
+                        .findMessagesBySenderIdOrRecipientId(
+                            theUser.get().getId(), theUser.get().getId()
+                        );
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void seen(Long id,String token) {
+        try {
+            String username = jwtService.extractUsername(token);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+
+            if (user != null) {
+                Optional<User> theUser = userService.findByEmail(user.getUsername());
+                if (theUser.isPresent()) {
+                    Optional<Message> message = messagesRepository
+                        .findById(
+                            id
+                        );
+
+                    if( message.isPresent()) {
+                        Message theMessage = message.get();
+                        theMessage.setSeen(true);
+                        messagesRepository.save(theMessage);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 }
