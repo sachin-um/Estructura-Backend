@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.Estructura.API.model.Role.*;
@@ -626,5 +627,14 @@ public class AuthenticationService {
                     .message("Refresh token is expired")
                     .build();
         }
+    }
+
+    /**
+     * @param email
+     * @return true if email is available
+     */
+    public boolean CheckEmailAvailable(String email) {
+        Optional<User> user = userService.findByEmail(email);
+        return user.isEmpty();
     }
 }
