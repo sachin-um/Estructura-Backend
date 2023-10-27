@@ -60,6 +60,8 @@ public class SecurityConfiguration {
             .permitAll()
             .requestMatchers(("/api/v1/renting-items/**"))
             .permitAll()
+            .requestMatchers("/chat**")
+            .permitAll()
             .requestMatchers(("/api/v1/customer-requests/**"))
             .permitAll()
             .requestMatchers(("/api/v1/response/**"))
