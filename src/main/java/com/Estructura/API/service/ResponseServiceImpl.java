@@ -53,6 +53,7 @@ public class ResponseServiceImpl implements ResponseService{
                     .shortDesc(responseRequest.getShortDesc())
                     .response(responseRequest.getResponse())
                     .proposedBudget(responseRequest.getProposedBudget())
+                    .customerRequest(customerRequest.get())
                     .build();
                 saveImagesOrDocuments(responseRequest,serviceProviderResponse);
                 Response savedResponse=
