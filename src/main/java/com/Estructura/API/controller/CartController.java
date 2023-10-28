@@ -1,6 +1,7 @@
 package com.Estructura.API.controller;
 
 import com.Estructura.API.requests.cart.CartRequest;
+import com.Estructura.API.requests.cart.CheckOutRequest;
 import com.Estructura.API.requests.projects.ProjectRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.service.CartService;
@@ -27,5 +28,9 @@ public class CartController {
         return cartService.saveOrUpdateCart(cartRequest);
     }
 
+    @PostMapping("/checkout")
+    public GenericAddOrUpdateResponse<CheckOutRequest> checkout(@ModelAttribute CheckOutRequest checkOutRequest){
+        return cartService.checkOut(checkOutRequest);
+    }
 
 }
