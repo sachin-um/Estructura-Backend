@@ -11,16 +11,18 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "requestTargetProfCategory")
+@Table(name = "customerPlanRentingItems ")
 @Entity
-public class RequestTargetProfessionalCategory {
+public class CustomerPlanRentingItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private Role role;
+    private Long id;
+
+    private Integer rentingItemId;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "request_id")
-    private CustomerRequest customerRequest;
+    @JoinColumn(name = "plan_id")
+    private CustomerPlan custonerPlan;
+
 }

@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,9 +16,10 @@ import lombok.experimental.SuperBuilder;
 public class RequestTargetItemType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private RetailItemType retailItemType;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "request_id")
     private CustomerRequest customerRequest;

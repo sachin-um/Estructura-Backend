@@ -32,4 +32,9 @@ public class Customer extends User {
     @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private List<CustomerRequest> customerRequests;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer")
+    private List<CustomerPlan> custonerPlans;
 }
