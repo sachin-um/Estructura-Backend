@@ -1,11 +1,14 @@
 package com.Estructura.API.service;
 
-public interface CartService {
+import com.Estructura.API.requests.cart.CartRequest;
+import com.Estructura.API.requests.projects.ProjectRequest;
+import com.Estructura.API.responses.GenericAddOrUpdateResponse;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
-//    public String addToCart(OrderRequestBody orderRequestBody);
-//
-//    public String addToCartMultiple(List<OrderRequestBody> orders);
-//
-//    public List<OrderEntity> findOrderedRetailItems();
+import java.io.IOException;
+
+public interface CartService {
+    GenericAddOrUpdateResponse<CartRequest> saveOrUpdateCart(
+        @ModelAttribute CartRequest cartRequest) throws IOException;
 
 }
