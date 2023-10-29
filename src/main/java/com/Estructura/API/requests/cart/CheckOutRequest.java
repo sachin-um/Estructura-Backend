@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckOutRequest extends CartRequest{
+public class CheckOutRequest {
     private Double totalPrice;
+    private Integer customer_id;
 
+    private List<CartItem> shoppingCartItems;
 }
