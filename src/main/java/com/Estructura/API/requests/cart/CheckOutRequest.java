@@ -11,7 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckOutRequest {
+
+public class CheckOutRequest{
     private Double totalPrice;
     private Integer customer_id;
 
