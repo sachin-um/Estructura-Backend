@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentDetailsRequest {
-    private int user_id;
+    private int customerId;
     private double amount;
+    private long retailStoreId;
 
 }
