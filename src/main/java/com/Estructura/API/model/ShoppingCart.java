@@ -2,17 +2,19 @@ package com.Estructura.API.model;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Getter
 @Setter
+@Table(name = "shopping_cart")
 
 public class ShoppingCart {
 
@@ -24,6 +26,7 @@ public class ShoppingCart {
     @JoinColumn(name = "customer_id")
     @OneToOne
     private Customer customer;
+
 
     @OneToMany(mappedBy = "shoppingCart")
     private List<ShoppingCartItem> shoppingCartItems;

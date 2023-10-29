@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,7 +18,9 @@ public class RequestTargetProfessionalCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Role role;
-    @ManyToOne
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private CustomerRequest customerRequest;
 }

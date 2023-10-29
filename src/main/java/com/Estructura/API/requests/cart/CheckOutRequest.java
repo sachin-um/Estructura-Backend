@@ -1,6 +1,5 @@
 package com.Estructura.API.requests.cart;
 
-import com.Estructura.API.model.ShoppingCartItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +11,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartRequest {
-
+public class CheckOutRequest{
+    private Double totalPrice;
     private Integer customer_id;
 
     private List<CartItem> shoppingCartItems;
-
-
 }

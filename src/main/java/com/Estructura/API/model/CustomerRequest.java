@@ -73,14 +73,13 @@ public class CustomerRequest {
     @CreationTimestamp
     private Date dateAdded;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetItemType> targetRetailCategories;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "customerRequest")
     private List<Response> responses;
-    @JsonIgnore
+
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetProfessionalCategory> targetCategories;
     @ManyToOne(fetch = FetchType.LAZY)
