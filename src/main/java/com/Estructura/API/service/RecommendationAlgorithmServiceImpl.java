@@ -154,6 +154,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
         recommendationResponse.setProfessionals(resultedProfessionals);
 //        recommendationResponse.setRetailItems(resultedRetailStores);
+        recommendationResponse.setSuccess(true);
         return ResponseEntity.ok(recommendationResponse);
     }
 
