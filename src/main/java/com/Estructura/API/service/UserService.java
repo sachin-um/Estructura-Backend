@@ -29,8 +29,6 @@ public interface UserService {
     ResponseEntity<User> activeOrSuspendAcccount(Integer id,
         AccountStatus action);
 
-    GenericResponse<Integer> upgradeToPremium(Integer id);
-
 
 
     void resetUserPassword(User user, String newPassword);
