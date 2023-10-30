@@ -38,7 +38,7 @@ public class ResponseServiceImpl implements ResponseService{
 
     @Override
     public GenericAddOrUpdateResponse<ResponseRequest> addResponse(
-        ResponseRequest responseRequest) throws IOException {
+        @ModelAttribute ResponseRequest responseRequest) throws IOException {
         GenericAddOrUpdateResponse<ResponseRequest> response=
             new GenericAddOrUpdateResponse<>();
         if (response.checkValidity(responseRequest)){
@@ -60,8 +60,8 @@ public class ResponseServiceImpl implements ResponseService{
                     responseRepository.save(serviceProviderResponse);
                 if (savedResponse.getId()!= 0){
                     String uploadDir =
-                        "./files/responses-files/" + savedResponse.getServiceProvider().getId() + "/" +
-                        savedResponse.getId();
+                        "./files/responses-files/" + responseRequest.getServiceProviderId() + "/" +
+                        responseRequest.getRequestId();
                     FileUploadUtil.uploadDocuments(uploadDir,
                         responseRequest.getDocuments(),
                         savedResponse.getDocument1Name(),
