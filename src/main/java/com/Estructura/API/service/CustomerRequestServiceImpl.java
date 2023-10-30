@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORRESPONSE;
+
 @Service
 @AllArgsConstructor
 public class CustomerRequestServiceImpl implements CustomerRequestService{
@@ -42,6 +44,7 @@ public class CustomerRequestServiceImpl implements CustomerRequestService{
                     .minPrice(customerRequestRequest.getMinPrice())
                     .customer(customer.get())
                     .createdBy(customerRequestRequest.getCustomerId())
+                    .status(AWAITINGFORRESPONSE)
                     .build();
                 saveImagesAndDocuments(customerRequestRequest,customerRequest);
                 CustomerRequest savedCustomerRequest=
