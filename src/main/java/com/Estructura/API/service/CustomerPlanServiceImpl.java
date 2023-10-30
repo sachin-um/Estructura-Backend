@@ -1,8 +1,8 @@
 package com.Estructura.API.service;
 
-import com.Estructura.API.model.Customer;
-import com.Estructura.API.model.CustomerPlan;
+import com.Estructura.API.model.*;
 import com.Estructura.API.repository.CustomerPlanProfessionalsRepository;
+import com.Estructura.API.repository.CustomerPlanRentingItemRepository;
 import com.Estructura.API.repository.CustomerPlanRepository;
 import com.Estructura.API.repository.CustomerPlanRetailIItemRepository;
 import com.Estructura.API.requests.customerPlan.CustomerPlanRequest;
@@ -22,6 +22,7 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
     private final CustomerPlanRepository customerPlanRepository;
     private final CustomerPlanProfessionalsRepository customerPlanProfessionalsRepository;
     private final CustomerPlanRetailIItemRepository customerPlanRetailIItemRepository;
+    private final CustomerPlanRentingItemRepository customerPlanRentingItemRepository;
     @Override
     public CustomerPlanResponse saveCustomerPlan(
         CustomerPlanRequest customerPlanRequest) {
@@ -40,11 +41,42 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                     customerPlanRepository.save(customerPlan);
                 if (customerPlanRequest.getProfessionals().length !=0){
                     Arrays.stream(customerPlanRequest.getProfessionals()).forEach(professional->{
-//                        var professional=
+                        var planProfessional=
+                            CustomerPlanProfessionals.builder()
+                            .professionalId(professional)
+                                                     .customerPlan(savedPlan)
+                                .build();
+                        customerPlanProfessionalsRepository.save(planProfessional);
+
                     });
                 }
+                if (customerPlanRequest.getRentingItems().length !=0){
+                    Arrays.stream(customerPlanRequest.getRentingItems()).forEach(rentingItem->{
+                        var planRentingItem= CustomerPlanRentingItems.builder()
+                            .rentingItemId(rentingItem)
+                            .custonerPlan(savedPlan)
+                            .build();
+                        customerPlanRentingItemRepository.save(planRentingItem);
+                    });
+                }
+                if (customerPlanRequest.getRetailItems().length !=0){
+                    Arrays.stream(customerPlanRequest.getRetailItems()).forEach(retailItem->{
+                        var planRetailItem= CustomerPlanRetailItems.builder()
+                            .retailItems(retailItem)
+                            .custonerPlan(savedPlan)
+                            .build();
+                        customerPlanRetailIItemRepository.save(planRetailItem);
+                    });
+                }
+                customerPlanResponse.setSuccess(true);
+                customerPlanResponse.setCustomerPlan(savedPlan);
+            }else {
+                customerPlanResponse.setErrormessage("Access denied");
             }
+
+        } else {
+            customerPlanResponse.setErrormessage("Bad Request");
         }
-        return null;
+        return customerPlanResponse;
     }
 }

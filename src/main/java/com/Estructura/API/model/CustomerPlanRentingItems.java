@@ -18,7 +18,7 @@ public class CustomerPlanRentingItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer rentingItemId;
+    private Long rentingItemId;
 
     @JsonIgnore
     @ManyToOne

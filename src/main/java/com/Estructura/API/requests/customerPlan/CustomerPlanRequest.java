@@ -13,7 +13,7 @@ public class CustomerPlanRequest {
     private String planName;
     private Integer coverImageId;
     private Integer userID;
-    private Long[] professionals;
+    private Integer[] professionals;
     private Long[] retailItems;
     private Long[] rentingItems;
 }
