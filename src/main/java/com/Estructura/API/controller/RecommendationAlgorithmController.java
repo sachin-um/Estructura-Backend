@@ -16,7 +16,7 @@ import java.util.List;
 public class RecommendationAlgorithmController {
     private final RecommendationAlgorithmService recommendationAlgorithmService;
 
-    @GetMapping("/recommend")
+    @PostMapping("/recommend")
     public ResponseEntity<RecommendationResponse> recommend(@RequestBody RecommendationRequest recommendationRequest){
         return recommendationAlgorithmService.recommend(recommendationRequest);
     }
