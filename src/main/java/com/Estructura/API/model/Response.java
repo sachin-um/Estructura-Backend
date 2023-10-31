@@ -44,6 +44,7 @@ public class Response {
     private String Document3Name;
 
     private Integer createBy;
+    private Long custReqId;
 
     @Enumerated(EnumType.STRING)
     private ResponseStatus status=PENDING;

@@ -54,6 +54,9 @@ public class ResponseServiceImpl implements ResponseService{
                     .response(responseRequest.getResponse())
                     .proposedBudget(responseRequest.getProposedBudget())
                     .customerRequest(customerRequest.get())
+                    .serviceProvider(serviceProvider.get())
+                    .status(PENDING)
+                    .custReqId(customerRequest.get().getId())
                     .build();
                 saveImagesOrDocuments(responseRequest,serviceProviderResponse);
                 Response savedResponse=
