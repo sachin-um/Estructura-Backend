@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/customer-plan")
@@ -21,5 +23,10 @@ public class CustomerPlanController {
     @GetMapping("/plan/{id}")
     public ResponseEntity<CustomerPlan> getCustomerPlan(@PathVariable("id") Long id){
         return customerPlanService.getCustomerPlanbyId(id);
+    }
+
+    @GetMapping("/plan/user/{id}")
+    public ResponseEntity<List<CustomerPlan>> getAllCustomerPlanByCustomer(@PathVariable("id") Integer id){
+        return customerPlanService.getCustomerPlansByCustomer(id);
     }
 }
