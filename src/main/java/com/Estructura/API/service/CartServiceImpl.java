@@ -7,9 +7,8 @@ import com.Estructura.API.repository.OrderRepository;
 import com.Estructura.API.repository.ShoppingCartItemRepository;
 import com.Estructura.API.requests.cart.CartRequest;
 import com.Estructura.API.requests.cart.CheckOutRequest;
-import com.Estructura.API.requests.projects.ProjectRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
-import com.Estructura.API.responses.cart.CheckOutResponse;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-
+@Transactional
 public class CartServiceImpl implements CartService {
 
 
@@ -34,36 +33,40 @@ public class CartServiceImpl implements CartService {
     public GenericAddOrUpdateResponse<CartRequest> saveOrUpdateCart(
         CartRequest cartRequest) throws IOException {
         GenericAddOrUpdateResponse<CartRequest> response = new GenericAddOrUpdateResponse<>();
-        if (response.checkValidity(cartRequest)){
-            Optional<Customer> customer=
+        if (response.checkValidity(cartRequest)) {
+            Optional<Customer> customer =
                 customerService.findById(cartRequest.getCustomer_id());
 
-            if (customer.isPresent()){
-                cartRepository.deleteAllByCustomer(customer.get());
-                ShoppingCart shoppingCart=ShoppingCart.builder()
-                    .customer(customer.get())
-                    .total(cartRequest.getTotal())
-                    .build();
-                ShoppingCart savedShoppingCar=cartRepository.save(shoppingCart);
-                if (cartRequest.getShoppingCartItems() !=null){
+            if (customer.isPresent()) {
+                ShoppingCart oldCart = cartRepository.findByCustomer(customer.get());
+                if (oldCart == null) {
+                    oldCart = ShoppingCart.builder()
+                        .customer(customer.get())
+                        .total(cartRequest.getTotal())
+                        .build();
+                }
+                ShoppingCart savedShoppingCar = cartRepository.save(oldCart);
+                shoppingCartItemRepository.deleteAllByShoppingCart(savedShoppingCar);
+//                cartRepository.deleteAllByCustomer(customer.get());
+                if (cartRequest.getShoppingCartItems() != null) {
                     cartRequest.getShoppingCartItems().forEach(shoppingCartItem -> {
-                        RetailItem retailItem=
+                        RetailItem retailItem =
                             retailItemService.getItemById(
                                 shoppingCartItem.getItemId()).getBody();
-                        ShoppingCartItem item=ShoppingCartItem.builder()
-                                .quantity(shoppingCartItem.getQuantity())
-                                .shoppingCart(savedShoppingCar)
-                                .retailItem(retailItem)
-                                .build();
+                        ShoppingCartItem item = ShoppingCartItem.builder()
+                            .quantity(shoppingCartItem.getQuantity())
+                            .shoppingCart(savedShoppingCar)
+                            .retailItem(retailItem)
+                            .build();
                         shoppingCartItemRepository.save(item);
                     });
                 }
                 response.setSuccess(true);
                 response.setId(savedShoppingCar.getCart_id());
-            }else {
+            } else {
                 response.addError("fatal", "Access denied");
             }
-        }else {
+        } else {
             response.addError("fatal", "Bad Request");
         }
 
@@ -73,13 +76,13 @@ public class CartServiceImpl implements CartService {
     @Override
     public GenericAddOrUpdateResponse<CheckOutRequest> checkOut(
         CheckOutRequest checkOutRequest) {
-        GenericAddOrUpdateResponse<CheckOutRequest> response=
+        GenericAddOrUpdateResponse<CheckOutRequest> response =
             new GenericAddOrUpdateResponse<>();
-        if (response.checkValidity(checkOutRequest)){
-            Optional<Customer> customer=
+        if (response.checkValidity(checkOutRequest)) {
+            Optional<Customer> customer =
                 customerService.findById(checkOutRequest.getCustomer_id());
-            if (customer.isPresent()){
-                Order order=Order.builder()
+            if (customer.isPresent()) {
+                Order order = Order.builder()
                     .total(checkOutRequest.getTotalPrice())
                     .createdBy(checkOutRequest.getCustomer_id())
                     .customer(customer.get())
@@ -88,12 +91,12 @@ public class CartServiceImpl implements CartService {
                     .billingCity(checkOutRequest.getBillingCity())
                     .billingZipcode(checkOutRequest.getBillingZipcode())
                     .build();
-                Order savedOrder=orderRepository.save(order);
-                if (checkOutRequest.getShoppingCartItems() != null){
+                Order savedOrder = orderRepository.save(order);
+                if (checkOutRequest.getShoppingCartItems() != null) {
                     checkOutRequest.getShoppingCartItems().forEach(cartItem -> {
-                        RetailItem retailItem=
+                        RetailItem retailItem =
                             retailItemService.getItemById(cartItem.getItemId()).getBody();
-                        OrderEntity orderEntity=OrderEntity.builder()
+                        OrderEntity orderEntity = OrderEntity.builder()
                             .order(order)
                             .quantity(cartItem.getQuantity())
                             .retailItem(retailItem)
@@ -103,10 +106,10 @@ public class CartServiceImpl implements CartService {
                 }
                 response.setId(savedOrder.getId());
                 response.setSuccess(true);
-            }else {
+            } else {
                 response.addError("fatal", "Access denied");
             }
-        }else {
+        } else {
             response.addError("fatal", "Bad Request");
         }
         return response;
@@ -114,24 +117,20 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseEntity<ShoppingCart> getShoppingCartByCustomer(Integer id) {
-        Optional<Customer> customer=
+        Optional<Customer> customer =
             customerService.findById(id);
-        if (customer.isPresent()){
-            ShoppingCart shoppingCart=
+        if (customer.isPresent()) {
+            ShoppingCart shoppingCart =
                 cartRepository.findByCustomer(customer.get());
-            if (shoppingCart !=null){
+            if (shoppingCart != null) {
                 return ResponseEntity.ok(shoppingCart);
-            }
-            else {
+            } else {
                 return ResponseEntity.notFound().build();
             }
-        }else {
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    ;
-
 
 
 }

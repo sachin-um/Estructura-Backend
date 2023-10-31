@@ -1,5 +1,6 @@
 package com.Estructura.API.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,11 +20,12 @@ public class ShoppingCartItem {
 
     @JoinColumn(name = "cart_id")
     @ManyToOne
+    @JsonIgnore
     private ShoppingCart shoppingCart;
 
 
     @JoinColumn(name = "item_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private RetailItem retailItem;
 
     private Integer quantity;

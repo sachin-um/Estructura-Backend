@@ -17,4 +17,6 @@ public class RecommendationRequest {
     private List<String> thirdChoice;
     private String district;
 
+    private String price;
+
 }
