@@ -172,7 +172,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             }
             case "design plans" -> {
                 ProfessionalWeights.put(INTERIORDESIGNER, -100);
-                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, 100);
+                ProfessionalWeights.put(CONSTRUCTIONCOMPANY, -100);
                 ProfessionalWeights.put(MASONWORKER, -100);
                 ProfessionalWeights.put(PAINTER, -100);
                 ProfessionalWeights.put(CARPENTER, -100);
