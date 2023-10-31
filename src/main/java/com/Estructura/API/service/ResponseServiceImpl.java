@@ -41,7 +41,7 @@ public class ResponseServiceImpl implements ResponseService{
             new GenericAddOrUpdateResponse<>();
         if (response.checkValidity(responseRequest)){
             Optional<ServiceProvider> serviceProvider=
-                serviceProviderService.findById(1);
+                serviceProviderService.findById(responseRequest.getServiceProviderId());
             Optional<CustomerRequest> customerRequest=
                 customerRequestService.getCustomerRequestById(responseRequest.getRequestId());
 

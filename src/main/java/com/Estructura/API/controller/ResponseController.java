@@ -61,7 +61,7 @@ public class ResponseController {
     }
 
     @PostMapping("/action")
-    public GenericResponse<Long> acceptOrDeclineResponse(ActionRequest actionRequest){
+    public GenericResponse<Long> acceptOrDeclineResponse(@RequestBody ActionRequest actionRequest){
         return responseService.acceptOrDeclineResponse(actionRequest);
     }
 

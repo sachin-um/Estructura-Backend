@@ -124,15 +124,17 @@ public class AuthenticationController {
             verificationTokenService.validateVerificationToken(
                 passwordRestToken);
         if (!verificationResult.equalsIgnoreCase("valid")) {
+            System.out.println("ggg");
             response.addError("token", "Invalid token");
         }
         if (response.checkValidity(passwordResetRequest)) {
+            System.out.println("dead");
             Optional<User> user =
                 verificationTokenService.findUserByPasswordRestToken(
                     passwordRestToken);
             if (user.isPresent()) {
                 userService.resetUserPassword(user.get(),
-                    passwordResetRequest.getNewPassword()
+                    passwordResetRequest.getPassword()
                 );
                 response.setSuccess(true);
                 response.setMessage("You successfully reset your password");
@@ -142,19 +144,20 @@ public class AuthenticationController {
         }
         return response;
     }
-    @PostMapping("/reset-password")
-    public void resetPasswordLink(
+    @GetMapping("/reset-password")
+    public RedirectView resetPasswordLink(
         @RequestParam("token") String passwordRestToken) {
-        RedirectView redirect = new RedirectView();
         String verificationResult =
             verificationTokenService.validateVerificationToken(
             passwordRestToken);
         if (!verificationResult.equalsIgnoreCase("valid")) {
-            redirect.setUrl("http://localhost:3000/emailVerified"); //to be
+            System.out.println("bai");
+            return new RedirectView("http://localhost:3000/emailVerified");
             // changed
         }
         else{
-            redirect.setUrl("http://localhost:3000/resetPassword/"+passwordRestToken);
+            System.out.println("hai");
+            return new RedirectView("http://localhost:3000/resetPassword/" + passwordRestToken);
         }
 
     }
