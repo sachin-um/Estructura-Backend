@@ -10,12 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "customer_plan")
 public class CustomerPlan {
     @Id
