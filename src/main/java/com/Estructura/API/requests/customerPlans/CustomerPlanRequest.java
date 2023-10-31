@@ -14,12 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomerPlanRequest {
     private String name;
-    private MultipartFile coverImage;
-    private List<Integer> professionals;
-    private List<Long> retailItems;
-    private List<Long> rentingItems;
+    private Integer coverImageId;
+    private Integer[] professionals;
+    private Long[] retailItems;
+    private Long[] rentingItems;
     private String note;
     private List<MultipartFile> images;
     private List<MultipartFile> documents;
     private Double budgets;
+    private Integer userID;
 }
