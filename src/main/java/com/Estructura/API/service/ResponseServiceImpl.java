@@ -3,7 +3,6 @@ package com.Estructura.API.service;
 import com.Estructura.API.model.*;
 import com.Estructura.API.repository.CustomerRequestRepository;
 import com.Estructura.API.repository.ResponseRepository;
-import com.Estructura.API.requests.customerRequests.CustomerRequestRequest;
 import com.Estructura.API.requests.serviceProviderResponses.ActionRequest;
 import com.Estructura.API.requests.serviceProviderResponses.ResponseRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
@@ -23,7 +22,6 @@ import java.util.Optional;
 
 import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORACCEPT;
 import static com.Estructura.API.model.CustomerRequestStatus.COMPLETED;
-import static com.Estructura.API.model.ResponseStatus.ACCEPTED;
 import static com.Estructura.API.model.ResponseStatus.PENDING;
 
 @Service

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,5 +87,19 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
     public ResponseEntity<CustomerPlan> getCustomerPlanbyId(Long id) {
         Optional<CustomerPlan> customerPlan=customerPlanRepository.findById(id);
         return customerPlan.map(ResponseEntity::ok).orElseGet(()->ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<List<CustomerPlan>> getCustomerPlansByCustomer(
+        Integer id) {
+        Optional<Customer> customer=customerService.findById(id);
+        if (customer.isPresent()){
+            List<CustomerPlan> customerPlans=
+                customerPlanRepository.findCustomerPlansByCustomer(customer.get());
+            return ResponseEntity.ok(customerPlans);
+        }else {
+            return ResponseEntity.noContent().build();
+        }
+
     }
 }

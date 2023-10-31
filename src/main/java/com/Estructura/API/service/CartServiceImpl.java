@@ -11,6 +11,7 @@ import com.Estructura.API.requests.projects.ProjectRequest;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import com.Estructura.API.responses.cart.CheckOutResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,9 +37,12 @@ public class CartServiceImpl implements CartService {
         if (response.checkValidity(cartRequest)){
             Optional<Customer> customer=
                 customerService.findById(cartRequest.getCustomer_id());
+
             if (customer.isPresent()){
+                cartRepository.deleteAllByCustomer(customer.get());
                 ShoppingCart shoppingCart=ShoppingCart.builder()
                     .customer(customer.get())
+                    .total(cartRequest.getTotal())
                     .build();
                 ShoppingCart savedShoppingCar=cartRepository.save(shoppingCart);
                 if (cartRequest.getShoppingCartItems() !=null){
@@ -102,6 +106,24 @@ public class CartServiceImpl implements CartService {
             response.addError("fatal", "Bad Request");
         }
         return response;
+    }
+
+    @Override
+    public ResponseEntity<ShoppingCart> getShoppingCartByCustomer(Integer id) {
+        Optional<Customer> customer=
+            customerService.findById(id);
+        if (customer.isPresent()){
+            ShoppingCart shoppingCart=
+                cartRepository.findByCustomer(customer.get());
+            if (shoppingCart !=null){
+                return ResponseEntity.ok(shoppingCart);
+            }
+            else {
+                return ResponseEntity.notFound().build();
+            }
+        }else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     ;

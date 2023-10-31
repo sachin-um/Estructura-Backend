@@ -18,5 +18,7 @@ public class CartRequest {
 
     private List<CartItem> shoppingCartItems;
 
+    private Double total;
+
 
 }

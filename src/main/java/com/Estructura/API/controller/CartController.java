@@ -1,5 +1,6 @@
 package com.Estructura.API.controller;
 
+import com.Estructura.API.model.ShoppingCart;
 import com.Estructura.API.requests.cart.CartRequest;
 import com.Estructura.API.requests.cart.CheckOutRequest;
 import com.Estructura.API.requests.projects.ProjectRequest;
@@ -8,6 +9,7 @@ import com.Estructura.API.service.CartService;
 import com.Estructura.API.service.UserService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,6 +33,11 @@ public class CartController {
     @PostMapping("/checkout")
     public GenericAddOrUpdateResponse<CheckOutRequest> checkout(@ModelAttribute CheckOutRequest checkOutRequest){
         return cartService.checkOut(checkOutRequest);
+    }
+
+    @GetMapping("/get-cart/{id}")
+    public ResponseEntity<ShoppingCart> getCartByCustomer(@PathVariable("id") Integer id){
+        return cartService.getShoppingCartByCustomer(id);
     }
 
 }
