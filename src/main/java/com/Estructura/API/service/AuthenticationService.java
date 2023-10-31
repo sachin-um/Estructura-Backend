@@ -92,6 +92,7 @@ public class AuthenticationService {
                                 request.getAddressLine2())
                         .city(request.getCity())
                         .district(request.getDistrict())
+                        .isAdminApproved(true)
                         .role(request.getRole()).build();
                 user = customer;
                 savedUser = customerService.saveCustomer(customer);
@@ -102,6 +103,7 @@ public class AuthenticationService {
                         .email(request.getEmail()).password(
                                 passwordEncoder.encode(request.getPassword()))
                         .role(request.getRole())
+                        .isAdminApproved(preVerified)
                         .assignedArea(request.getAssignedArea())
                         .build();
                 user = admin;
@@ -137,6 +139,7 @@ public class AuthenticationService {
                                 request.getCity())
                         .district(
                                 request.getDistrict())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     retailStore.setProfileImage(profileImageName);
@@ -165,6 +168,7 @@ public class AuthenticationService {
                                 request.getAddressLine2())
                         .city(request.getCity())
                         .district(request.getDistrict())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     renter.setProfileImage(profileImageName);
@@ -210,6 +214,7 @@ public class AuthenticationService {
                                 request.getMaxRate())
                         .sliaRegNumber(
                                 request.getSliaRegNumber())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     landscapeArchitect.setProfileImage(profileImageName);
@@ -246,6 +251,7 @@ public class AuthenticationService {
                                 request.getSliaRegNumber())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     architect.setProfileImage(profileImageName);
@@ -291,6 +297,7 @@ public class AuthenticationService {
                                 request.getMinRate())
                         .maxRate(
                                 request.getMaxRate())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     constructionCompany.setProfileImage(profileImageName);
@@ -331,12 +338,13 @@ public class AuthenticationService {
                                 request.getCity())
                         .district(
                                 request.getDistrict())
-                        .sLIDRegNumber(
-                                request.getSlidRegNumber())
+                        .sliaRegNumber(
+                                request.getSliaRegNumber())
                         .minRate(
                                 request.getMinRate())
                         .maxRate(
                                 request.getMaxRate())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     interiorDesigner.setProfileImage(profileImageName);
@@ -377,6 +385,7 @@ public class AuthenticationService {
                                 request.getMinRate())
                         .maxRate(
                                 request.getMaxRate())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     masonWorker.setProfileImage(profileImageName);
@@ -407,6 +416,7 @@ public class AuthenticationService {
                         .district(
                                 request.getDistrict())
                         .minRate(request.getMinRate())
+                        .isAdminApproved(preVerified)
                         .maxRate(request.getMaxRate()).build();
                 if (profileImageName != null) {
                     painter.setProfileImage(profileImageName);
@@ -441,6 +451,7 @@ public class AuthenticationService {
                                 request.getDistrict())
                         .minRate(request.getMinRate())
                         .maxRate(request.getMaxRate())
+                        .isAdminApproved(preVerified)
                         .build();
                 if (profileImageName != null) {
                     carpenter.setProfileImage(profileImageName);
@@ -516,7 +527,10 @@ public class AuthenticationService {
         if (user == null) {
             response.addError("email", "Email does not exist");
         } else if (!user.isVerified()) {
-            response.addError("account", "Email is not verified");
+            response.addError("email", "Email is not verified");
+        } else if(!user.isEnabled()) {
+            response.addError("email",
+                "your account has not been approved by an admin yet.");
         } else if (!passwordEncoder.matches(request.getPassword(),
                 user.getPassword())) {
             response.addError("password", "Password is incorrect");

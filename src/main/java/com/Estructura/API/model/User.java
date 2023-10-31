@@ -83,6 +83,9 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isAdminApproved;
     }
+
+    @Default
+    private boolean isAdminApproved = false;
 }
