@@ -114,7 +114,7 @@ public class AuthenticationController {
         return response;
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/reset-password-process")
     public GenericResponse<ResetPasswordRequest> resetPassword(
         @RequestBody ResetPasswordRequest passwordResetRequest,
         @RequestParam("token") String passwordRestToken) {
@@ -122,17 +122,17 @@ public class AuthenticationController {
             new GenericResponse<>();
         String verificationResult =
             verificationTokenService.validateVerificationToken(
-            passwordRestToken);
+                passwordRestToken);
         if (!verificationResult.equalsIgnoreCase("valid")) {
             response.addError("token", "Invalid token");
         }
         if (response.checkValidity(passwordResetRequest)) {
             Optional<User> user =
                 verificationTokenService.findUserByPasswordRestToken(
-                passwordRestToken);
+                    passwordRestToken);
             if (user.isPresent()) {
                 userService.resetUserPassword(user.get(),
-                                              passwordResetRequest.getNewPassword()
+                    passwordResetRequest.getNewPassword()
                 );
                 response.setSuccess(true);
                 response.setMessage("You successfully reset your password");
@@ -141,6 +141,22 @@ public class AuthenticationController {
             }
         }
         return response;
+    }
+    @PostMapping("/reset-password")
+    public void resetPasswordLink(
+        @RequestParam("token") String passwordRestToken) {
+        RedirectView redirect = new RedirectView();
+        String verificationResult =
+            verificationTokenService.validateVerificationToken(
+            passwordRestToken);
+        if (!verificationResult.equalsIgnoreCase("valid")) {
+            redirect.setUrl("http://localhost:3000/emailVerified"); //to be
+            // changed
+        }
+        else{
+            redirect.setUrl("http://localhost:3000/resetPassword/"+passwordRestToken);
+        }
+
     }
 
     @PostMapping("/authenticate")

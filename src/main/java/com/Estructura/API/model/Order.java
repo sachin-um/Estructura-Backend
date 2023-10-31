@@ -24,6 +24,12 @@ public class Order {
 
     private Double total;
 
+    private String billingName;
+    private String billingAddressLine1;
+    private String billingAddressLine2;
+    private String billingCity;
+    private Integer billingZipcode;
+
     @Column(nullable = false)
     @CreationTimestamp
     private Date dateAdded;

@@ -17,4 +17,11 @@ public class CheckOutRequest{
     private Integer customer_id;
 
     private List<CartItem> shoppingCartItems;
+
+    private String billingName;
+    private String billingAddressLine1;
+    private String billingAddressLine2;
+    private String billingCity;
+    private Integer billingZipcode;
+
 }

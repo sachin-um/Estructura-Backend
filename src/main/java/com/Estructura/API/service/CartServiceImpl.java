@@ -86,6 +86,10 @@ public class CartServiceImpl implements CartService {
                     .total(checkOutRequest.getTotalPrice())
                     .createdBy(checkOutRequest.getCustomer_id())
                     .customer(customer.get())
+                    .billingAddressLine1(checkOutRequest.getBillingAddressLine1())
+                    .billingAddressLine2(checkOutRequest.getBillingAddressLine2())
+                    .billingCity(checkOutRequest.getBillingCity())
+                    .billingZipcode(checkOutRequest.getBillingZipcode())
                     .build();
                 Order savedOrder = orderRepository.save(order);
                 if (checkOutRequest.getShoppingCartItems() != null) {
