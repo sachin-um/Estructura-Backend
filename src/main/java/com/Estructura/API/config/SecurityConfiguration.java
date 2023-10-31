@@ -36,6 +36,8 @@ public class SecurityConfiguration {
         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
         auth.requestMatchers("/api/v1/auth/**")
             .permitAll()
+            .requestMatchers(("/api/v1/admin/**"))
+            .permitAll()
             .requestMatchers("/api/v1/retailItems/all")
             .permitAll()
             .requestMatchers("/api/v1/projects/**")

@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasRole('ADMIN')")
 @AllArgsConstructor
 public class AdminController {
     private final UserService userService;
     private final AdminService adminService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin:read')")
     public AdminDemoResponse get() {
         return new AdminDemoResponse(true, "Hello from admin");
     }
@@ -38,7 +36,7 @@ public class AdminController {
     }
 
     @PostMapping("/create-an-admin")
-    public RegisterResponse createAnAdmin(RegisterRequest registerRequest){
+    public RegisterResponse createAnAdmin(@ModelAttribute RegisterRequest registerRequest){
         return adminService.crateAnAdmin(registerRequest);
     }
 }
