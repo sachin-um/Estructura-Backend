@@ -20,6 +20,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     private final ProfessionalService professionalService;
     private final RetailItemService retailItemService;
+    private final RetailStoreService retailStoreService;
     //--------------------------------- weighting logic start -------------------------------------------------------//
 
     // Initialize professional weights
@@ -71,6 +72,8 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         final String district=recommendationRequest.getDistrict();
 //        final String district= "Puttalam";
 
+        final String price=recommendationRequest.getPrice();
+
 
         Map<Role, Integer> professionalWeights = getProfessionalWeights();
         Map<RetailItemType, Integer> retailItemWeights = getRetailItemWeights();
@@ -118,7 +121,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         System.out.println("Filtered and Sorted Retail Item Tags: " + filteredRetailItemTags);
 
         List<Professional> professionalsWithCorrectRole = new ArrayList<>();
-        List<RetailItem>  RetailItemsWithCorrectType = new ArrayList<>();
+        Map<RetailItem,String>  RetailItemsWithCorrectType = new HashMap<>();
 
         for (Professional professional : allProfessionals) {
             if (filteredProfessionalTags.contains(professional.getRole())) {
@@ -127,11 +130,15 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         }
 
 
-//        for (RetailItem retailitem : allRetailItems) {
-//            if (filteredRetailItemTags.contains(retailitem.getRetailItemType())) {
-//                RetailItemsWithCorrectType.add(retailitem);
-//            }
-//        }
+        for (RetailItem retailitem : allRetailItems) {
+            if (filteredRetailItemTags.contains(retailitem.getRetailItemType())) {
+                Optional<RetailStore> retailStore= retailStoreService.findById(retailitem.getCreatedBy());
+                if(retailStore.isPresent()){
+                    String RetailStoreDistrict=retailStore.get().getDistrict();
+                    RetailItemsWithCorrectType.put(retailitem,RetailStoreDistrict);
+                }
+            }
+        }
 
 
         initializeGraph();
@@ -142,18 +149,24 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         System.out.println(adjacentDistrictsBasedOnUserSelectedDistrict);
 
         List<Professional> resultedProfessionals = getProfessionals(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, professionalsWithCorrectRole);
-//        List<RetailItem> resultedRetailStores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, RetailItemsWithCorrectType);
+        List<RetailItem> resultedRetailStores = getRetailStores(userSelectedDistrict, adjacentDistrictsBasedOnUserSelectedDistrict, RetailItemsWithCorrectType);
 
         //todo: check with sort options and adjust
 
         // Sort professionals based on rating (highest to lowest)
-        // resultedRetailStores.sort(Comparator.comparingDouble(product -> product.price));
+        System.out.println(recommendationRequest.getThirdChoice().toString());
+        if(price.equals("1") || price.equals("2")) {
+            //sort the resultedRetailStores based on price (lowest to highest)
+            resultedRetailStores.sort(Comparator.comparingDouble(RetailItem::getPrice));
+        }else{
+            resultedRetailStores.sort(Comparator.comparingDouble(RetailItem::getPrice).reversed());
+        }
 
         // Sort professionals based on rating (highest to lowest)
         // resultedProfessionals.sort((prof1, prof2) -> Double.compare(prof2.rating, prof1.rating));
 
         recommendationResponse.setProfessionals(resultedProfessionals);
-//        recommendationResponse.setRetailItems(resultedRetailStores);
+        recommendationResponse.setRetailItems(resultedRetailStores);
         recommendationResponse.setSuccess(true);
         return ResponseEntity.ok(recommendationResponse);
     }
@@ -596,7 +609,7 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
         return results_professional;
     }
 
-    public static List<RetailItem> getRetailStores(String userDistrict, List<String> selectedDistricts, List<RetailItem> filteredRetailStores) {
+    public static List<RetailItem> getRetailStores(String userDistrict, List<String> selectedDistricts, Map<RetailItem,String> filteredRetailStores) {
 
             List<RetailItem> results_retail = new ArrayList<>();
 
@@ -609,21 +622,21 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
             List<RetailItem> retailItemInUserDistrict = new ArrayList<>();
             List<RetailItem> retailItemInAdjacentDistricts = new ArrayList<>();
 
-            for (RetailItem retailItem : filteredRetailStores) {
+        for (Map.Entry<RetailItem, String> entry : filteredRetailStores.entrySet()) {
                 // Check if the professional is in the userDistrict
-                if (true /* Check if the professional is in userDistrict */) {
-                    retailItemInUserDistrict.add(retailItem);
+                if (userDistrict.toLowerCase().equals(entry.getValue().toLowerCase())) {
+                    retailItemInUserDistrict.add(entry.getKey());
                 } else {
                     // Check if the professional is in any of the adjacent districts
                     boolean foundInAdjacent = false;
                     for (String adjacentDistrict : selectedDistricts) {
-                        if ( true /* Check if the professional is in adjacentDistrict */) {
+                        if (entry.getValue().toLowerCase().equals(adjacentDistrict) ) {
                             foundInAdjacent = true;
                             break;
                         }
                     }
                     if (foundInAdjacent) {
-                        retailItemInAdjacentDistricts.add(retailItem);
+                        retailItemInAdjacentDistricts.add(entry.getKey());
                     }
                 }
             }
