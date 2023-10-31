@@ -11,17 +11,18 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "requestTargetItemType")
+@Table(name = "customerPlanRentingItems ")
 @Entity
-public class RequestTargetItemType {
+public class CustomerPlanRentingItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private RetailItemType retailItemType;
-    @JsonIgnore
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
-    private CustomerRequest customerRequest;
+    private Long rentingItemId;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private CustomerPlan custonerPlan;
+
 }

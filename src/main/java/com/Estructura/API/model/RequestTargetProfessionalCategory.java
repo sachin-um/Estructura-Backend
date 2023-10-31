@@ -20,6 +20,7 @@ public class RequestTargetProfessionalCategory {
     private Role role;
 
     @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private CustomerRequest customerRequest;

@@ -73,6 +73,7 @@ public class CustomerRequest {
     @CreationTimestamp
     private Date dateAdded;
 
+
     @OneToMany(mappedBy = "customerRequest")
     private List<RequestTargetItemType> targetRetailCategories;
 
