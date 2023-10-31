@@ -18,7 +18,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id")
 public class InteriorDesigner extends Professional {
     @Column(nullable = false)
-    private String sLIDRegNumber;
+    private String sliaRegNumber;
     @OneToMany(mappedBy = "interiorDesigner")
     private List<Specialization> specializations;
     @OneToMany(mappedBy = "interiorDesigner")

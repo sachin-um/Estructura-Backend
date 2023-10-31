@@ -53,12 +53,12 @@ public class Response {
     @CreationTimestamp
     private Date dateAdded;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "request_id")
     @JsonIgnore
     private CustomerRequest customerRequest;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_provider_id")
     @JsonIgnore
     private ServiceProvider serviceProvider;

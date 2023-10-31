@@ -331,7 +331,7 @@ public class AuthenticationService {
                                 request.getCity())
                         .district(
                                 request.getDistrict())
-                        .sLIDRegNumber(
+                        .sliaRegNumber(
                                 request.getSlidRegNumber())
                         .minRate(
                                 request.getMinRate())
