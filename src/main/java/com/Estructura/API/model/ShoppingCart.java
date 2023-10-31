@@ -1,6 +1,7 @@
 package com.Estructura.API.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class ShoppingCart {
 
     @JoinColumn(name = "customer_id")
     @OneToOne
+    @JsonIgnore
     private Customer customer;
 
     private Double total;

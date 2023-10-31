@@ -66,7 +66,7 @@ public class SecurityConfiguration {
             .permitAll()
             .requestMatchers(("/api/v1/response/**"))
             .permitAll()
-            .requestMatchers(("api/v1/cart/**"))
+            .requestMatchers(("/api/v1/cart/**"))
             .permitAll()
             .requestMatchers(("/api/v1/payment/**"))
             .permitAll()
