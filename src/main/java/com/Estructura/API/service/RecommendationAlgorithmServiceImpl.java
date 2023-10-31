@@ -49,6 +49,14 @@ public class RecommendationAlgorithmServiceImpl implements RecommendationAlgorit
 
     @Override
     public ResponseEntity<RecommendationResponse> recommend(RecommendationRequest recommendationRequest) {
+        ProfessionalWeights.clear();
+        Arrays.stream(professionals)
+            .forEach(profession -> ProfessionalWeights.put(profession, 0));
+        RetailItemWeights.clear();
+        Arrays.stream(retailItems)
+            .forEach(item -> RetailItemWeights.put(item, 0));
+        System.out.println("Professional Weights check if zero: " + ProfessionalWeights);
+        System.out.println("Retail Item Weights check if zero: " + RetailItemWeights);
         RecommendationResponse recommendationResponse=
             new RecommendationResponse();
 
