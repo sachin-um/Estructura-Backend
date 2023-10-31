@@ -2,10 +2,14 @@ package com.Estructura.API.repository;
 
 import com.Estructura.API.model.Customer;
 import com.Estructura.API.model.ShoppingCart;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
+@Transactional
 public interface CartRepository extends JpaRepository<ShoppingCart, Long> {
 //    Optional<ShoppingCart> findByUserInfo(UserInfo userInfo);
 
