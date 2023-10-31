@@ -6,10 +6,11 @@ import com.Estructura.API.repository.CustomerPlanProfessionalsRepository;
 import com.Estructura.API.repository.CustomerPlanRentingItemRepository;
 import com.Estructura.API.repository.CustomerPlanRepository;
 import com.Estructura.API.repository.CustomerPlanRetailIItemRepository;
-import com.Estructura.API.requests.customerPlan.CustomerPlanRequest;
+import com.Estructura.API.requests.customerPlans.CustomerPlanRequest;
 import com.Estructura.API.responses.CustomerPlan.CustomerPlanResponse;
 import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                 customerService.findById(customerPlanRequest.getUserID());
             if (customer.isPresent()){
                 CustomerPlan customerPlan=CustomerPlan.builder()
-                    .planName(customerPlanRequest.getPlanName())
+                    .planName(customerPlanRequest.getName())
                     .createdBy(customerPlanRequest.getUserID())
                     .coverImageId(customerPlanRequest.getCoverImageId())
                     .customer(customer.get())
@@ -55,7 +56,7 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                     Arrays.stream(customerPlanRequest.getRentingItems()).forEach(rentingItem->{
                         var planRentingItem= CustomerPlanRentingItems.builder()
                             .rentingItemId(rentingItem)
-                            .custonerPlan(savedPlan)
+                            .customerPlan(savedPlan)
                             .build();
                         customerPlanRentingItemRepository.save(planRentingItem);
                     });
@@ -64,7 +65,7 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                     Arrays.stream(customerPlanRequest.getRetailItems()).forEach(retailItem->{
                         var planRetailItem= CustomerPlanRetailItems.builder()
                             .retailItems(retailItem)
-                            .custonerPlan(savedPlan)
+                            .customerPlan(savedPlan)
                             .build();
                         customerPlanRetailIItemRepository.save(planRetailItem);
                     });
@@ -81,4 +82,9 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
         return customerPlanResponse;
     }
 
+    @Override
+    public ResponseEntity<CustomerPlan> getCustomerPlanbyId(Long id) {
+        Optional<CustomerPlan> customerPlan=customerPlanRepository.findById(id);
+        return customerPlan.map(ResponseEntity::ok).orElseGet(()->ResponseEntity.notFound().build());
+    }
 }

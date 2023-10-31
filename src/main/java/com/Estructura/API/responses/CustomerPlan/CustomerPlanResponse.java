@@ -1,7 +1,7 @@
 package com.Estructura.API.responses.CustomerPlan;
 
 import com.Estructura.API.model.CustomerPlan;
-import com.Estructura.API.requests.customerPlan.CustomerPlanRequest;
+import com.Estructura.API.requests.customerPlans.CustomerPlanRequest;
 import com.Estructura.API.responses.ValidatedResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

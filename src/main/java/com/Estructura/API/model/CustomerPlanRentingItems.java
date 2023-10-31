@@ -11,8 +11,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "customerPlanRentingItems ")
 @Entity
+@Table(name = "customerPlanRentingItems ")
+
 public class CustomerPlanRentingItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +22,8 @@ public class CustomerPlanRentingItems {
     private Long rentingItemId;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
-    private CustomerPlan custonerPlan;
+    private CustomerPlan customerPlan;
 
 }
