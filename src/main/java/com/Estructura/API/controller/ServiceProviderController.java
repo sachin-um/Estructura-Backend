@@ -1,12 +1,11 @@
 package com.Estructura.API.controller;
 
 import com.Estructura.API.model.ServiceProvider;
+import com.Estructura.API.responses.GenericResponse;
 import com.Estructura.API.service.ServiceProviderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +18,10 @@ public class ServiceProviderController {
     @GetMapping("/all")
     public ResponseEntity<List<ServiceProvider>> getAllServiceProviders() {
         return serviceProviderService.getAllServiceProviders();
+    }
+
+    @PutMapping("/upgrade-to-premium/{user_id}")
+    public GenericResponse<Integer> upgradeToPremium(@PathVariable("user_id") int user_id){
+        return serviceProviderService.upgradeToPremium(user_id);
     }
 }

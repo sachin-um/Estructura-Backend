@@ -20,7 +20,8 @@ public class RequestTargetItemType {
     @Enumerated(EnumType.STRING)
     private RetailItemType retailItemType;
     @JsonIgnore
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private CustomerRequest customerRequest;
 }

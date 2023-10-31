@@ -38,12 +38,12 @@ public class ResponseServiceImpl implements ResponseService{
 
     @Override
     public GenericAddOrUpdateResponse<ResponseRequest> addResponse(
-        ResponseRequest responseRequest) throws IOException {
+        @ModelAttribute ResponseRequest responseRequest) throws IOException {
         GenericAddOrUpdateResponse<ResponseRequest> response=
             new GenericAddOrUpdateResponse<>();
         if (response.checkValidity(responseRequest)){
             Optional<ServiceProvider> serviceProvider=
-                serviceProviderService.findById(responseRequest.getServiceProviderId());
+                serviceProviderService.findById(1);
             Optional<CustomerRequest> customerRequest=
                 customerRequestService.getCustomerRequestById(responseRequest.getRequestId());
 
@@ -53,14 +53,18 @@ public class ResponseServiceImpl implements ResponseService{
                     .shortDesc(responseRequest.getShortDesc())
                     .response(responseRequest.getResponse())
                     .proposedBudget(responseRequest.getProposedBudget())
+                    .customerRequest(customerRequest.get())
+                    .serviceProvider(serviceProvider.get())
+                    .status(PENDING)
+                    .custReqId(customerRequest.get().getId())
                     .build();
                 saveImagesOrDocuments(responseRequest,serviceProviderResponse);
                 Response savedResponse=
                     responseRepository.save(serviceProviderResponse);
                 if (savedResponse.getId()!= 0){
                     String uploadDir =
-                        "./files/responses-files/" + savedResponse.getServiceProvider().getId() + "/" +
-                        savedResponse.getId();
+                        "./files/responses-files/" + responseRequest.getServiceProviderId() + "/" +
+                        responseRequest.getRequestId();
                     FileUploadUtil.uploadDocuments(uploadDir,
                         responseRequest.getDocuments(),
                         savedResponse.getDocument1Name(),

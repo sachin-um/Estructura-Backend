@@ -1,5 +1,6 @@
 package com.Estructura.API.service;
 
+
 import com.Estructura.API.model.*;
 import com.Estructura.API.repository.CustomerPlanProfessionalsRepository;
 import com.Estructura.API.repository.CustomerPlanRentingItemRepository;
@@ -79,4 +80,5 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
         }
         return customerPlanResponse;
     }
+
 }
