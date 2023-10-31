@@ -26,7 +26,7 @@ public class CartController {
 
     @PostMapping("/create")
     public GenericAddOrUpdateResponse<CartRequest> createCart(
-        @ModelAttribute CartRequest cartRequest) throws IOException {
+        @RequestBody CartRequest cartRequest) throws IOException {
         return cartService.saveOrUpdateCart(cartRequest);
     }
 
