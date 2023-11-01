@@ -332,7 +332,7 @@ public class AuthenticationService {
                         .district(
                                 request.getDistrict())
                         .sliaRegNumber(
-                                request.getSlidRegNumber())
+                                request.getSliaRegNumber())
                         .minRate(
                                 request.getMinRate())
                         .maxRate(
