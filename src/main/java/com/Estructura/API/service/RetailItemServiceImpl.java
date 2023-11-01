@@ -41,6 +41,7 @@ public class RetailItemServiceImpl implements RetailItemService {
                                             .price(retailItemRequest.getPrice())
                                             .retailItemType(
                                                 retailItemRequest.getRetailItemType())
+                    .furnitureType(retailItemRequest.getFurnitureItemType())
                                             .createdBy(
                                                 retailItemRequest.getRetailStoreId())
                                             .retailStore(retailStore.get())

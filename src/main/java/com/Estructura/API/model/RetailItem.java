@@ -32,6 +32,9 @@ public class RetailItem {
     private String mainImageName;
     @Column()
     private String extraImage1;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FurnitureType furnitureType;
     @Column()
     private String extraImage1Name;
     @Column()
