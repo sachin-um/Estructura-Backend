@@ -22,6 +22,7 @@ import static com.Estructura.API.model.CustomerRequestStatus.AWAITINGFORRESPONSE
 public class CustomerRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
     @Column(length = 2000)
     private String description;

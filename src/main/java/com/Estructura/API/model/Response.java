@@ -20,6 +20,7 @@ import static com.Estructura.API.model.ResponseStatus.PENDING;
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "response_id")
     private long id;
     @Column(nullable = false)
     private String shortDesc;
@@ -53,12 +54,12 @@ public class Response {
     @CreationTimestamp
     private Date dateAdded;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id")
     @JsonIgnore
     private CustomerRequest customerRequest;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_provider_id")
     @JsonIgnore
     private ServiceProvider serviceProvider;
