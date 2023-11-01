@@ -30,11 +30,11 @@ public class Customer extends User {
     private String contactNo;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private List<CustomerRequest> customerRequests;
 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private List<CustomerPlan> custonerPlans;
 }

@@ -17,6 +17,6 @@ public class CustomerPlanResponse extends ValidatedResponse<CustomerPlanRequest>
     private boolean success = false;
     @JsonProperty("error_message")
     private String errormessage;
-    @JsonProperty("customerPlan")
-    private CustomerPlan customerPlan;
+    @JsonProperty("id")
+    private Long id;
 }

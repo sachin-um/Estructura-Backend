@@ -80,9 +80,11 @@ public class CustomerRequest {
 
 
     @OneToMany(mappedBy = "customerRequest")
+    @JsonIgnore
     private List<Response> responses;
 
     @OneToMany(mappedBy = "customerRequest")
+    @JsonIgnore
     private List<RequestTargetProfessionalCategory> targetCategories;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
