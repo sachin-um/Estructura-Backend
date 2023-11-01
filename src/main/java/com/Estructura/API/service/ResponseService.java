@@ -10,6 +10,7 @@ import com.Estructura.API.responses.GenericDeleteResponse;
 import com.Estructura.API.responses.GenericResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +29,6 @@ public interface ResponseService {
 
     Optional<Response> fetchResponseById(Long id);
 
-    GenericResponse<Long> acceptOrDeclineResponse(ActionRequest actionRequest);
+    GenericResponse<Long> acceptOrDeclineResponse(@RequestBody ActionRequest actionRequest);
     GenericDeleteResponse<Long> deleteResponse(Response response);
 }
