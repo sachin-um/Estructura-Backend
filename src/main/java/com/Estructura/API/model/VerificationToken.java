@@ -19,7 +19,7 @@ public class VerificationToken {
     private String token;
     private Date expirationTime;
     private TokenType tokenType;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     public VerificationToken(String token, User user, TokenType tokenType) {

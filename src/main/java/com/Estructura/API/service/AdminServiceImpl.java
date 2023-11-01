@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public RegisterResponse crateAnAdmin(RegisterRequest registerRequest) {
+    public RegisterResponse crateAnAdmin(@ModelAttribute RegisterRequest registerRequest) {
         var response = new RegisterResponse();
 
         // Pre-check fields that aren't checked by response.checkValidity()
@@ -76,15 +77,8 @@ public class AdminServiceImpl implements AdminService {
                 savedUser = adminRepository.save(admin);;
             }
             if (savedUser != null) {
-                var jwtToken = jwtService.generateToken(user);
-                var refreshToken = jwtService.generateRefreshToken(user);
-                saveUserToken(savedUser, jwtToken);
-
-                response.setLoggedUser(savedUser);
-                response.setRole(savedUser.getRole());
-                response.setAccessToken(jwtToken);
-                response.setRefreshToken(refreshToken);
                 response.setSuccess(true);
+                response.setLoggedUser(savedUser);
             } else {
                 response.setSuccess(false);
                 response.setErrorMessage(

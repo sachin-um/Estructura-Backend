@@ -155,7 +155,7 @@ public class EstructuraAPIApplication {
                                                   "Railway road")
                                               .city("Nugegoda")
                                               .district("Colombo")
-                                              .slidRegNumber("SLD22393")
+                                              .sliaRegNumber("SLD22393")
                                               .website("www.HariniInterior.com")
                                               .qualification(
                                                   "Bsc in Interior Designing," +

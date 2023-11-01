@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
 
         if (optionalUser.isPresent()){
             User existedUser=optionalUser.get();
-            existedUser.setVerified(true);
+            existedUser.setAdminApproved(true);
             User savedUser=userRepository.save(existedUser);
             return ResponseEntity.ok(savedUser);
         }
