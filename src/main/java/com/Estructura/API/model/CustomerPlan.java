@@ -25,6 +25,8 @@ public class CustomerPlan {
     private String planName;
     private Integer coverImageId;
     private Integer createdBy;
+    private String note;
+    private Double budget;
 
     @Column(nullable = false)
     @CreationTimestamp

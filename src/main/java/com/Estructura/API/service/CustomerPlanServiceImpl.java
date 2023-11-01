@@ -8,7 +8,6 @@ import com.Estructura.API.repository.CustomerPlanRepository;
 import com.Estructura.API.repository.CustomerPlanRetailIItemRepository;
 import com.Estructura.API.requests.customerPlans.CustomerPlanRequest;
 import com.Estructura.API.responses.CustomerPlan.CustomerPlanResponse;
-import com.Estructura.API.responses.GenericAddOrUpdateResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,41 +37,48 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                     .planName(customerPlanRequest.getName())
                     .createdBy(customerPlanRequest.getUserID())
                     .coverImageId(customerPlanRequest.getCoverImageId())
+                    .note(customerPlanRequest.getNote())
+                    .budget(customerPlanRequest.getBudgets())
                     .customer(customer.get())
                     .build();
                 CustomerPlan savedPlan=
                     customerPlanRepository.save(customerPlan);
-                if (customerPlanRequest.getProfessionals().length !=0){
-                    Arrays.stream(customerPlanRequest.getProfessionals()).forEach(professional->{
-                        var planProfessional=
-                            CustomerPlanProfessionals.builder()
-                            .professionalId(professional)
-                                                     .customerPlan(savedPlan)
+                if(customerPlanRequest.getProfessionals() != null) {
+                    if (customerPlanRequest.getProfessionals().length !=0){
+                        Arrays.stream(customerPlanRequest.getProfessionals()).forEach(professional->{
+                            var planProfessional=
+                                CustomerPlanProfessionals.builder()
+                                .professionalId(professional)
+                                                         .customerPlan(savedPlan)
+                                    .build();
+                            customerPlanProfessionalsRepository.save(planProfessional);
+                        });
+                    }
+                }
+                if(customerPlanRequest.getRentingItems() != null) {
+                    if (customerPlanRequest.getRentingItems().length != 0) {
+                        Arrays.stream(customerPlanRequest.getRentingItems()).forEach(rentingItem -> {
+                            var planRentingItem = CustomerPlanRentingItems.builder()
+                                .rentingItemId(rentingItem)
+                                .customerPlan(savedPlan)
                                 .build();
-                        customerPlanProfessionalsRepository.save(planProfessional);
-
-                    });
+                            customerPlanRentingItemRepository.save(planRentingItem);
+                        });
+                    }
                 }
-                if (customerPlanRequest.getRentingItems().length !=0){
-                    Arrays.stream(customerPlanRequest.getRentingItems()).forEach(rentingItem->{
-                        var planRentingItem= CustomerPlanRentingItems.builder()
-                            .rentingItemId(rentingItem)
-                            .customerPlan(savedPlan)
-                            .build();
-                        customerPlanRentingItemRepository.save(planRentingItem);
-                    });
-                }
-                if (customerPlanRequest.getRetailItems().length !=0){
-                    Arrays.stream(customerPlanRequest.getRetailItems()).forEach(retailItem->{
-                        var planRetailItem= CustomerPlanRetailItems.builder()
-                            .retailItems(retailItem)
-                            .customerPlan(savedPlan)
-                            .build();
-                        customerPlanRetailIItemRepository.save(planRetailItem);
-                    });
+                if(customerPlanRequest.getRetailItems() != null) {
+                    if (customerPlanRequest.getRetailItems().length != 0) {
+                        Arrays.stream(customerPlanRequest.getRetailItems()).forEach(retailItem -> {
+                            var planRetailItem = CustomerPlanRetailItems.builder()
+                                .retailItems(retailItem)
+                                .customerPlan(savedPlan)
+                                .build();
+                            customerPlanRetailIItemRepository.save(planRetailItem);
+                        });
+                    }
                 }
                 customerPlanResponse.setSuccess(true);
-                customerPlanResponse.setCustomerPlan(savedPlan);
+                customerPlanResponse.setId(savedPlan.getId());
             }else {
                 customerPlanResponse.setErrormessage("Access denied");
             }
