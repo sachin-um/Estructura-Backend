@@ -37,6 +37,8 @@ public class CustomerPlanServiceImpl implements CustomerPlanService{
                     .planName(customerPlanRequest.getName())
                     .createdBy(customerPlanRequest.getUserID())
                     .coverImageId(customerPlanRequest.getCoverImageId())
+                    .note(customerPlanRequest.getNote())
+                    .budget(customerPlanRequest.getBudgets())
                     .customer(customer.get())
                     .build();
                 CustomerPlan savedPlan=
