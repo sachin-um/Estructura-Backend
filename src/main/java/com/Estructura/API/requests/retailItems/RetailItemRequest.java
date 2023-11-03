@@ -1,5 +1,6 @@
 package com.Estructura.API.requests.retailItems;
 
+import com.Estructura.API.model.FurnitureType;
 import com.Estructura.API.model.RetailItemType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class RetailItemRequest {
     private Integer quantity;
     private Integer retailStoreId;
     private RetailItemType retailItemType;
+    private FurnitureType furnitureItemType;
     private MultipartFile mainImage;
     private List<MultipartFile> extraImages;
 }
